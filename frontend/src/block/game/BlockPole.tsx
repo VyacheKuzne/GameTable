@@ -1,66 +1,78 @@
-// BlockPole.tsx
-import React from 'react';
-// Импорт кастомного хука для логики работы с мобами
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import useMobLogic from '../hooks/useMobLogic';
-// Импорт компонента для отображения списка мобов
 import MobList from '../mob/MobList';
-// Импорт компонента для клетки грида
 import GridCell from './GridCell';
-// Импорт типа данных для моба
-import { MobBlock } from './types'; // Обратите внимание на корректный путь к types.ts
+import { MobBlock } from './types';
+import TurnList from '../game/TurnList';
 
 function BlockPole() {
-  // Деструктуризация данных из кастомного хука useMobLogic
+  // State to store fetched turn orders
+  const [turnOrders, setTurnOrders] = useState<any[]>([]);
+
+  // Fetch turn orders when the component mounts
+  useEffect(() => {
+    const fetchTurnOrders = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/turn-list'); // API request to port 3000
+        setTurnOrders(response.data);
+      } catch (error) {
+        console.error('Error fetching turn orders:', error);
+      }
+    };
+
+    fetchTurnOrders();
+  }, []); // Empty dependency array ensures this runs once on component mount
+
   const {
-    gridSize,         // Размер сетки (ширина и высота грида)
-    cellSize,         // Размер каждой клетки
-    mobBlocks,        // Список мобов на поле
-    placingMob,       // Моб, который сейчас размещается
-    highlightedCells, // Ячейки, которые должны быть подсвечены
-    selectedMobId,    // ID выбранного моба
-    handleMobSelect,  // Функция для выбора моба
-    placeMob,         // Функция для размещения моба
-    moveMob,          // Функция для перемещения моба
-    handleMobClick,   // Функция для обработки клика по мобу
+    gridSize,
+    cellSize,
+    mobBlocks,
+    placingMob,
+    highlightedCells,
+    selectedMobId,
+    handleMobSelect,
+    placeMob,
+    moveMob,
+    handleMobClick,
   } = useMobLogic();
 
   return (
     <>
-      {/* Отображаем компонент списка мобов, передавая функцию для выбора моба */}
+      {/* Display the list of mobs */}
       <MobList onMobSelect={handleMobSelect} />
 
-      {/* 
-        Отображаем сетку. 
-        Каждая строка состоит из `gridSize` количества клеток.
-        Используем метод Array.from() для генерации строк и столбцов.
-      */}
-      <div className="grid grid-cols-10 w-1/4">
-        {Array.from({ length: gridSize }).map((_, rowIndex) =>
-          Array.from({ length: gridSize }).map((_, colIndex) => (
-            <GridCell
-              key={`${rowIndex}-${colIndex}`} // Уникальный ключ для каждой клетки
-              rowIndex={rowIndex}  // Индекс строки (по оси Y)
-              colIndex={colIndex}  // Индекс столбца (по оси X)
-              cellSize={cellSize}  // Размер клетки (передается из состояния)
-              
-              // {/* Проверяем, является ли текущая клетка подсвеченной */}
-              isHighlighted={highlightedCells.some(
-                (cell) => cell.row === rowIndex && cell.col === colIndex
-              )}
-              
-              // {/* Фильтруем список мобов по текущей клетке (rowIndex и colIndex) */}
-              mobBlocks={(mobBlocks as any).filter( // Преобразуем тип, чтобы избежать ошибки типов
-                (mob: any) => (mob as any).row === rowIndex && (mob as any).col === colIndex // Фильтруем мобов по строке и столбцу
-              ) as MobBlock[]} // Преобразуем результат обратно в массив MobBlock[]
+      {/* Display the grid */}
+      <div className="flex">
+        <div className="grid grid-cols-10 w-1/4">
+          {Array.from({ length: gridSize }).map((_, rowIndex) =>
+            Array.from({ length: gridSize }).map((_, colIndex) => (
+              <GridCell
+                key={`${rowIndex}-${colIndex}`}
+                rowIndex={rowIndex}
+                colIndex={colIndex}
+                cellSize={cellSize}
+                isHighlighted={highlightedCells.some(
+                  (cell) => cell.row === rowIndex && cell.col === colIndex
+                )}
+                mobBlocks={(mobBlocks as any).filter(
+                  (mob: any) =>
+                    (mob as any).row === rowIndex && (mob as any).col === colIndex
+                ) as MobBlock[]}
+                placingMob={placingMob}
+                placeMob={placeMob}
+                moveMob={moveMob}
+                handleMobClick={handleMobClick}
+                selectedMobId={selectedMobId}
+              />
+            ))
+          )}
+        </div>
 
-              placingMob={placingMob}         // Моб, который сейчас размещается
-              placeMob={placeMob}             // Функция для размещения моба
-              moveMob={moveMob}               // Функция для перемещения моба
-              handleMobClick={handleMobClick} // Функция для обработки кликов по мобам
-              selectedMobId={selectedMobId}   // ID выбранного моба
-            />
-          ))
-        )}
+        {/* Display the TurnList */}
+        <div>
+          <TurnList turnOrders={turnOrders} /> {/* Pass the fetched turn orders */}
+        </div>
       </div>
     </>
   );

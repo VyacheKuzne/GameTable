@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
 // Определяем типы для оружия и брони, чтобы корректно работать с данными.
 interface Weapon {
   id: number;
@@ -105,6 +104,7 @@ export default function MobList({ onMobSelect }: MobListProps) {
         // Если данных о мобах еще нет (мобы загружаются), показываем сообщение о загрузке.
         <p>Загрузка...</p>
       )}
+
     </div>
   );
 }
