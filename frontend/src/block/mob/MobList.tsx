@@ -65,14 +65,17 @@ export default function MobList({ onMobSelect }: MobListProps) {
             <button
               key={mob.id}  // Используем id моба как ключ для оптимизации рендеринга.
               className="border-2 border-pink-800 hover:text-white hover:bg-pink-500 m-2 p-2"
-              onClick={() => onMobSelect({
+              onClick={() => {console.log('моб выбран') 
+                onMobSelect({
                 id: mob.id,          // Передаем id моба
                 name: mob.name,      // Передаем имя моба
                 speed: mob.speed,    // Передаем скорость моба
                 health: mob.health,  // Передаем здоровье моба
                 weapon: mob.weapon,  // Передаем объект оружия (или null)
                 armor: mob.armor,    // Передаем объект брони (или null)
-              })}
+              })
+              }
+            }
             >
               {mob.name}  {/* Отображаем имя моба на кнопке */}
               

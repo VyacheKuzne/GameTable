@@ -32,9 +32,9 @@ function BlockPole() {
     highlightedCells,
     selectedMobId,
     handleMobSelect,
-    placeMob,
-    moveMob,
+    moveOrAttack,
     handleMobClick,
+    placeMob, // Получаем placeMob из useMobLogic
   } = useMobLogic();
 
   return (
@@ -55,15 +55,14 @@ function BlockPole() {
                 isHighlighted={highlightedCells.some(
                   (cell) => cell.row === rowIndex && cell.col === colIndex
                 )}
-                mobBlocks={(mobBlocks as any).filter(
-                  (mob: any) =>
-                    (mob as any).row === rowIndex && (mob as any).col === colIndex
-                ) as MobBlock[]}
+                mobBlocks={mobBlocks.filter(
+                  (mob) => mob.row === rowIndex && mob.col === colIndex
+                ) as MobBlock[]} // Преобразуем mobBlocks в MobBlock[]
                 placingMob={placingMob}
-                placeMob={placeMob}
-                moveMob={moveMob}
+                moveOrAttack={moveOrAttack}
                 handleMobClick={handleMobClick}
                 selectedMobId={selectedMobId}
+                placeMob={placeMob} // Передаем placeMob в GridCell
               />
             ))
           )}

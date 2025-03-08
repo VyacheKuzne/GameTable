@@ -12,7 +12,7 @@ interface GridCellProps {
   mobBlocks: MobBlock[];         // Список мобов, находящихся в данной клетке
   placingMob: boolean;           // Флаг, указывающий, что мы находимся в режиме размещения моба
   placeMob: (row: number, col: number) => void; // Функция для размещения моба
-  moveMob: (row: number, col: number) => void;  // Функция для перемещения моба
+  moveOrAttack: (row: number, col: number) => void;  // Функция для перемещения моба
   handleMobClick: (mob: MobBlock) => void;      // Функция для обработки кликов по мобам
   selectedMobId: number | null;  // ID выбранного моба для выделения
 }
@@ -25,7 +25,7 @@ const GridCell: React.FC<GridCellProps> = ({
   mobBlocks,               // Мобы, находящиеся в текущей клетке
   placingMob,              // Флаг, указывающий на режим размещения
   placeMob,                // Функция для размещения моба
-  moveMob,                 // Функция для перемещения моба
+  moveOrAttack,                 // Функция для перемещения моба
   handleMobClick,          // Функция для обработки кликов по мобам
   selectedMobId,           // ID выбранного моба
 }) => {
@@ -46,7 +46,7 @@ const GridCell: React.FC<GridCellProps> = ({
           placeMob(rowIndex, colIndex);
         } else {
           // Если не в режиме размещения, то вызываем функцию для перемещения моба
-          moveMob(rowIndex, colIndex);
+          moveOrAttack(rowIndex, colIndex);
         }
       }}
     >

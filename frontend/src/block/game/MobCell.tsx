@@ -26,6 +26,7 @@ const MobCell: React.FC<MobCellProps> = ({ mob, handleMobClick, isSelected, cell
       onClick={(e) => {
         e.stopPropagation(); // Предотвращаем дальнейшее распространение события
         handleMobClick(mob);  // Обрабатываем клик по мобу
+        console.log('клик по')
       }}
       onMouseEnter={() => setIsHovered(true)} // Устанавливаем isHovered в true при наведении
       onMouseLeave={() => setIsHovered(false)} // Устанавливаем isHovered в false при уходе мыши
