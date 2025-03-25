@@ -4,7 +4,7 @@ import { MobBlock, MobCellProps } from './types'; // Импортируем ти
 // Компонент MobCell отображает информацию о мобе в клетке
 const MobCell: React.FC<MobCellProps> = ({ mob, handleMobClick, isSelected, cellSize }) => {
   const [isHovered, setIsHovered] = useState(false); // Состояние для отслеживания, наведена ли мышь
-
+  const [turn, setTurn] = useState(false);
   return (
     <div
       style={{
@@ -24,9 +24,14 @@ const MobCell: React.FC<MobCellProps> = ({ mob, handleMobClick, isSelected, cell
         boxShadow: isHovered ? '0px 0px 10px rgba(0, 0, 0, 0.5)' : 'none', // Тень при наведении
       }}
       onClick={(e) => {
+        console.log(turn)
+        if (!turn ){
         e.stopPropagation(); // Предотвращаем дальнейшее распространение события
         handleMobClick(mob);  // Обрабатываем клик по мобу
         console.log('клик по')
+        setTurn(true)
+        }
+
       }}
       onMouseEnter={() => setIsHovered(true)} // Устанавливаем isHovered в true при наведении
       onMouseLeave={() => setIsHovered(false)} // Устанавливаем isHovered в false при уходе мыши

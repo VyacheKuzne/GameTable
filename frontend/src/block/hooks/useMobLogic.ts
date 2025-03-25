@@ -83,7 +83,7 @@ const useMobLogic = () => {
   placingMob,
   setPlacingMob,
   selectedMob,  // Это предполагается, что selectedMob передается в useMobPlace
-  setSelectedMob: setSelectedMob,  // Функция для установки selectedMob
+  setSelectedMob: setSelectedMob,  // Функция для установки selectedMob 
   mobBlocks,
   setMobBlocks,
   nextId,

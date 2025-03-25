@@ -1,23 +1,28 @@
-import React from "react";
-import ArrowImg from '../img/ArrowImg.svg';
-// import { useState, } from "react";
- function Header() {
-    // const linkText = [
-    //     'Вебинары', 'Курсы', 'Практика', 'О нас'
-    // ]
-    // const [linkText, _setlinkText] = useState() 
-    return(
-        <>
-        <header className="flex justify-center">
-            <div className="flex w-full content-center my-[10px]">
-                <button className="bg-custom-darkGray rounded-tr-xl flex place-items-center text-white p-[0.5%]">
-                    <p>Меню</p>
-                    <img src={ArrowImg} alt="Стрелка" />
-                </button>
-            </div>
-        </header>
-        </>
-    )
- }
+import React, { useState, useRef } from "react";
+import MenuButton from "../component/Button/MenuButton";
+import ModalBlockMenu from "../component/ModalBlock/ModalBlockMenu";
 
- export default Header
+function Header() {
+  const [isOpen, setIsOpen] = useState(false);
+  const navRef = useRef<HTMLElement | null>(null);
+
+  function showMenu() {
+    setIsOpen((prev) => !prev);
+  }
+
+  return (
+    <header className="h-[100px]">
+      <nav
+        ref={navRef}
+        className={` ${
+          isOpen ? "nav-open" : ""
+        }`}
+        >
+        <MenuButton onClick={showMenu} />
+        <ModalBlockMenu />
+      </nav>
+    </header>
+  );
+}
+
+export default Header;
