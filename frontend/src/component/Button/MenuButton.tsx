@@ -17,7 +17,7 @@ export default function MenuButton({ onClick }: ShowModalProps) {
         <div>
             <button 
                 onClick={handleClick} 
-                className="fixed flex items-center gap-2 right-0 w-[25%] bg-custom-darkGray p-2 text-white cursor-pointer z-30"
+                className="fixed flex items-center gap-2 right-0  bg-custom-darkGray p-2 text-white cursor-pointer z-30"
             >       
                 <p>Меню</p>
                 <img 

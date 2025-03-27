@@ -1,28 +1,24 @@
 .hexagon-container{
     position: relative;
     text-align: center;
-    width: 300px;
+    width: 400px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .hexagon-container-first {
-    width: 100px; /* Изменим на ширину, которая будет соответствовать ширине шестиугольника */
-    height: calc(100px * 1.1547); /*  Высота, чтобы стороны были равными, ≈1.1547  = sqrt(3) / 2 * 2*/
     display: flex;
     justify-content: center;
     align-items: center;
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 95%, 0% 75%, 0% 25%);
     position: absolute;
-    top: 20px;
+    top: -10px;
     background-color: rgba(49, 49, 49, 1);
     z-index: 20;
   }
 
 .hexagon-container-second{
-    width: 100px; /* Изменим на ширину, которая будет соответствовать ширине шестиугольника */
-    height: calc(100px * 1.1547); /*  Высота, чтобы стороны были равными, ≈1.1547  = sqrt(3) / 2 * 2*/
     display: flex;
     justify-content: center;
     align-items: center;
@@ -33,12 +29,12 @@
     z-index: 10;
 }
 .hexagon-container-first-img{
-    width: 85%;
+    width: fit-content;
 }
 .card-text{
     width: 95%;
     position: absolute;
-    top: 130px;
+    top: 55%;
 }
 
 .hexagon-container-tittle{

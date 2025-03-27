@@ -1,19 +1,19 @@
 nav {
     overflow: hidden;
-    position: relative;
-    transform: translateX(-300px);
-    width: 400px;
+    position: fixed;
+    transform: translateX(-200px);
+    width: 285px;
     transition: all 800ms cubic-bezier(.8, 0, .33, 1);
     border-radius: 0% 0% 100% 50%;
     z-index: 700;
     height: 100px;
 }
 nav.nav-open {
-    height: 1000vw;
+    height: 10vw;
     transform: translateX(0px);
     border-radius: 0% 0% 0% 0%;
 	background: rgba(49, 49, 49, 1);
     position: fixed;
     z-index: 600;
-    
+    border-top-right-radius: 15px;
 }
