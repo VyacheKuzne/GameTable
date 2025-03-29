@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import Poligon from '../img/Polygon.svg'
 export default function ExitPage() {
   const blockCount = 15;
 
@@ -91,9 +91,9 @@ export default function ExitPage() {
           </div>
           <button
             type="submit"
-            className="rounded-full bg-custom-red absolute top-1/3 right-[-14%] border-[5px] border-white w-[74px] h-[74px]"
+            className="rounded-full flex items-center justify-center bg-custom-red absolute top-1/3 right-[-14%] border-[5px] border-white w-[74px] h-[74px]"
           >
-            btn
+            <img src={Poligon} alt="Poligon" />
           </button>
         </form>
       </div>
