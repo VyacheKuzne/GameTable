@@ -7,13 +7,14 @@ type Props = {
     size:number
     mainText: string;
     subText: string;
+    link: string;
 }
-const CursCard = ({ size, img, mainText, subText }: Props) => {
+const CursCard = ({ size, img, mainText, subText,link }: Props) => {
     const height = size * 1.3047; // Вычисляем высоту исходя из размера
     const width = size * 1.0447; 
   return ( 
     <>
-    <Link to="/gamepage">
+    <Link to={link}>
     <button className='hexagon-container'>
         <p className='hexagon-container-tittle'>{mainText}</p>
         <div className="hexagon-container-first" style={{ width: width, height: height}}>

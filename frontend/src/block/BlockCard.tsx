@@ -9,10 +9,34 @@ import tarif from '../img/advantages/tarif.svg'
     return(
     <>
         <div className="flex m-auto my-[200px]">
-            <CursCard mainText='Присоединиться к игре по ключу' subText='Уникальный ключ вам сообщит создатель игры' img={key} size={size} />
-            <CursCard mainText='Создать игровую сессию' subText='Вы можете создать свою игру по своему усмотрению' img={plus} size={size}/>
-            <CursCard mainText='Посмотреть историю игр' subText='Посмотрите историю своих прошлых игра' img={history} size={size}/>
-            <CursCard mainText='Посмотреть акутальные тарифы' subText='Можете обновить свой тариф, лучше тариф-лучше условия' img={tarif} size={size}/>
+            <CursCard 
+             link="/gamepage"
+             mainText='Присоединиться к игре по ключу' 
+             subText='Уникальный ключ вам сообщит создатель игры' 
+             img={key} 
+             size={size} 
+        />
+            <CursCard
+             link="/createSession"
+             mainText='Создать игровую сессию'
+             subText='Вы можете создать свою игру по своему усмотрению' 
+             img={plus}
+             size={size}
+        />
+            <CursCard
+             link="/sessionHistory" 
+             mainText='Посмотреть историю игр' 
+             subText='Посмотрите историю своих прошлых игра' 
+             img={history} 
+             size={size}
+        />
+            <CursCard
+             link="/tarifs" 
+             mainText='Посмотреть акутальные тарифы' 
+             subText='Можете обновить свой тариф, лучше тариф-лучше условия' 
+             img={tarif} 
+             size={size}
+        />
         </div>
     </>
     )

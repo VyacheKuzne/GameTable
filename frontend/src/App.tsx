@@ -5,6 +5,7 @@ import MainPage from './pages/MainPage';
 import GamePage from './pages/GamePage'; 
 import AftorizationPage from './pages/AftorizationPage';
 import ProfilePage from './pages/ProfilePage';
+import TarifPage from './pages/TarifPage';
 function App() {
   return (
     <BrowserRouter>
@@ -14,6 +15,10 @@ function App() {
             <Route path="/gamepage" element={<GamePage/>} />
             <Route path="/aftorization" element={<AftorizationPage/>} />
             <Route path="/profile" element={<ProfilePage/>} />
+            <Route path="/tarifs" element={<TarifPage/>} />
+            <Route path="/profile" element={<ProfilePage/>} />
+            <Route path="/profile" element={<ProfilePage/>} />
+
           </Routes>
       </div>
     </BrowserRouter>

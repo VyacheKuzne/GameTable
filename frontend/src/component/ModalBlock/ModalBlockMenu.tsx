@@ -3,7 +3,7 @@ import './ModalBlockMenu.css'
 export default function ModalBlockMenu() {
 const menuItem = [
     { name: 'Профиль', link: '/profile' },
-    { name: 'Тарифы', link: '/tarif' },
+    { name: 'Тарифы', link: '/tarifs' },
     { name: 'Выход', link: '/aftorization' },
 ]
   return (

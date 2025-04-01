@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Poligon from '../img/Polygon.svg'
 export default function ExitPage() {
   const blockCount = 15;
-
+  
   const getRandomSize = () => Math.floor(Math.random() * 200) + 35;
   const getRandomColor = () => (Math.random() > 0.5 ? "black" : "white");
   const getRandomPosition = () => ({
