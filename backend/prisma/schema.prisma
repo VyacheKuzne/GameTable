@@ -45,3 +45,11 @@ model TurnOrder {
   mobId     Int  @unique
   turnIndex Int
 }
+
+model User {
+  id Int  @id @default(autoincrement())
+  name String
+  email String @unique
+  phone String
+  password String
+}
