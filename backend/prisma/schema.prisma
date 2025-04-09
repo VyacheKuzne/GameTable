@@ -1,55 +1,64 @@
-// schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model armor {
+  id      Int    @id @default(autoincrement())
+  name    String
+  defense Int
+  weight  Int
+  mob     mob[]
 }
 
-model Mob {
-  id        Int  @id @default(autoincrement())
+model mob {
+  id        Int        @id @default(autoincrement())
   name      String
   health    Int
   attack    Int
   defense   Int
   speed     Int
-  weapon    Weapon? @relation(fields: [weaponId], references: [id])
   weaponId  Int?
-  armor     Armor?  @relation(fields: [armorId], references: [id])
   armorId   Int?
-  turnOrder TurnOrder?
+  armor     armor?     @relation(fields: [armorId], references: [id], map: "Mob_armorId_fkey")
+  weapon    weapon?    @relation(fields: [weaponId], references: [id], map: "Mob_weaponId_fkey")
+  turnorder turnorder?
+
+  @@index([armorId], map: "Mob_armorId_fkey")
+  @@index([weaponId], map: "Mob_weaponId_fkey")
 }
 
-model Weapon {
-  id        Int  @id @default(autoincrement())
-  name      String
-  damage    Int
-  weight    Int
-  mobs      Mob[]
-}
-
-model Armor {
-  id        Int  @id @default(autoincrement())
-  name      String
-  defense   Int
-  weight    Int
-  mobs      Mob[]
-}
-
-model TurnOrder {
-  id        Int  @id @default(autoincrement())
-  mob       Mob     @relation(fields: [mobId], references: [id])
-  mobId     Int  @unique
+model turnorder {
+  id        Int @id @default(autoincrement())
+  mobId     Int @unique(map: "TurnOrder_mobId_key")
   turnIndex Int
+  mob       mob @relation(fields: [mobId], references: [id], map: "TurnOrder_mobId_fkey")
 }
 
-model User {
-  id Int  @id @default(autoincrement())
-  name String
-  email String @unique
-  phone String
+model user {
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique(map: "User_email_key")
+  phone    String
   password String
 }
+
+model weapon {
+  id     Int    @id @default(autoincrement())
+  name   String
+  damage Int
+  weight Int
+  mob    mob[]
+}
+
+model chatMessage {
+  id   Int    @id @default(autoincrement())
+  text String
+  
+}
+
+

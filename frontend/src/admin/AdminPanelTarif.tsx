@@ -1,5 +1,5 @@
 import React from 'react'
-import AminModalBlockMenu from '../component/ModalBlock/AminModalBlockMenu'
+import AminModalBlockMenu from './adminModalBlock/AminModalBlockMenu'
 export default function AdminPanelTarif() {
   return (
     <div>

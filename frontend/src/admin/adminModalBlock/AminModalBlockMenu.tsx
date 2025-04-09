@@ -1,22 +1,35 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import AdminMenuBlock from "../../img/AdminMenuBlokc.svg";
+import axios from "axios";
 export default function AminModalBlockMenu() {
   const location = useLocation();
   const activeTag = location.pathname.includes("tarifs") ? "tarifs" : "users";
+  const admin = '/AdminPanel'
   const localUrls = {
     users: {
-      url: "/AdminPanel/users",
+      url: `${admin}/users`,
       text: "пользователи",
     },
     tarifs: {
-      url: "/AdminPanel/tarifs",
+      url: `${admin}/tarifs`,
       text: "тарифы",
     },
+    exist: {
+      url: `${admin}/exist`,
+      text: "выход",
+    },
   };
+
+  const numberOfItems  = Object.keys(localUrls).length
+
   const [isOpen, setIsOpen] = useState(true);
   return (
-    <div className="relative w-[320px] h-[100px]">
+    <div className="relative w-[320px] z-10"
+      style={{
+        height: `calc(50px * ${numberOfItems})`
+      }}
+    >
       {/* МЕНЮ */}
       <div
         className={`

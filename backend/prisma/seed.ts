@@ -43,13 +43,13 @@ async function main() {
     },
   });
 
-  // Устанавливаем порядок ходов
-  await prisma.turnOrder.createMany({
-    data: [
-      { mobId: goblin.id, turnIndex: 1 },
-      { mobId: orc.id, turnIndex: 2 },
-    ],
-  });
+  // // Устанавливаем порядок ходов
+  // await prisma.turnOrder.createMany({
+  //   data: [
+  //     { mobId: goblin.id, turnIndex: 1 },
+  //     { mobId: orc.id, turnIndex: 2 },
+  //   ],
+  // });
 
   console.log('Seed успешно выполнен!');
 }
