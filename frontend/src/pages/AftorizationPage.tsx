@@ -5,6 +5,8 @@ import { METHODS } from "http";
 export default function ExitPage() {
   const [dataFrom, setDataFrom] = useState({
     name: "",
+    secondname: "",
+    nickname: "",
     email: "",
     password: "",
     phone: "",
@@ -80,7 +82,67 @@ export default function ExitPage() {
             <div className="w-[18px] h-[18px] rounded-full bg-white"></div>
             <p className="text-[32px] text-white">Авторизация</p>
           </div>
-          <div className="flex">
+          <div className="grid grid-cols-2">
+            {/* 1 */}
+            <div className="border-r-[1px] border-b-[1px]">
+              <label className="block text-white text-[8px]">ИМЯ</label>
+              <input 
+                type="text"  
+                className="bg-transparent input-r"
+                name="name"
+              />
+            </div>
+            {/* 2 */}
+            <div className="border-b-[1px]">
+              <label className="block text-white text-[8px] pl-2">ФАМИЛИЯ</label>
+              <input 
+                type="text"  
+                className="bg-transparent input-r pl-2"
+                name="secondname"
+              />
+            </div>
+            {/* 3 */}
+            <div className="border-r-[1px] border-b-[1px]">
+              <label className="block text-white text-[8px]">ПАРОЛЬ</label>
+              <input 
+                type="text"  
+                className="bg-transparent input-r"
+                name="password"
+              />
+            </div>
+            {/* 4 */}
+            <div className="border-b-[1px]">
+              <label className="block text-white text-[8px] pl-2">ТЕЛЕФОН</label>
+              <input 
+                type="text"  
+                className="bg-transparent input-r pl-2"
+                name="phone"
+              />
+            </div>
+            {/* 5 */}
+            <div className="border-r-[1px] border-b-[1px]">
+              <label className="block text-white text-[8px]">НИК</label>
+              <input 
+                type="text"  
+                className="bg-transparent input-r"
+                name="nickname"
+              />
+            </div>
+            {/* 6 */}
+            <div className="input-r w-full border-b-[1px]">
+              <label className="block text-white text-[8px] pl-2">ПОЧТА</label>
+              <input 
+                type="text"  
+                className="bg-transparent input-r pl-2"
+                name="email"
+              />
+            </div>
+            {/* end */}
+          </div>
+          <div>
+
+          </div>
+          {/* <div className="flex">
             <input
               type="text"
               name="name"
@@ -91,8 +153,8 @@ export default function ExitPage() {
             <label htmlFor="name" className="absolute left-[52%] text-[10px] font-bold text-white">
               Фамилия
             </label>
-          </div>
-          <div className="flex">
+          </div> */}
+          {/* <div className="flex">
             <input
               type="text"
               name="email"
@@ -123,7 +185,7 @@ export default function ExitPage() {
               className="relative bg-transparent text-white border-white border-b-2 w-1/2 h-[46px] pl-3"
               onChange={fetchData}
             />
-          </div>
+          </div> */}
           <button
             type="submit"
             className="rounded-full flex items-center justify-center bg-custom-red absolute top-1/3 right-[-14%] border-[5px] border-white w-[74px] h-[74px]"

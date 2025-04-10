@@ -90,12 +90,10 @@ export const useMobPlace = ({
 
       // Увеличиваем счетчик для следующего ID
       setNextId(nextId + 1);
-
       // Завершаем процесс размещения моба и сбрасываем выбранного моба
       setPlacingMob(false);
       setSelectedMob(null);
     }
   };
-
   return { placeMob };
 };

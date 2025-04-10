@@ -49,7 +49,9 @@ model TurnOrder {
 model User {
   id Int  @id @default(autoincrement())
   name String
+  secondname String
   email String @unique
-  phone String
+  phone String @unique
   password String
+  nickname String @unique
 }

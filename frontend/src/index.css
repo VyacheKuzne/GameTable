@@ -8,3 +8,8 @@
   @apply text-[12px] md:text-[16px] xl:text-[20] 2xl:text-[24px]
 }
 
+
+.input-r{
+  @apply w-full focus:outline-none
+}
+
