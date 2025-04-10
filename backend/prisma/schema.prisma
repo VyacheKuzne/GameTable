@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model armor {
+model Armor {
   id      Int    @id @default(autoincrement())
   name    String
   defense Int
@@ -24,22 +24,22 @@ model mob {
   speed     Int
   weaponId  Int?
   armorId   Int?
-  armor     armor?     @relation(fields: [armorId], references: [id], map: "Mob_armorId_fkey")
-  weapon    weapon?    @relation(fields: [weaponId], references: [id], map: "Mob_weaponId_fkey")
-  turnorder turnorder?
+  armor     Armor?     @relation(fields: [armorId], references: [id], map: "Mob_armorId_fkey")
+  weapon    Weapon?    @relation(fields: [weaponId], references: [id], map: "Mob_weaponId_fkey")
+  turnorder TurnOrder?
 
   @@index([armorId], map: "Mob_armorId_fkey")
   @@index([weaponId], map: "Mob_weaponId_fkey")
 }
 
-model turnorder {
+model TurnOrder {
   id        Int @id @default(autoincrement())
   mobId     Int @unique(map: "TurnOrder_mobId_key")
   turnIndex Int
   mob       mob @relation(fields: [mobId], references: [id], map: "TurnOrder_mobId_fkey")
 }
 
-model user {
+model User {
   id       Int    @id @default(autoincrement())
   name     String
   email    String @unique(map: "User_email_key")
@@ -47,7 +47,7 @@ model user {
   password String
 }
 
-model weapon {
+model Weapon {
   id     Int    @id @default(autoincrement())
   name   String
   damage Int
@@ -55,7 +55,7 @@ model weapon {
   mob    mob[]
 }
 
-model chatMessage {
+model ChatMessage {
   id   Int    @id @default(autoincrement())
   text String
   
