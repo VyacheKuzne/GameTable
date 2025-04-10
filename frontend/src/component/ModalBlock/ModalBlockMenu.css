@@ -9,7 +9,7 @@ nav {
     height: 100px;
 }
 nav.nav-open {
-    height: 10vw;
+    height: 9vw;
     transform: translateX(0px);
     border-radius: 0% 0% 0% 0%;
 	background: rgba(49, 49, 49, 1);

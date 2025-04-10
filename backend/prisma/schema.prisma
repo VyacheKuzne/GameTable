@@ -1,49 +1,42 @@
-// schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model Armor {
+  id      Int    @id @default(autoincrement())
+  name    String
+  defense Int
+  weight  Int
+  mob     mob[]
 }
 
-model Mob {
-  id        Int  @id @default(autoincrement())
+model mob {
+  id        Int        @id @default(autoincrement())
   name      String
   health    Int
   attack    Int
   defense   Int
   speed     Int
-  weapon    Weapon? @relation(fields: [weaponId], references: [id])
   weaponId  Int?
-  armor     Armor?  @relation(fields: [armorId], references: [id])
   armorId   Int?
-  turnOrder TurnOrder?
-}
+  armor     Armor?     @relation(fields: [armorId], references: [id], map: "Mob_armorId_fkey")
+  weapon    Weapon?    @relation(fields: [weaponId], references: [id], map: "Mob_weaponId_fkey")
+  turnorder TurnOrder?
 
-model Weapon {
-  id        Int  @id @default(autoincrement())
-  name      String
-  damage    Int
-  weight    Int
-  mobs      Mob[]
-}
-
-model Armor {
-  id        Int  @id @default(autoincrement())
-  name      String
-  defense   Int
-  weight    Int
-  mobs      Mob[]
+  @@index([armorId], map: "Mob_armorId_fkey")
+  @@index([weaponId], map: "Mob_weaponId_fkey")
 }
 
 model TurnOrder {
-  id        Int  @id @default(autoincrement())
-  mob       Mob     @relation(fields: [mobId], references: [id])
-  mobId     Int  @unique
+  id        Int @id @default(autoincrement())
+  mobId     Int @unique(map: "TurnOrder_mobId_key")
   turnIndex Int
+  mob       mob @relation(fields: [mobId], references: [id], map: "TurnOrder_mobId_fkey")
 }
 
 model User {
@@ -55,3 +48,20 @@ model User {
   password String
   nickname String @unique
 }
+
+
+model Weapon {
+  id     Int    @id @default(autoincrement())
+  name   String
+  damage Int
+  weight Int
+  mob    mob[]
+}
+
+model ChatMessage {
+  id   Int    @id @default(autoincrement())
+  text String
+  
+}
+
+

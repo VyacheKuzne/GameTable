@@ -5,7 +5,7 @@ import MobList from '../mob/MobList';
 import GridCell from './GridCell';
 import { MobBlock } from './types';
 import TurnList from '../game/TurnList';
-
+import ChatBlock from './ChatBlock';
 function BlockPole() {
   // State to store fetched turn orders
   const [turnOrders, setTurnOrders] = useState<any[]>([]);
@@ -71,6 +71,9 @@ function BlockPole() {
         {/* Display the TurnList */}
         <div>
           <TurnList turnOrders={turnOrders} /> {/* Pass the fetched turn orders */}
+        </div>
+        <div className='fixed right-0 bottom-0'>
+          <ChatBlock/>
         </div>
       </div>
     </>

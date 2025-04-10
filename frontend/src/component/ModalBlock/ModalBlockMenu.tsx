@@ -2,6 +2,7 @@ import React from 'react'
 import './ModalBlockMenu.css'
 export default function ModalBlockMenu() {
 const menuItem = [
+    { name: 'Главная', link: '/' },
     { name: 'Профиль', link: '/profile' },
     { name: 'Тарифы', link: '/tarifs' },
     { name: 'Выход', link: '/aftorization' },

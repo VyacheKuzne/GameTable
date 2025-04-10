@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
 import { TurnListService } from './turn-list.service';
 import { CreateTurnOrderDto } from './dto/create-turn-order.dto';
-import { TurnOrder } from '@prisma/client'; // Import the TurnOrder model if needed
+import { TurnOrder } from '@prisma/client';
 
 @Controller('turn-list')
 export class TurnListController {
