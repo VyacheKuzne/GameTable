@@ -1,43 +1,32 @@
+import { Server } from 'socket.io';
 import {
+  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
-  OnGatewayInit,
   WebSocketServer,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
 } from '@nestjs/websockets';
-import { Socket, Server } from 'socket.io';
-import { ChatService } from './chat.service';
-// import { chatMessage } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 @WebSocketGateway({
   cors: {
-    origin: '*',
+    origin: `*`,
   },
 })
-export class ChatGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
-  constructor(private readonly chatService: ChatService) {}
-
+export class chatWS implements OnGatewayInit {
   @WebSocketServer()
   server: Server;
+  private prisma = new PrismaClient();
 
-  @SubscribeMessage('getMessages')
-  async handleGetMessages(client: Socket): Promise<void> {
-    const messages = await this.chatService.getMessages();
-    client.emit('messageHistory', messages);
+  async afterInit() {
+    const messages = await this.prisma.ChatMessage.findMany();
+    this.server.emit('messgaeFromUser', messages);
   }
-
-  afterInit() {
-    console.log('WebSocket сервер инициализирован');
-  }
-
-  handleConnection(client: Socket) {
-    console.log('Клиент подключён:', client.id);
-  }
-
-  handleDisconnect(client: Socket) {
-    console.log('Клиент отключён:', client.id);
+  @SubscribeMessage('messages')
+  async handleMessage(client: any, payload: { text: string }) {
+    await this.prisma.ChatMessage.create({
+      data: { text: payload.text },
+    });
+    const allMessages = await this.prisma.ChatMessage.findMany();
+    this.server.emit('messages', allMessages);
   }
 }

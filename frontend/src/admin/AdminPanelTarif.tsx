@@ -4,6 +4,9 @@ export default function AdminPanelTarif() {
   return (
     <div>
         <AminModalBlockMenu/>
+        <div>
+          
+        </div>
     </div>
   )
 }

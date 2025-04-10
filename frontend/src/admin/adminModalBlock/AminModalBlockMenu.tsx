@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import AdminMenuBlock from "../../img/AdminMenuBlokc.svg";
 import axios from "axios";
-export default function AminModalBlockMenu() {
+
+// type Props = {
+//   tableHeadersWithKeys:object
+// }
+export default function AminModalBlockMenu(
+  // {tableHeadersWithKeys}:Props
+) {
   const location = useLocation();
   const activeTag = location.pathname.includes("tarifs") ? "tarifs" : "users";
   const admin = '/AdminPanel'
