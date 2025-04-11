@@ -5,7 +5,7 @@ import { MoblistModule } from './MobList/moblist.module';
 import { TurnListService } from './turn-list/turn-list.service';
 import { TurnListController } from './turn-list/turn-list.controller';
 import { TurnListModule } from './turn-list/turn-list.module';
-import { AutorizationModule } from './autorization/autorization.module';
+import { AutorizationModule } from './auth/autorization.module';
 import { PrismaModule } from 'prisma/prisma.module';
 import { ChatModule } from './chat/chat.module';
 import { GetAllUserModule } from './admin/getAllUser/getAllUser.module';

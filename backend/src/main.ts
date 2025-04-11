@@ -4,10 +4,15 @@ import * as cors from 'cors';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use(cors({
-    origin: 'http://localhost:3001', // Замените на порт вашего фронтенда
-    credentials: true, // Важно, если используете куки или заголовки авторизации
-  }));
+
+  // Настройка CORS для передачи куков
+  app.use(
+    cors({
+      origin: 'http://localhost:3001',  // Убедись, что это твой фронт
+      credentials: true,  // Важно: разрешаем передачу куков
+    }),
+  );
+
   await app.listen(3000);
 }
 bootstrap();

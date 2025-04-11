@@ -1,56 +1,56 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Poligon from '../img/Polygon.svg'
-import { METHODS } from "http";
+import Poligon from "../img/Polygon.svg";
 export default function ExitPage() {
   const [dataFrom, setDataFrom] = useState({
-    name: "",
-    secondname: "",
     nickname: "",
-    email: "",
     password: "",
-    phone: "",
   });
-  const fetchData = (event: React.ChangeEvent<HTMLInputElement>) =>  {
+  const fetchData = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setDataFrom((prevData) => ({
       ...prevData,
       [name]: value,
-    }))
-  }
+    }));
+  };
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Предотвращаем перезагрузку страницы
-  
+
     try {
-      const response = await axios.post('http://localhost:3000/user/create',dataFrom, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      console.log(response.data); // Обработка ответа от сервера
+      console.log(dataFrom)
+      const response = await axios.post(
+        "http://localhost:3000/check",
+        dataFrom,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+         
+        }
+      );
+
+      console.log(response.data);
     } catch (error) {
-      console.error(error); // Логирование ошибки
+      console.error(error);
     }
   };
-  
+
   const blockCount = 15;
-  
+
   const getRandomSize = () => Math.floor(Math.random() * 200) + 35;
   const getRandomColor = () => (Math.random() > 0.5 ? "black" : "white");
   const getRandomPosition = () => ({
     top: `${Math.random() * 50}%`,
     left: `${Math.random() * 90}%`,
   });
-  const getRandomDelay = () => Math.floor(Math.random() * 3000) + 1000; // от 1 до 4 секунд
+  const getRandomDelay = () => Math.floor(Math.random() * 3000) + 1000;
 
-  // Создаём массив блоков с начальными значениями
   const [blocks, setBlocks] = useState(
     Array.from({ length: blockCount }, () => ({
       size: getRandomSize(),
       color: getRandomColor(),
       position: getRandomPosition(),
-      scale: 1, // Используем scale для плавности
+      scale: 1,
     }))
   );
 
@@ -59,7 +59,9 @@ export default function ExitPage() {
       const animateBlock = () => {
         setBlocks((prevBlocks) =>
           prevBlocks.map((block, i) =>
-            i === index ? { ...block, scale: block.scale === 1 ? 0.9 : 1 } : block
+            i === index
+              ? { ...block, scale: block.scale === 1 ? 0.9 : 1 }
+              : block
           )
         );
 
@@ -78,114 +80,34 @@ export default function ExitPage() {
       <div className="border-[5px] my-[10%] border-white shadow-inner z-10 bg-custom-red relative rounded-xl w-1/3 m-auto p-8 max-w-[630px] min-w-[600px]">
         <form className="relative m-auto w-full" onSubmit={handleSubmit}>
           <div className="flex justify-between items-center">
-            <p className="text-[32px] text-white">Регистрация</p>
+            <a href="/registartion" className="text-[32px] text-white">Регистрация</a>
             <div className="w-[18px] h-[18px] rounded-full bg-white"></div>
-            <p className="text-[32px] text-white">Авторизация</p>
+            <a href="/aftorization" className="text-[32px] text-white">Авторизация</a>
           </div>
           <div className="grid grid-cols-2">
-            {/* 1 */}
-            <div className="border-r-[1px] border-b-[1px]">
-              <label className="block text-white text-[8px]">ИМЯ</label>
-              <input 
-                type="text"  
-                className="bg-transparent input-r"
-                name="name"
-              />
-            </div>
-            {/* 2 */}
-            <div className="border-b-[1px]">
-              <label className="block text-white text-[8px] pl-2">ФАМИЛИЯ</label>
-              <input 
-                type="text"  
-                className="bg-transparent input-r pl-2"
-                name="secondname"
-              />
-            </div>
             {/* 3 */}
             <div className="border-r-[1px] border-b-[1px]">
-              <label className="block text-white text-[8px]">ПАРОЛЬ</label>
-              <input 
-                type="text"  
+              <label className="block label-text">ПАРОЛЬ</label>
+              <input
+                type="text"
                 className="bg-transparent input-r"
                 name="password"
-              />
-            </div>
-            {/* 4 */}
-            <div className="border-b-[1px]">
-              <label className="block text-white text-[8px] pl-2">ТЕЛЕФОН</label>
-              <input 
-                type="text"  
-                className="bg-transparent input-r pl-2"
-                name="phone"
+                onChange={fetchData}
               />
             </div>
             {/* 5 */}
-            <div className="border-r-[1px] border-b-[1px]">
-              <label className="block text-white text-[8px]">НИК</label>
-              <input 
-                type="text"  
-                className="bg-transparent input-r"
-                name="nickname"
-              />
-            </div>
-            {/* 6 */}
-            <div className="input-r w-full border-b-[1px]">
-              <label className="block text-white text-[8px] pl-2">ПОЧТА</label>
-              <input 
-                type="text"  
+            <div className="border-b-[1px]">
+              <label className="block label-text pl-2">НИК</label>
+              <input
+                type="text"
                 className="bg-transparent input-r pl-2"
-                name="email"
+                name="nickname"
+                onChange={fetchData}
               />
             </div>
             {/* end */}
           </div>
-          <div>
-
-          </div>
-          {/* <div className="flex">
-            <input
-              type="text"
-              name="name"
-              placeholder="КУЗНЕЦОВ"
-              className="relative bg-transparent text-white border-white border-b-2 w-1/2 h-[46px] pl-3"
-              onChange={fetchData}
-            />
-            <label htmlFor="name" className="absolute left-[52%] text-[10px] font-bold text-white">
-              Фамилия
-            </label>
-          </div> */}
-          {/* <div className="flex">
-            <input
-              type="text"
-              name="email"
-              placeholder="VACESLAVK70@GAMIL.COM"
-              className="bg-transparent text-white border-white border-b-2 border-r-2 w-1/2 h-[46px]"
-              onChange={fetchData}
-            />
-            <label htmlFor="email" className="absolute text-[10px] font-bold text-white">
-              ЭЛЕКТРОННАЯ ПОЧТА
-            </label>
-            <input
-              type="text"
-              name="phone"
-              placeholder="+7 904 152 85 77"
-              className="bg-transparent text-white border-white border-b-2 w-1/2 h-[46px] pl-3"
-              onChange={fetchData}
-            />
-            <label htmlFor="phone" className="absolute left-[52%]  text-[10px] font-bold text-white">
-              НОМЕР ТЕЛЕФОНА
-            </label>
-            <label htmlFor="firstName" className="absolute text-[10px] font-bold text-white">
-              пароль
-            </label>
-            <input
-              type="text"
-              name="password"
-              placeholder="пароль"
-              className="relative bg-transparent text-white border-white border-b-2 w-1/2 h-[46px] pl-3"
-              onChange={fetchData}
-            />
-          </div> */}
+          <div></div> 
           <button
             type="submit"
             className="rounded-full flex items-center justify-center bg-custom-red absolute top-1/3 right-[-14%] border-[5px] border-white w-[74px] h-[74px]"
@@ -214,3 +136,4 @@ export default function ExitPage() {
     </div>
   );
 }
+

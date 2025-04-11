@@ -47,6 +47,8 @@ model User {
   phone String @unique
   password String
   nickname String @unique
+  createdAt  DateTime   @default(now())
+  updateAt DateTime
 }
 
 

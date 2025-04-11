@@ -13,3 +13,7 @@
   @apply w-full focus:outline-none
 }
 
+/* настройки шрифтов */
+.label-text{
+  @apply font-bold text-white text-[10px]
+}
