@@ -12,6 +12,7 @@ export default function RegistartionPage() {
     email: "",
     password: "",
     phone: "",
+    updateAt: new Date()
   });
 
   const fetchData = (event: React.ChangeEvent<HTMLInputElement>) => {

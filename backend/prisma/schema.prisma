@@ -49,6 +49,8 @@ model User {
   nickname String @unique
   createdAt  DateTime   @default(now())
   updateAt DateTime
+  role String @default("user")
+  status String @default("active")
 }
 
 
@@ -60,7 +62,7 @@ model Weapon {
   mob    mob[]
 }
 
-model ChatMessage {
+model chatMessage{
   id   Int    @id @default(autoincrement())
   text String
   

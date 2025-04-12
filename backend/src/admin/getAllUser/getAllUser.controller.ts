@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { GetAllUserService } from './getAllUser.service';
 import { User } from '@prisma/client';
 
@@ -9,5 +9,10 @@ export class GetAllUserController {
   @Get('find/allUser')
   async GetAllUser(): Promise<User[]> {
     return await this.getAllUserService.getAllUsers();
+  }
+  @Get('/delete/:id')
+  async delete(@Param('id') id: string): Promise<void> {
+    const userId = (id); // Преобразуем строку в число
+    await this.getAllUserService.deleteUser(userId); // Передаем id в сервис
   }
 }

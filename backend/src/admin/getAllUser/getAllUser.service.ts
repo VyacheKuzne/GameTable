@@ -8,4 +8,13 @@ export class GetAllUserService {
   async getAllUsers(): Promise<User[]> {
     return await this.prisma.user.findMany();
   }
+
+  async deleteUser(id): Promise<User> {
+    return await this.prisma.user.update({
+      where: (id),
+      data: {
+        status: 'delete',
+      }
+    })
+  }
 }
