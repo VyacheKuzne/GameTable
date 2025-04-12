@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient, User } from '@prisma/client';
+import { use } from 'passport';
 
 @Injectable()
 export class GetAllUserService {
@@ -11,10 +12,37 @@ export class GetAllUserService {
 
   async deleteUser(id): Promise<User> {
     return await this.prisma.user.update({
-      where: (id),
+      where: id,
       data: {
         status: 'delete',
-      }
-    })
+      },
+    });
   }
+
+  async updateUser(user: User): Promise<User> {
+    const findUser = await this.prisma.user.findUnique({
+      where: { id: user.id },
+    });
+  
+    if (!findUser) {
+      throw new Error('Пользователь не найден');
+    }
+  
+    console.log('Обновляемые данные пользователя:', user);
+    const dataForUpdate: Partial<User> = {};
+    for (const key in user) {
+      if (key !== 'id' &&user[key as keyof User] !==undefined){
+        dataForUpdate[key] = user[key as keyof User];
+      }
+    }
+    const updatedUser = await this.prisma.user.update({
+      where: { id: user.id },
+      data: dataForUpdate
+    });
+    
+    console.log('Обновленные данные пользователя:', updatedUser);  // Логируем обновленные данные
+    return updatedUser;
+  }
+  
+
 }
