@@ -51,6 +51,8 @@ model User {
   updateAt DateTime
   role String @default("user")
   status String @default("active")
+  tarif Tariff? @relation(fields: [idTariff], references: [idTariff])
+  idTariff Int?
 }
 
 
@@ -66,6 +68,13 @@ model chatMessage{
   id   Int    @id @default(autoincrement())
   text String
   
+}
+
+model Tariff {
+  idTariff Int @id @default(autoincrement())
+  name String
+  status String @default("avtive")
+  user User[]
 }
 
 

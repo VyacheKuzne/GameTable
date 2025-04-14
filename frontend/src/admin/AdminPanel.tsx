@@ -28,7 +28,9 @@ export default function AdminPanel() {
     phone: string;
     password: string;
     status?: string;
+    nickname: string;
     tariff?: string;
+    secondname: string;
   };
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [allUsers, setAllUsers] = useState<User[]>([]);
@@ -83,14 +85,16 @@ export default function AdminPanel() {
                   onClick={() => {
                     setIsEdit(!isEdit);
                     setSelectedUser(user);
-                    // console.log(user)
                   }}
                   className="bg-custom-green w-[25px] h-[25px] rounded-[4px] p-[4px] mx-[10%]"
                 >
                   <img src={Edit} alt="Edit" className="w-full" />
                 </button>
                 <button
-                  onClick={() => setIsDelete(!isDelete)}
+                  onClick={() => {
+                    setIsDelete(!isDelete);
+                    setSelectedUser(user);
+                  }}
                   className="bg-custom-red w-[25px] h-[25px] rounded-[4px] p-[4px] mx-[10%]"
                 >
                   <img src={Bascet} alt="Basket" className="w-full" />
