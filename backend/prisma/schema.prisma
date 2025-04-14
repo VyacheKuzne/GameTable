@@ -77,4 +77,12 @@ model Tariff {
   user User[]
 }
 
+model GameHub {
+  idSession Int @id @default(autoincrement())
+  token String
+  status String
+  createdAt DateTime
+  updateAT DateTime
+}
+
 
