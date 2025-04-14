@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Poligon from "../img/Polygon.svg";
+import { useNavigate } from "react-router-dom";
+
 export default function ExitPage() {
+   const navigate = useNavigate();
   const [dataFrom, setDataFrom] = useState({
     nickname: "",
     password: "",
@@ -19,7 +22,7 @@ export default function ExitPage() {
     try {
       console.log(dataFrom)
       const response = await axios.post(
-        "http://localhost:3000/check",
+        "http://localhost:3000/autorization",
         dataFrom,
         {
           headers: {
@@ -30,6 +33,11 @@ export default function ExitPage() {
       );
 
       console.log(response.data);
+      if(
+        response.status = 201
+      ){
+        navigate("/");
+      }
     } catch (error) {
       console.error(error);
     }
