@@ -10,7 +10,6 @@ export class TariffService {
     return await this.prisma.tariff.findMany();
   }
 
-
   async creatTariff(tariff: Tariff): Promise<Tariff> {
     const createdTarif = await this.prisma.tariff.create({
       data: tariff,

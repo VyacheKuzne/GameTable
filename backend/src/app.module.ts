@@ -9,7 +9,7 @@ import { AutorizationModule } from './auth/autorization.module';
 import { PrismaModule } from 'prisma/prisma.module';
 import { ChatModule } from './chat/chat.module';
 import { GetAllUserModule } from './admin/getAllUser/getAllUser.module';
-
+import { GameSessionModule } from './createGameSession/gameSession.module';
 @Module({
   imports: [
     MoblistModule,
@@ -18,6 +18,7 @@ import { GetAllUserModule } from './admin/getAllUser/getAllUser.module';
     PrismaModule,
     ChatModule,
     GetAllUserModule,
+    GameSessionModule,
   ],
   controllers: [AppController, TurnListController],
   providers: [AppService, TurnListService],

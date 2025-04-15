@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import GamePage from '../../pages/GamePage'
 import './KeyCard.css'; // Импортируем CSS
 type Props = {
@@ -7,15 +7,15 @@ type Props = {
     size:number
     mainText: string;
     subText: string;
-    link: string;
+    onclick: () => void
+    
 }
-const CursCard = ({ size, img, mainText, subText,link }: Props) => {
+const CursCard = ({ size, img, mainText, subText, onclick }: Props) => {
     const height = size * 1.3047; // Вычисляем высоту исходя из размера
     const width = size * 1.0447; 
   return ( 
     <>
-    <Link to={link}>
-    <button className='hexagon-container'>
+    <button onClick={onclick} className='hexagon-container'>
         <p className='hexagon-container-tittle'>{mainText}</p>
         <div className="hexagon-container-first" style={{ width: width, height: height}}>
             <div className='hexagon-container-first-img'>
@@ -26,7 +26,6 @@ const CursCard = ({ size, img, mainText, subText,link }: Props) => {
             <p className='text-white card-text'>{subText}</p>  
         </div>
     </button>
-    </Link>
     <Routes>
         <Route path="/about" element={<GamePage />} />
     </Routes>
