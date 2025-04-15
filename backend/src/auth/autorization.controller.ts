@@ -10,7 +10,7 @@ import {
 import { AutorizationService } from './autorization.service';
 import { Response as ExpressResponse } from 'express';
 import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
-
+import { User } from '@prisma/client';
 @Controller()
 export class AutorizationController {
   constructor(private readonly AutorizationService: AutorizationService) {}
@@ -60,5 +60,10 @@ export class AutorizationController {
 
     console.log(token);
     return res.send({ user });
+  }
+
+  @Post ('/autorization')
+  async autorizationUser(@Body() user:User){
+    return await this.AutorizationService.autorizationUser(user);
   }
 }
