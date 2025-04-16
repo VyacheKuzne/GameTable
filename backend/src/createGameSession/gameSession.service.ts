@@ -10,7 +10,6 @@ export class GameSessionService {
   async createGameSession(): Promise<void> {
     const gameSessionId = uuidv4();
     const dataSession = {
-      id: gameSessionId,
       token: gameSessionId,
       status: 'active',
       createdAt: new Date(),

@@ -53,6 +53,8 @@ model User {
   status String @default("active")
   tarif Tariff? @relation(fields: [idTariff], references: [idTariff])
   idTariff Int?
+  GameHub GameHub? @relation(fields: [idSession], references: [token])
+  idSession String?
 }
 
 
@@ -67,6 +69,9 @@ model Weapon {
 model chatMessage{
   id   Int    @id @default(autoincrement())
   text String
+  GameHub GameHub? @relation(fields: [idSession], references: [token])
+  idSession String?
+  createdAt DateTime
   
 }
 
@@ -79,10 +84,12 @@ model Tariff {
 
 model GameHub {
   idSession Int @id @default(autoincrement())
-  token String
+  token String @unique
   status String
   createdAt DateTime
   updateAT DateTime
+  user User[]
+  chatMessage chatMessage[]
 }
 
 
