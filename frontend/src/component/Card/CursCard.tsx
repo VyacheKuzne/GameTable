@@ -2,12 +2,16 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import GamePage from '../../pages/GamePage'
 import './KeyCard.css'; // Импортируем CSS
+type GameHub = {
+
+}
 type Props = {
     img:string;
     size:number
     mainText: string;
     subText: string;
-    onclick: () => void
+    onclick?: () => void | Promise<GameHub>
+
     
 }
 const CursCard = ({ size, img, mainText, subText, onclick }: Props) => {

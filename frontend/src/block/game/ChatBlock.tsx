@@ -7,38 +7,46 @@ import axios from "axios";
 export default function ChatBlock() {
   const [messages, setMessage] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
-   async function viewMessage() {
-    try {
-      const response = await axios.get('http://localhost:3000/api/chat')
-      console.log("а вот и данные", response.data)
-      setMessage(response.data)
-    } catch (error) {
-      console.log("есть ошибка", error)
-    }
-  }
   const socket = io("http://localhost:3000");
   type Message = {
     id: number;
     text: string;
+    idSession: string;
   };
+  const token = window.location.pathname.split("/").pop();
+
+  async function viewMessage() {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/gamePage/${token}/getMessage`
+      );
+      console.log("запуск интересной функции", response.data + response.status);
+      setMessage(response.data);
+    } catch (error) {
+      console.log("есть ошибка", error);
+    }
+  }
 
   useEffect(() => {
-    console.log('запустился')
-    viewMessage()
+    if (!token) return; // Проверяем наличие токена
+    // console.log("messages1: " + messages);
+    viewMessage();
+
     socket.on("messages", (data: Message[]) => {
-      setMessage(data);
-      console.log(messages)
+      setMessage((prevMessages) => [...prevMessages, ...data]); // Добавляем новые сообщенияl
     });
     return () => {
       socket.off("messages");
     };
   }, []);
   const sendMessage = () => {
-    if (!newMessage.trim()) return;
-    socket.emit("messages", { text: newMessage });
-    setNewMessage('');
+    if (!newMessage.trim() || !token) return;
+    const newMsg = { id: Date.now(), text: newMessage, idSession: token };
+    setMessage((prevMessage) => [...prevMessage, newMsg]);
+    setNewMessage("");
+    socket.emit("messages", { text: newMessage, idSession: token });
   };
- 
+
   return (
     <div className="border-2 border-black w-[500px] h-[500px] my-[10%] rounded-l-[20px] p-[1.5%] relative flex flex-col justify-between">
       <div className="flex flex-col justify-between h-full">
@@ -50,10 +58,9 @@ export default function ChatBlock() {
         </div>
         {/* чат-сообщения */}
         <div className="h-full overflow-y-auto ps-4 max-h-[calc(100vh-7.5rem)]">
-          {messages.map((msg)=>(
-            <div key={msg.id}>
-              🗨️ {msg.text}
-            </div>
+          {/* {messages} */}
+          {messages.map((msg) => (
+            <div key={msg.id}>🗨️ {msg.text}</div>
           ))}
         </div>
       </div>
@@ -65,10 +72,11 @@ export default function ChatBlock() {
           placeholder="Сообщение..."
           className="flex w-full h-full pl-2 bg-custom-darkGray rounded-3xl text-white"
           value={newMessage}
-          onChange={(e)=> setNewMessage(e.target.value)}
+          onChange={(e) => setNewMessage(e.target.value)}
         />
-             <button onClick={sendMessage}>Отправить</button>
+        <button onClick={sendMessage}>Отправить</button>
       </div>
     </div>
   );
 }
+

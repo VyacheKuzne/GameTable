@@ -15,7 +15,7 @@ function App() {
       <div className="App font-montserrat flex flex-col justify-center">
           <Routes>
             <Route path="/" element={<MainPage />} />
-            <Route path="/gamepage" element={<GamePage/>} />
+            <Route path="/gamepage/:token" element={<GamePage/>} />
             <Route path="/aftorization" element={<AftorizationPage/>} />
             <Route path="/registartion" element={<RegistartionPage/>} />
             <Route path="/profile" element={<ProfilePage/>} />

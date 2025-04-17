@@ -4,6 +4,7 @@ import { ChatService } from './chat.service';
 import { chatWS } from './chatWS';
 
 @Module({
+  exports: [ChatService],
   controllers: [ChatController],
   providers: [ChatService, chatWS],
 })

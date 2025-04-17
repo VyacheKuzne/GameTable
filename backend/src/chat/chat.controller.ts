@@ -6,9 +6,9 @@ import { Response } from 'express';
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
-  @Get('/api/chat')
-  async getMessages(@Res() res: Response) {
-    const messages = await this.chatService.getMessages();
-    res.json(messages);
-  }
+  // @Get('/api/chat')
+  // async getMessages(@Res() res: Response) {
+  //   const messages = await this.chatService.getMessages(token);
+  //   res.json(messages);
+  // }
 }

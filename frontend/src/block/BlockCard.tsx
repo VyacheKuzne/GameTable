@@ -10,16 +10,27 @@ import { useNavigate } from "react-router-dom";
  function Header() {
     const navigate = useNavigate();
     const apiUrl = process.env.REACT_APP_API_URL;
-    async function ctrateGamesession(): Promise<void> {
+    type GameHub = {
+        idSession: number;
+        token: string;
+        status: string;
+        createdAt: Date
+        updateAt: Date
+    }
+    async function ctrateGamesession(): Promise<GameHub> {
         try {
-            console.log('пытаемся')
             const responce = await axios.get (`http://localhost:3000/createGameSession`)
             if(responce.status === 200||201) {
-                navigate("/gamePage");
+                console.log('наш токен ' + responce.data.token)
+
+                navigate(`/gamePage/${responce.data.token}`);
             }
+            console.log(responce.status)
+            return responce.data;
         } catch (error) {
-            
-        }
+            console.error(error);
+            throw new Error("Не удалось создать игровую сессию");
+          }
     }
     function function1() {
         navigate("/tarif");

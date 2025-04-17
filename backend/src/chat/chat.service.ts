@@ -5,7 +5,11 @@ import { PrismaClient} from '@prisma/client';
 @Injectable()
 export class ChatService {
   constructor(private readonly prisma: PrismaService) {}
-  async getMessages() {
-    return await this.prisma.chatMessage.findMany();
+  async getMessages(token:string) {
+    // console.log('сервер что ли: ' + token)
+    const findMessage = await this.prisma.chatMessage.findMany({
+      where: { idSession: token},
+    });
+    return findMessage
   }
 }
