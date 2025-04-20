@@ -25,7 +25,7 @@ export default function RedButton({
     <button
       type={type}
       onClick={onClick}
-      className="bg-custom-red text-white cursor-pointer rounded-[10px] flex align-center  justify-center"
+      className="bg-custom-red hover-effect-btn-red text-white cursor-pointer rounded-[10px] flex align-center  justify-center"
       style={{
         padding: p,
         width: w,

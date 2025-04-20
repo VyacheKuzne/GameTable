@@ -4,6 +4,18 @@ CREATE TABLE `Armor` (
     `name` VARCHAR(191) NOT NULL,
     `defense` INTEGER NOT NULL,
     `weight` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Weapon` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `damage` INTEGER NOT NULL,
+    `weight` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -18,6 +30,7 @@ CREATE TABLE `mob` (
     `speed` INTEGER NOT NULL,
     `weaponId` INTEGER NULL,
     `armorId` INTEGER NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     INDEX `Mob_armorId_fkey`(`armorId`),
     INDEX `Mob_weaponId_fkey`(`weaponId`),
@@ -27,10 +40,23 @@ CREATE TABLE `mob` (
 -- CreateTable
 CREATE TABLE `TurnOrder` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `mobId` INTEGER NOT NULL,
     `turnIndex` INTEGER NOT NULL,
+    `mobId` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     UNIQUE INDEX `TurnOrder_mobId_key`(`mobId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `turnhistory` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `x` INTEGER NOT NULL,
+    `y` INTEGER NOT NULL,
+    `idSession` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `idMob` INTEGER NULL,
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -57,16 +83,6 @@ CREATE TABLE `User` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Weapon` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(191) NOT NULL,
-    `damage` INTEGER NOT NULL,
-    `weight` INTEGER NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `chatMessage` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `text` VARCHAR(191) NOT NULL,
@@ -81,6 +97,7 @@ CREATE TABLE `Tariff` (
     `idTariff` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `status` VARCHAR(191) NOT NULL DEFAULT 'avtive',
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`idTariff`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -90,7 +107,7 @@ CREATE TABLE `GameHub` (
     `idSession` INTEGER NOT NULL AUTO_INCREMENT,
     `token` VARCHAR(191) NOT NULL,
     `status` VARCHAR(191) NOT NULL,
-    `createdAt` DATETIME(3) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updateAT` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `GameHub_token_key`(`token`),
@@ -105,6 +122,12 @@ ALTER TABLE `mob` ADD CONSTRAINT `Mob_weaponId_fkey` FOREIGN KEY (`weaponId`) RE
 
 -- AddForeignKey
 ALTER TABLE `TurnOrder` ADD CONSTRAINT `TurnOrder_mobId_fkey` FOREIGN KEY (`mobId`) REFERENCES `mob`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `turnhistory` ADD CONSTRAINT `turnhistory_idSession_fkey` FOREIGN KEY (`idSession`) REFERENCES `GameHub`(`token`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `turnhistory` ADD CONSTRAINT `turnhistory_idMob_fkey` FOREIGN KEY (`idMob`) REFERENCES `mob`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `User` ADD CONSTRAINT `User_idTariff_fkey` FOREIGN KEY (`idTariff`) REFERENCES `Tariff`(`idTariff`) ON DELETE SET NULL ON UPDATE CASCADE;

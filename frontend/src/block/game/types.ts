@@ -1,5 +1,5 @@
-// Обновленный интерфейс MobBlock для учета оружия и брони
-export interface MobBlock {
+// Обновленный интерфейс Mob для учета оружия и брони
+export interface Mob {
     id: number;
     name: string;
     health: number;
@@ -33,8 +33,8 @@ export interface Armor {
 
 // Интерфейс пропсов для MobCell
 export interface MobCellProps {
-    mob: MobBlock;                    // Моб, для которого отображаем клетку
-    handleMobClick: (mob: MobBlock) => void; // Обработчик кликов по мобу
+    mob: Mob;                    // Моб, для которого отображаем клетку
+    handleMobClick: (mob: Mob) => void; // Обработчик кликов по мобу
     isSelected: boolean;              // Проверка, выбран ли моб
     cellSize: number;                 // Размер клетки
 }

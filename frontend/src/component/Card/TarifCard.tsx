@@ -8,7 +8,7 @@ export default function TarifCard() {
     ]
   return (
     <div className='w-[400px] h-[233px] relative m-autom my-[5%]'>
-      <div content='' className='bg-custom-red absolute top-[-22px] left-[-22px] w-[177px] h-[177px]  rounded-xl'></div>
+      <div content='' className='bg-custom-red  absolute top-[-22px] left-[-22px] w-[177px] h-[177px]  rounded-xl'></div>
       <div className='flex flex-col p-[4%] justify-between font-medium relative w-full h-full bg-white rounded-xl shadow-lg z-20'>
         <h2 className='text-[24px]'>Разовый - платишь один раз</h2>
         <div className='flex flex-col justify-around h-full'>

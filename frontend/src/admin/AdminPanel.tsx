@@ -86,7 +86,7 @@ export default function AdminPanel() {
                     setIsEdit(!isEdit);
                     setSelectedUser(user);
                   }}
-                  className="bg-custom-green w-[25px] h-[25px] rounded-[4px] p-[4px] mx-[10%]"
+                  className="bg-custom-green hover-effect-btn-green w-[25px] h-[25px] rounded-[4px] p-[4px] mx-[10%]"
                 >
                   <img src={Edit} alt="Edit" className="w-full" />
                 </button>
@@ -95,7 +95,7 @@ export default function AdminPanel() {
                     setIsDelete(!isDelete);
                     setSelectedUser(user);
                   }}
-                  className="bg-custom-red w-[25px] h-[25px] rounded-[4px] p-[4px] mx-[10%]"
+                  className="bg-custom-red hover-effect-btn-red w-[25px] h-[25px] rounded-[4px] p-[4px] mx-[10%]"
                 >
                   <img src={Bascet} alt="Basket" className="w-full" />
                 </button>

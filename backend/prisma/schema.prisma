@@ -13,6 +13,18 @@ model Armor {
   defense Int
   weight  Int
   mob     mob[]
+  createdAt  DateTime   @default(now())
+
+}
+
+model Weapon {
+  id     Int    @id @default(autoincrement())
+  name   String
+  damage Int
+  weight Int
+  mob    mob[]
+  createdAt  DateTime   @default(now())
+
 }
 
 model mob {
@@ -27,6 +39,10 @@ model mob {
   armor     Armor?     @relation(fields: [armorId], references: [id], map: "Mob_armorId_fkey")
   weapon    Weapon?    @relation(fields: [weaponId], references: [id], map: "Mob_weaponId_fkey")
   turnorder TurnOrder?
+  turnhistory turnhistory[]
+  createdAt  DateTime   @default(now())
+
+
 
   @@index([armorId], map: "Mob_armorId_fkey")
   @@index([weaponId], map: "Mob_weaponId_fkey")
@@ -34,9 +50,21 @@ model mob {
 
 model TurnOrder {
   id        Int @id @default(autoincrement())
-  mobId     Int @unique(map: "TurnOrder_mobId_key")
   turnIndex Int
   mob       mob @relation(fields: [mobId], references: [id], map: "TurnOrder_mobId_fkey")
+  mobId     Int @unique(map: "TurnOrder_mobId_key")
+  createdAt  DateTime   @default(now())
+}
+
+model turnhistory {
+  id Int @id @default(autoincrement())
+  x Int
+  y Int
+  GameHub GameHub? @relation(fields: [idSession], references: [token])
+  idSession String?
+  createdAt DateTime @default(now())
+  Mob mob? @relation(fields: [idMob], references: [id])
+  idMob Int?
 }
 
 model User {
@@ -58,14 +86,6 @@ model User {
 }
 
 
-model Weapon {
-  id     Int    @id @default(autoincrement())
-  name   String
-  damage Int
-  weight Int
-  mob    mob[]
-}
-
 model chatMessage{
   id   Int    @id @default(autoincrement())
   text String
@@ -80,15 +100,18 @@ model Tariff {
   name String
   status String @default("avtive")
   user User[]
+  createdAt  DateTime   @default(now())
+
 }
 
 model GameHub {
   idSession Int @id @default(autoincrement())
   token String @unique
   status String
-  createdAt DateTime
+  createdAt  DateTime   @default(now())
   updateAT DateTime
   user User[]
+  turnhistory turnhistory[]
   chatMessage chatMessage[]
 }
 

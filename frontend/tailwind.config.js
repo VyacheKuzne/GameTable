@@ -14,6 +14,9 @@ module.exports = {
         'custom-red': 'rgba(248, 61, 86, 1)',
         'custom-green': 'rgba(44, 197, 151, 1)',
         'custom-fon-darkGray': 'rgba(86, 86, 86, 0.67)',
+        'custom-btn-hover-red': 'rgba(201, 37, 59, 1)',
+        'custom-btn-hover-green': 'rgba(32, 138, 106, 1)',
+
       },
     },
   },

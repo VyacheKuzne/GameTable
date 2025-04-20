@@ -73,6 +73,11 @@ export default function ChatBlock() {
           className="flex w-full h-full pl-2 bg-custom-darkGray rounded-3xl text-white"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
+          onKeyDown={(e)=>{
+            if(e.key === 'Enter'){
+              sendMessage();
+            }
+          }}
         />
         <button onClick={sendMessage}>Отправить</button>
       </div>

@@ -135,7 +135,7 @@ export default function AdminUserForm({
       >
         <button
           onClick={() => closeModalBlock()}
-          className="absolute right-[-10px] top-[-10px] bg-custom-red flex items-center justify-center w-[33px] h-[33px] rounded-[10px]"
+          className="absolute right-[-10px] top-[-10px] bg-custom-red hover-effect-btn-red flex items-center justify-center w-[33px] h-[33px] rounded-[10px]"
         >
           <img src={Cross} alt="Cross" />
         </button>
@@ -202,7 +202,7 @@ export default function AdminUserForm({
       >
         <button
           onClick={() => closeModalBlock()}
-          className="absolute right-[-10px] top-[-10px] bg-custom-red flex items-center justify-center w-[33px] h-[33px] rounded-[10px]"
+          className="absolute right-[-10px] top-[-10px] bg-custom-red hover-effect-btn-red flex items-center justify-center w-[33px] h-[33px] rounded-[10px]"
         >
           <img src={Cross} alt="Cross" />
         </button>
@@ -217,10 +217,10 @@ export default function AdminUserForm({
         </div>
         <div>
           <div className="flex justify-around">
-            <button onClick={()=> deleteTariff()} className="w-[50px] h-[50px] bg-custom-red rounded-[10px]">
+            <button onClick={()=> deleteTariff()} className="w-[50px] h-[50px] bg-custom-red hover-effect-btn-red rounded-[10px]">
               <p className="text-white font-bold">ДА</p>
             </button>
-            <button onClick={() => {setIsDelete(!isDelete)}} className="w-[50px] h-[50px] bg-custom-green rounded-[10px]">
+            <button onClick={() => {setIsDelete(!isDelete)}} className="w-[50px] h-[50px] bg-custom-green hover-effect-btn-green rounded-[10px]">
               <p className="text-white font-bold">НЕТ</p>
             </button>
           </div>
@@ -234,7 +234,7 @@ export default function AdminUserForm({
       >
         <button
           onClick={() => closeModalBlock()}
-          className="absolute right-[-10px] top-[-10px] bg-custom-red flex items-center justify-center w-[33px] h-[33px] rounded-[10px]"
+          className="absolute right-[-10px] top-[-10px] bg-custom-red hover-effect-btn-red flex items-center justify-center w-[33px] h-[33px] rounded-[10px]"
         >
           <img src={Cross} alt="Cross" />
         </button>
@@ -284,7 +284,7 @@ export default function AdminUserForm({
             })}
           <div className="w-full h-[67px] flex items-end">
             <button
-              className="bg-custom-red rounded-[10px] w-full h-[47px]"
+              className="bg-custom-red hover-effect-btn-red rounded-[10px] w-full h-[47px]"
               type="submit"
             >
               <p className="text-white font-medium">Подтверждаю создание</p>

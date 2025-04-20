@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import axios from 'axios';
-import { Mob } from './useMobLogic';
+// import { Mob } from './useMobLogic';
 
 type Weapon = {
   id: number;
@@ -16,7 +16,7 @@ type Armor = {
   weight: number;
 };
 
-type MobBlock = {
+type Mob = {
   id: number;
   name: string;
   speed: number;
@@ -34,8 +34,8 @@ interface UseMobPlaceProps {
   rowIndex: number;
   colIndex: number;
   setSelectedMob: (value: Mob | null) => void;
-  mobBlocks: MobBlock[];
-  setMobBlocks: (mobBlocks: MobBlock[]) => void;
+  mobBlocks: Mob[];
+  setMobs: (mobBlocks: Mob[]) => void;
   nextId: number;
   setNextId: (id: number) => void;
 }
@@ -46,7 +46,7 @@ export const useMobPlace = ({
   selectedMob,
   setSelectedMob,
   mobBlocks,
-  setMobBlocks,
+  setMobs,
   nextId,
   setNextId,
 }: Omit<UseMobPlaceProps, 'rowIndex' | 'colIndex'>) => {  // ❌ Убрали rowIndex и colIndex из пропсов
@@ -55,7 +55,7 @@ export const useMobPlace = ({
     if (placingMob && selectedMob) {
       console.log('Моб размещен');
 
-      const newMob: MobBlock = {
+      const newMob: Mob = {
         id: nextId,
         name: selectedMob.name,
         speed: selectedMob.speed,
@@ -86,7 +86,7 @@ export const useMobPlace = ({
       }
 
       // Обновляем состояние с новым мобом
-      setMobBlocks([...mobBlocks, newMob]);
+      setMobs([...mobBlocks, newMob]);
 
       // Увеличиваем счетчик для следующего ID
       setNextId(nextId + 1);

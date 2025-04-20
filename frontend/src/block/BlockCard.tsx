@@ -39,7 +39,7 @@ import { useNavigate } from "react-router-dom";
         navigate("/tarif");
     }
     function function3() {
-        navigate("/tarif");
+        navigate("/tarifs");
     }
     const size = 240
     return(

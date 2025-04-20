@@ -17,3 +17,13 @@
 .label-text{
   @apply font-bold text-white text-[10px]
 }
+
+/* настройки ховеров  */
+@layer utilities {
+  .hover-effect-btn-red {
+    @apply hover:bg-custom-btn-hover-red transition-colors duration-150;
+  }
+  .hover-effect-btn-green {
+    @apply hover:bg-custom-btn-hover-green transition-colors duration-150;
+  }
+}

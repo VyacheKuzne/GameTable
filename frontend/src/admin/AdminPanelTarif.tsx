@@ -89,7 +89,7 @@ export default function AdminPanelTarif() {
                     setIsEdit(!isEdit);
                     setSelectedUser(tariff);
                   }}
-                  className="bg-custom-green w-[25px] h-[25px] rounded-[4px] p-[4px] mx-[10%]"
+                  className="bg-custom-green hover-effect-btn-green w-[25px] h-[25px] rounded-[4px] p-[4px] mx-[10%]"
                 >
                   <img src={Edit} alt="Edit" className="w-full" />
                 </button>

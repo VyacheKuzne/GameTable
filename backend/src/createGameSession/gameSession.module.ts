@@ -5,6 +5,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { ChatService } from 'src/chat/chat.service';
 import { ChatModule } from 'src/chat/chat.module';
 import { JwtModule } from '@nestjs/jwt';
+import { setMobWS } from './setMobWS';
 @Module({
   imports: [
     JwtModule.register({
@@ -14,7 +15,7 @@ import { JwtModule } from '@nestjs/jwt';
     ChatModule
   ],
   controllers: [GameSessiontController],
-  providers: [GameSessionService, PrismaService],
+  providers: [GameSessionService, PrismaService, setMobWS],
   exports: [PrismaService],
 })
 export class GameSessionModule {}
