@@ -36,4 +36,11 @@ export class GameSessionService {
       
     }
   }
+  async mobfindMany() {
+    try {
+      return this.prisma.mob.findMany()
+    } catch (error) {
+      
+    }
+  }
 }

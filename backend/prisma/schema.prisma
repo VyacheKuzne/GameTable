@@ -65,6 +65,7 @@ model turnhistory {
   createdAt DateTime @default(now())
   Mob mob? @relation(fields: [idMob], references: [id])
   idMob Int?
+  tokenMob String @unique
 }
 
 model User {

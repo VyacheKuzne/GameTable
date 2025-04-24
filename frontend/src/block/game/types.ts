@@ -11,6 +11,7 @@ export interface Mob {
     weapon: Weapon | null;    // Оружие (если есть)
     armor: Armor | null;      // Броня (если есть)
     turnOrder?: any;
+    tokenMob?: string
     row: number;
     col: number;
 }

@@ -14,23 +14,57 @@ function BlockPole() {
   const [selectMob, setSelectMob] = useState<Mob | undefined>(undefined);
   const [isSelectMob, setiISelectMob] = useState<boolean>(false);
   const [socket, setSocket] = useState<Socket | null>(null);
-  useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      setMousePosition({ x: event.clientX, y: event.clientY });
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, []);
+  const [placedMobs, setPlacedMobs] = useState<
+    { x: number; y: number; idMob: number; tokenMob: string }[]
+  >([]);
+  const [allMobs, setAllMobs] = useState<Mob[]>([]);
+  const [replaceMob, setReplaceMob] = useState<Mob|undefined>()
+  const [isReplaceMob, setIsReplaceMob] = useState<boolean>(false)
+  // useEffect(() => {
+  //   const handleMouseMove = (event: MouseEvent) => {
+  //     setMousePosition({ x: event.clientX, y: event.clientY });
+  //   };
+  //   window.addEventListener("mousemove", handleMouseMove);
+  //   return () => {
+  //     window.removeEventListener("mousemove", handleMouseMove);
+  //   };
+  // }, []);
 
   useEffect(() => {
     const newSocket = io("http://localhost:3000");
     setSocket(newSocket);
-
-    return () => { newSocket.disconnect(); };
+    const token = window.location.pathname.split("/").pop();
+    if (token) {
+      newSocket.emit("joinRoom", token);
+    }
+    return () => {
+      newSocket.disconnect();
+    };
   }, []);
 
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleSessionMob = (
+      data: { x: number; y: number; idMob: number; tokenMob: string }[]
+    ) => {
+      setPlacedMobs(data);
+    };
+
+    socket.on("sessionMob", handleSessionMob);
+
+    return () => {
+      socket.off("sessionMob", handleSessionMob);
+    };
+  }, [socket]);
+  
+  useEffect(() => {
+    async function fetchMobs() {
+      const response = await axios.get("http://localhost:3000/mobs");
+      setAllMobs(response.data);
+    }
+    fetchMobs();
+  }, []);
   return (
     <>
       <div className="flex">
@@ -49,6 +83,14 @@ function BlockPole() {
                   selectMob={selectMob}
                   isSelectMob={isSelectMob}
                   socket={socket}
+                  placedMob={placedMobs.find(
+                    (mob) => mob.x === x && mob.y === y
+                  )}
+                  allMobs={allMobs}
+                  setIsReplaceMob={setIsReplaceMob}
+                  setReplaceMob={setReplaceMob}
+                  isReplaceMob={isReplaceMob}
+                  replaceMob={replaceMob}
                 />
               </div>
             );
