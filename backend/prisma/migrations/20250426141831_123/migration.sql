@@ -30,6 +30,7 @@ CREATE TABLE `mob` (
     `speed` INTEGER NOT NULL,
     `weaponId` INTEGER NULL,
     `armorId` INTEGER NULL,
+    `manevr` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     INDEX `Mob_armorId_fkey`(`armorId`),
@@ -56,7 +57,11 @@ CREATE TABLE `turnhistory` (
     `idSession` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `idMob` INTEGER NULL,
+    `idOwner` INTEGER NOT NULL,
+    `tokenMob` VARCHAR(191) NOT NULL,
+    `isOverMove` BOOLEAN NULL,
 
+    UNIQUE INDEX `turnhistory_tokenMob_key`(`tokenMob`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -128,6 +133,9 @@ ALTER TABLE `turnhistory` ADD CONSTRAINT `turnhistory_idSession_fkey` FOREIGN KE
 
 -- AddForeignKey
 ALTER TABLE `turnhistory` ADD CONSTRAINT `turnhistory_idMob_fkey` FOREIGN KEY (`idMob`) REFERENCES `mob`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `turnhistory` ADD CONSTRAINT `turnhistory_idOwner_fkey` FOREIGN KEY (`idOwner`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `User` ADD CONSTRAINT `User_idTariff_fkey` FOREIGN KEY (`idTariff`) REFERENCES `Tariff`(`idTariff`) ON DELETE SET NULL ON UPDATE CASCADE;

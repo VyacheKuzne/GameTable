@@ -40,6 +40,7 @@ model mob {
   weapon    Weapon?    @relation(fields: [weaponId], references: [id], map: "Mob_weaponId_fkey")
   turnorder TurnOrder?
   turnhistory turnhistory[]
+  manevr Int
   createdAt  DateTime   @default(now())
 
 
@@ -65,26 +66,12 @@ model turnhistory {
   createdAt DateTime @default(now())
   Mob mob? @relation(fields: [idMob], references: [id])
   idMob Int?
+  User User? @relation(fields: [idOwner], references: [id])
+  idOwner Int
   tokenMob String @unique
+  isOverMove Boolean?
 }
 
-model User {
-  id Int  @id @default(autoincrement())
-  name String
-  secondname String
-  email String @unique
-  phone String @unique
-  password String
-  nickname String @unique
-  createdAt  DateTime   @default(now())
-  updateAt DateTime
-  role String @default("user")
-  status String @default("active")
-  tarif Tariff? @relation(fields: [idTariff], references: [idTariff])
-  idTariff Int?
-  GameHub GameHub? @relation(fields: [idSession], references: [token])
-  idSession String?
-}
 
 
 model chatMessage{
@@ -104,16 +91,35 @@ model Tariff {
   createdAt  DateTime   @default(now())
 
 }
+model User {
+  id                Int         @id @default(autoincrement())
+  name              String
+  secondname        String
+  email             String      @unique
+  phone             String      @unique
+  password          String
+  nickname          String      @unique
+  createdAt         DateTime    @default(now())
+  updateAt          DateTime
+  role              String      @default("user")
+  status            String      @default("active")
+  tarif             Tariff?     @relation(fields: [idTariff], references: [idTariff])
+  idTariff          Int?
+  createdSessionId  String?     @unique 
+  turnhistory       turnhistory[]
+  gameHub           GameHub?    @relation("GameHubPlayers", fields: [idSession], references: [token]) 
+  idSession         String?
 
-model GameHub {
-  idSession Int @id @default(autoincrement())
-  token String @unique
-  status String
-  createdAt  DateTime   @default(now())
-  updateAT DateTime
-  user User[]
-  turnhistory turnhistory[]
-  chatMessage chatMessage[]
 }
 
+model GameHub {
+  idSession   Int         @id @default(autoincrement())
+  token       String      @unique
+  status      String
+  createdAt   DateTime    @default(now())
+  updateAT    DateTime
+  turnhistory turnhistory[]
+  chatMessage chatMessage[]
+  users       User[]      @relation("GameHubPlayers")
+}
 

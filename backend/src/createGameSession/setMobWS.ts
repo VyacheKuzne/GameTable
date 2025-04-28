@@ -25,9 +25,17 @@ export class setMobWS implements OnGatewayInit {
   @SubscribeMessage('joinRoom')
   async handleJoinRoom(client: any, idSession: string) {
     client.join(idSession);
-    const sessionMob = await this.prisma.turnhistory.findMany({
-      where: { idSession:idSession },
+    const turnhistoryMobs = await this.prisma.turnhistory.findMany({
+      where: { idSession: idSession },
     });
+    const allMobs = await this.prisma.mob.findMany();
+    const sessionMob = turnhistoryMobs.map((turnHistoryEntry)=>{
+      const mob = allMobs.find((m)=>m.id === turnHistoryEntry.idMob);
+      return {
+        ...turnHistoryEntry,
+        mob: mob || null
+      }
+    }) 
     this.server.to(idSession).emit('sessionMob', sessionMob);
   }
   @SubscribeMessage('newMobOnTable')
@@ -35,6 +43,7 @@ export class setMobWS implements OnGatewayInit {
     client: any,
     payload: { idMob: number; x: number; y: number; idSession: string },
   ) {
+    console.debug('gjuyfk')
     const newMobToken = uuidv4();
     await this.prisma.turnhistory.create({
       data: {
@@ -42,13 +51,26 @@ export class setMobWS implements OnGatewayInit {
         x: payload.x,
         y: payload.y,
         idSession: payload.idSession,
-        tokenMob: newMobToken
+        tokenMob: newMobToken,
+        isOverMove: false,
+        idOwner: 12
       },
     });
-    const sessionMob = await this.prisma.turnhistory.findMany({
+   
+    const turnhistoryMobs = await this.prisma.turnhistory.findMany({
       where: { idSession: payload.idSession },
     });
+    const allMobs = await this.prisma.mob.findMany();
+    const sessionMob = turnhistoryMobs.map((turnHistoryEntry)=>{
+      const mob = allMobs.find((m)=>m.id === turnHistoryEntry.idMob);
+      return {
+        ...turnHistoryEntry,
+        mob: mob || null
+      }
+    }) 
+
     this.server.to(payload.idSession).emit('sessionMob', sessionMob);
+    console.debug(sessionMob)
   }
   @SubscribeMessage('replaceMobOnTable')
   async handleReplaceMob(

@@ -30,6 +30,7 @@ async function main() {
       speed: 10,
       weaponId: sword.id,
       armorId: shield.id,
+      manevr: 16,
     },
   });
 
@@ -40,6 +41,7 @@ async function main() {
       attack: 8,
       defense: 5,
       speed: 7,
+      manevr: 13,
     },
   });
 
