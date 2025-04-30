@@ -30,14 +30,26 @@ export default function GirdCellGame({
   isReplaceMob,
   replaceMob,
 }: Props) {
+   function getCookie(name: string) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(';').shift();
+    return null;
+  }
+  const token = getCookie('access_token');
+  // console.log(token); 
   async function setMobs() {
     const token = window.location.pathname.split("/").pop();
+    const userToken = getCookie('access_token'); // или getCookie('access_token')
+    // console.log('UserToken from cookie:', userToken);
     if (isSelectMob && selectMob) {
       socket?.emit("newMobOnTable", {
         idMob: selectMob.id,
         x,
         y,
         idSession: token,
+        token:token,
+        userToken: userToken,
       });
     } else if (isReplaceMob && replaceMob) {
       socket?.emit("replaceMobOnTable", {
@@ -54,12 +66,11 @@ export default function GirdCellGame({
   const mobTemplate = placedMob
     ? allMobs?.find((mob) => mob.id === placedMob.idMob)
     : null;
-
   const renderedMob =
     mobTemplate && placedMob
       ? { ...mobTemplate, tokenMob: placedMob.tokenMob }
       : null;
-
+  // console.log('лог на маневры '+renderedMob?.manevr);
   return (
     <div
       onClick={setMobs}

@@ -29,7 +29,7 @@ export class AutorizationService {
     });
   
     // Создаем JWT
-    const token = this.jwtService.sign({ id: user.id });
+    const token = this.jwtService.sign({ id: user.id, status: user.status});
   
     return { user, token };
   }
@@ -42,6 +42,7 @@ export class AutorizationService {
     const findUser = await this.prisma.user.findUnique({
       where: {
         nickname: user.nickname,
+        status: 'active'
       }
     });
   
@@ -58,7 +59,7 @@ export class AutorizationService {
     if (!isPasswordValid) {
       throw new NotFoundException('Неверный пароль');
     }
-  
-    return findUser;
+    const token = this.jwtService.sign({ id: user.id, status: user.status});
+    return {findUser, token};
   }
 }

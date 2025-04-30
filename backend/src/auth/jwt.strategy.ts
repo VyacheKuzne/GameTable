@@ -7,13 +7,22 @@ import { Request } from 'express';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // Теперь извлекаем токен из Authorization header
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (request: Request) => {
+          const token = request?.cookies?.['access_token'];
+          console.log('[JWT Strategy] Извлечён токен из cookie:', token);
+          return token;
+        },
+      ]),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET as string,
+      secretOrKey: 'supersecretkey123',
     });
+
+    console.log('[JWT Strategy] Стратегия JWT инициализирована');
   }
 
   async validate(payload: any) {
-    return { userId: payload.sub, nickname: payload.nickname };
+    console.log('[JWT Strategy] Токен прошёл проверку. Payload:', payload);
+    return { id: payload.id, status: payload.status };
   }
 }

@@ -1,17 +1,17 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Req } from '@nestjs/common';
 import { GameSessionService } from './gameSession.service';
-
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 @Controller()
 export class GameSessiontController {
   constructor(private readonly GameSessionService: GameSessionService) {}
   @Get('createGameSession')
-  async createGameSession() {
-    return this.GameSessionService.createGameSession();
+  @UseGuards(AuthGuard('jwt'))
+  async createGameSession(@Req() req: any) {
+    const user = req.user as { id: number }
+    console.debug(user)
+    return this.GameSessionService.createGameSession(user);
   }
-  // @Get(`gamePage/:token`)
-  // async getGamePage(@Param('token') token: string) {
-  //   return this.GameSessionService.getGamePage(token);
-  // }
   @Get(`gamePage/:token/getMessage`)
   async getGamePage(@Param('token') token: string) {
     return this.GameSessionService.getGamePage(token);
@@ -19,5 +19,12 @@ export class GameSessiontController {
   @Get('mobs')
   async getAllMobs() {
     return this.GameSessionService.mobfindMany(); // имя таблицы в Prisma
+  }
+  @Get('checkCreator')
+  @UseGuards(AuthGuard('jwt'))
+  async checkCreator(@Req() req: any) {
+    const token = req.headers['x-session-token'];
+    const user = req.user as { id: number }
+    return this.GameSessionService.checkCreator(user, token); // имя таблицы в Prisma
   }
 }

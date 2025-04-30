@@ -12,7 +12,7 @@ export class GameSessionService {
     private readonly ChatService: ChatService,
   ) {}
 
-  async createGameSession(): Promise<GameHub> {
+  async createGameSession(user: { id: number }): Promise<GameHub> {
     const gameSessionId = uuidv4();
     const dataSession = {
       token: gameSessionId,
@@ -24,7 +24,12 @@ export class GameSessionService {
     const createSession = await this.prisma.gameHub.create({
       data: dataSession,
     });
-    // console.log('и получаеться' + createSession);
+    await this.prisma.user.update({
+      where: {id: user.id},
+      data: {
+        createdSessionId:createSession.token
+      }
+    })
     return createSession;
   }
 
@@ -33,14 +38,35 @@ export class GameSessionService {
     try {
       return this.ChatService.getMessages(token)
     } catch (error) {
-      
+      null
     }
   }
   async mobfindMany() {
     try {
       return this.prisma.mob.findMany()
     } catch (error) {
-      
+      null
+    }
+  }
+  async checkCreator(user: { id: number }, token) {
+    console.debug(token)
+    console.debug(user.id)
+    const gameSession = this.prisma.gameHub.findUnique({
+     where: {token: token}
+    })
+    if(!gameSession){
+      console.log('такой сессии нет')
+      return
+    }
+    const findUser = await this.prisma.user.findUnique({
+      where: {id: user.id}
+    })
+    if(findUser?.createdSessionId === token)
+    {
+      return true
+    }
+    if (!findUser) {
+      throw new Error('User not found');
     }
   }
 }

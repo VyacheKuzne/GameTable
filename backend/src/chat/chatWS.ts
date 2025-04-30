@@ -19,7 +19,7 @@ export class chatWS implements OnGatewayInit {
 
   async afterInit() {
     const messages = await this.prisma.chatMessage.findMany();
-    this.server.emit('messgaeFromUser', messages);
+    this.server.emit('messages', messages);
   }
   @SubscribeMessage('messages')
   async handleMessage(client: any, payload: { text: string, idSession:string }) {

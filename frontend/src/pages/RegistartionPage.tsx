@@ -38,8 +38,7 @@ export default function RegistartionPage() {
           withCredentials: true,
         }
       );
-      document.cookie = `access_token=${response.data.token}; path=/; HttpOnly`;
-      console.log(document.cookie);
+
 
       console.log(response.status);
       if (response.status === 201) {

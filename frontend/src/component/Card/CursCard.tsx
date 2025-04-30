@@ -11,7 +11,6 @@ type Props = {
     mainText: string;
     subText: string;
     onclick?: () => void | Promise<GameHub>
-
     
 }
 const CursCard = ({ size, img, mainText, subText, onclick }: Props) => {

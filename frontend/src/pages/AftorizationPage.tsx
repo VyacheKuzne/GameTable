@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Poligon from "../img/Polygon.svg";
 import { useNavigate } from "react-router-dom";
-
+import ErrorMessages from "../component/messages/ErrorMessages";
 export default function ExitPage() {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const [dataFrom, setDataFrom] = useState({
     nickname: "",
     password: "",
   });
+  const [error, setError] = useState<boolean>(false);
   const fetchData = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setDataFrom((prevData) => ({
@@ -18,9 +19,14 @@ export default function ExitPage() {
   };
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Предотвращаем перезагрузку страницы
-
+    function showError(){
+      setError(true)
+      setTimeout(()=>{
+        setError(false)
+      },2000)
+    }
     try {
-      console.log(dataFrom)
+      console.log(dataFrom);
       const response = await axios.post(
         "http://localhost:3000/autorization",
         dataFrom,
@@ -28,18 +34,18 @@ export default function ExitPage() {
           headers: {
             "Content-Type": "application/json",
           },
-         
+          withCredentials: true,
         }
       );
-
+      console.log(document.cookie);
       console.log(response.data);
-      if(
-        response.status = 201
-      ){
+      if ((response.status = 201)) {
         navigate("/");
       }
+      console.log(error)
     } catch (error) {
-      console.error(error);
+      console.log(error);
+      showError()
     }
   };
 
@@ -85,12 +91,18 @@ export default function ExitPage() {
   return (
     <div className="bg-custom-darkGray w-screen h-screen relative">
       {/* Контейнер формы */}
+      {error ? (<ErrorMessages textError={"Такой пользователь не найден, возможно он был удален"} /> ): (null)}
+     
       <div className="border-[5px] my-[10%] border-white shadow-inner z-10 bg-custom-red relative rounded-xl w-1/3 m-auto p-8 max-w-[630px] min-w-[600px]">
         <form className="relative m-auto w-full" onSubmit={handleSubmit}>
           <div className="flex justify-between items-center">
-            <a href="/registartion" className="text-[32px] text-white">Регистрация</a>
+            <a href="/registartion" className="text-[32px] text-white">
+              Регистрация
+            </a>
             <div className="w-[18px] h-[18px] rounded-full bg-white"></div>
-            <a href="/aftorization" className="text-[32px] text-white">Авторизация</a>
+            <a href="/aftorization" className="text-[32px] text-white">
+              Авторизация
+            </a>
           </div>
           <div className="grid grid-cols-2">
             {/* 3 */}
@@ -115,7 +127,7 @@ export default function ExitPage() {
             </div>
             {/* end */}
           </div>
-          <div></div> 
+          <div></div>
           <button
             type="submit"
             className="rounded-full flex items-center justify-center bg-custom-red absolute top-1/3 right-[-14%] border-[5px] border-white w-[74px] h-[74px]"
@@ -144,4 +156,3 @@ export default function ExitPage() {
     </div>
   );
 }
-

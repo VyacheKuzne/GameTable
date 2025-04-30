@@ -9,13 +9,13 @@ import {
 } from '@nestjs/common';
 import { AutorizationService } from './autorization.service';
 import { Response as ExpressResponse } from 'express';
-import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
+// import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
 import { User } from '@prisma/client';
 @Controller()
 export class AutorizationController {
   constructor(private readonly AutorizationService: AutorizationService) {}
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get('registartion')
   getProtected(@Req() req) {
     console.log('Получен запрос на /registartion');
@@ -49,10 +49,11 @@ export class AutorizationController {
       updateAt: new Date(),
     };
 
-    const { user, token } = await this.AutorizationService.createUser(fullUserData);
+    const { user, token } =
+      await this.AutorizationService.createUser(fullUserData);
 
     res.cookie('access_token', token, {
-      httpOnly: true,
+      httpOnly: false,
       secure: false,
       maxAge: 60 * 60 * 1000, // 1 час
       path: '/',
@@ -62,8 +63,15 @@ export class AutorizationController {
     return res.send({ user });
   }
 
-  @Post ('/autorization')
-  async autorizationUser(@Body() user:User){
-    return await this.AutorizationService.autorizationUser(user);
+  @Post('/autorization')
+  async autorizationUser(@Body() user: User, @Response() res: ExpressResponse) {
+    const { token } = await this.AutorizationService.autorizationUser(user);
+    res.cookie('access_token', token, {
+      httpOnly: false,
+      secure: false,
+      maxAge: 60 * 60 * 1000, // 1 час
+      path: '/',
+    });
+    return res.send({ user });
   }
 }

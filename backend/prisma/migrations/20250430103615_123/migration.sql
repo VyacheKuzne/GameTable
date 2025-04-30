@@ -66,28 +66,6 @@ CREATE TABLE `turnhistory` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `User` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(191) NOT NULL,
-    `secondname` VARCHAR(191) NOT NULL,
-    `email` VARCHAR(191) NOT NULL,
-    `phone` VARCHAR(191) NOT NULL,
-    `password` VARCHAR(191) NOT NULL,
-    `nickname` VARCHAR(191) NOT NULL,
-    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updateAt` DATETIME(3) NOT NULL,
-    `role` VARCHAR(191) NOT NULL DEFAULT 'user',
-    `status` VARCHAR(191) NOT NULL DEFAULT 'active',
-    `idTariff` INTEGER NULL,
-    `idSession` VARCHAR(191) NULL,
-
-    UNIQUE INDEX `User_email_key`(`email`),
-    UNIQUE INDEX `User_phone_key`(`phone`),
-    UNIQUE INDEX `User_nickname_key`(`nickname`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `chatMessage` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `text` VARCHAR(191) NOT NULL,
@@ -105,6 +83,30 @@ CREATE TABLE `Tariff` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`idTariff`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `User` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `secondname` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
+    `phone` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NOT NULL,
+    `nickname` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updateAt` DATETIME(3) NOT NULL,
+    `role` VARCHAR(191) NOT NULL DEFAULT 'user',
+    `status` VARCHAR(191) NOT NULL DEFAULT 'active',
+    `idTariff` INTEGER NULL,
+    `createdSessionId` VARCHAR(191) NULL,
+    `idSession` VARCHAR(191) NULL,
+
+    UNIQUE INDEX `User_email_key`(`email`),
+    UNIQUE INDEX `User_phone_key`(`phone`),
+    UNIQUE INDEX `User_nickname_key`(`nickname`),
+    UNIQUE INDEX `User_createdSessionId_key`(`createdSessionId`),
+    PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -138,10 +140,10 @@ ALTER TABLE `turnhistory` ADD CONSTRAINT `turnhistory_idMob_fkey` FOREIGN KEY (`
 ALTER TABLE `turnhistory` ADD CONSTRAINT `turnhistory_idOwner_fkey` FOREIGN KEY (`idOwner`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `chatMessage` ADD CONSTRAINT `chatMessage_idSession_fkey` FOREIGN KEY (`idSession`) REFERENCES `GameHub`(`token`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `User` ADD CONSTRAINT `User_idTariff_fkey` FOREIGN KEY (`idTariff`) REFERENCES `Tariff`(`idTariff`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `User` ADD CONSTRAINT `User_idSession_fkey` FOREIGN KEY (`idSession`) REFERENCES `GameHub`(`token`) ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `chatMessage` ADD CONSTRAINT `chatMessage_idSession_fkey` FOREIGN KEY (`idSession`) REFERENCES `GameHub`(`token`) ON DELETE SET NULL ON UPDATE CASCADE;

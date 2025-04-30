@@ -1,23 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { PassportStrategy } from '@nestjs/passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 
 @Injectable()
-export class JwtAuthGuard extends AuthGuard('jwt') {
-  handleRequest(err, user, info) {
-    // Логируем все этапы: ошибки, наличие пользователя, успешную аутентификацию.
-    console.log('JWT Auth Guard сработал.');
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  constructor() {
+    super({
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req) => {
+          let token = null;
+          if (req && req.cookies) {
+            token = req.cookies['access_token'];
+          }
+          return token;
+        }
+      ]),
+      ignoreExpiration: false,
+      secretOrKey: 'supersecretkey123',
+    });
+  }
 
-    if (err) {
-      console.log('Ошибка при аутентификации:', err);
-      throw err;
-    }
-
-    if (user) {
-      console.log('Пользователь успешно аутентифицирован:', user);
-    } else {
-      console.log('Пользователь не найден или токен невалиден.');
-    }
-
-    return user;
+  async validate(payload: any) {
+    return { id: payload.sub, username: payload.username };
   }
 }

@@ -14,6 +14,7 @@ export interface Mob {
     tokenMob?: string
     row: number;
     col: number;
+    manevr?: number;
 }
 
 // Интерфейс для оружия
