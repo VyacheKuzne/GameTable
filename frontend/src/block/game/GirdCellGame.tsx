@@ -2,6 +2,7 @@ import React from "react";
 import { Mob } from "./types";
 import { Socket } from "socket.io-client";
 import MobCell from "./MobCell";
+import {MobsOnTable} from './types'
 
 type Props = {
   x: number;
@@ -11,10 +12,11 @@ type Props = {
   socket: Socket | null;
   placedMob?: { idMob: number; tokenMob: string };
   allMobs?: Mob[];
-  setIsReplaceMob: React.Dispatch<React.SetStateAction<boolean>>;
-  setReplaceMob: React.Dispatch<React.SetStateAction<Mob | undefined>>;
-  isReplaceMob: boolean;
-  replaceMob: Mob | undefined;
+
+    setIsReplaceMob: React.Dispatch<React.SetStateAction<boolean>>;
+    setReplaceMob: React.Dispatch<React.SetStateAction<MobsOnTable | undefined>>;
+    isReplaceMob: boolean;
+    replaceMob: MobsOnTable | undefined;
   
 
   setIsViewMobsStat: React.Dispatch<React.SetStateAction<boolean>>;

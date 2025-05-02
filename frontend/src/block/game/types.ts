@@ -56,3 +56,38 @@ export interface Member {
     createdSessionId?: string | null;
     idSession?: string | null;
   }
+
+  export interface MobsOnTable {
+    id: number;
+    x: number;
+    y: number;
+    name: string;
+    health: number;
+    psih: number;
+    idSession?: string | null;
+    createdAt: string; // ISO 8601 формат (Date.toISOString())
+    idMob?: number | null;
+    idOwner: number;
+    tokenMob: string;
+    isOverMove?: boolean | null;
+  
+    // Вложенные объекты — типизируются отдельно, если нужны
+    // GameHub?: GameHub | null;
+    // Mob?: Mob | null;
+    // User?: Member | null;
+  }
+  
+
+  export interface GameHub {
+    idSession: number;
+    token: string;
+    status: string;
+    createdAt: string; // ISO 8601 format
+    updateAT: string;  // ISO 8601 format
+  
+    // Связанные записи
+    // mobsOnTable: MobsOnTable[];      // Импортируйте или объявите интерфейс отдельно
+    // chatMessage: ChatMessage[];      // Импортируйте или объявите интерфейс отдельно
+    // users: Member[];                   // Импортируйте или объявите интерфейс отдельно
+  }
+  

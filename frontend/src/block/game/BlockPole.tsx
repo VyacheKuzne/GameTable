@@ -11,6 +11,7 @@ import { Member } from "./types";
 import MembersList from "./MembersList";
 import NotificationMessages from "../../component/messages/NotificationMessages";
 import PlayerCard from "./PlayerCard";
+import { MobsOnTable } from "./types";
 function BlockPole() {
   const blocks = 10;
   const blockCount = blocks * blocks;
@@ -30,15 +31,16 @@ function BlockPole() {
     }[]
   >([]);
   const [allMobs, setAllMobs] = useState<Mob[]>([]);
-  const [replaceMob, setReplaceMob] = useState<Mob | undefined>();
+  const [replaceMob, setReplaceMob] = useState<MobsOnTable | undefined>();
   const [isReplaceMob, setIsReplaceMob] = useState<boolean>(false);
   const [isCreator, setIsCreator] = useState<boolean>(false);
   const [isGameOn, setIsGameOn] = useState<boolean>(false);
   const [isMesasages, setIsMesasages] = useState<boolean>(false);
-  const [isViewMobsStat, setIsViewMobsStat] = useState<boolean>(false)
-  const [viewMobsStat, setViewMobsStat] = useState<Mob | undefined>()
-  const [allMembers, setMembers] = useState <Member[] | undefined>([])
-  const [isYourTurn, setIsYourTurn] = useState<boolean>(false)
+  const [isViewMobsStat, setIsViewMobsStat] = useState<boolean>(false);
+  const [viewMobsStat, setViewMobsStat] = useState<Mob | undefined>();
+  const [allMembers, setMembers] = useState<Member[] | undefined>([]);
+  const [isYourTurn, setIsYourTurn] = useState<boolean>(false);
+  const [MobIsNowTurn, setMobIsNowTurn] = useState<MobsOnTable>();
   // useEffect(() => {
   //   const handleMouseMove = (event: MouseEvent) => {
   //     setMousePosition({ x: event.clientX, y: event.clientY });
@@ -66,7 +68,8 @@ function BlockPole() {
     newSocket.on("yourTurn", (data) => {
       console.log("🔔 Сейчас твой ход!", data);
       setIsMesasages(true);
-      setIsYourTurn(true)
+      setIsYourTurn(true);
+      setMobIsNowTurn(data.MobIsNowTurn);
     });
     return () => {
       newSocket.disconnect();
@@ -89,18 +92,15 @@ function BlockPole() {
       setPlacedMobs(data);
       console.log(data);
     };
-    const handleSessionMembers = (
-      data: Member[] 
-    ) => {
-      setMembers(data); 
-      console.log(data); 
+    const handleSessionMembers = (data: Member[]) => {
+      setMembers(data);
+      console.log(data);
     };
     socket.on("sessionMob", handleSessionMob);
     socket.on("sessionMembers", handleSessionMembers);
     return () => {
       socket.off("sessionMob", handleSessionMob);
       socket.off("sessionMembers", handleSessionMembers);
-
     };
   }, [socket]);
 
@@ -144,16 +144,16 @@ function BlockPole() {
   }
   return (
     <>
-    <MembersList allMembers={allMembers}/>
-    <StatMob
-      setIsViewMobsStat={setIsViewMobsStat}
-      setViewMobsStat={setViewMobsStat}
-      isViewMobsStat={isViewMobsStat}
-      viewMobsStat={viewMobsStat}
-      allMembers={allMembers}
-      socket={socket}
-      isCreator={isCreator}
-    />
+      <MembersList allMembers={allMembers} />
+      <StatMob
+        setIsViewMobsStat={setIsViewMobsStat}
+        setViewMobsStat={setViewMobsStat}
+        isViewMobsStat={isViewMobsStat}
+        viewMobsStat={viewMobsStat}
+        allMembers={allMembers}
+        socket={socket}
+        isCreator={isCreator}
+      />
       {isMesasages ? (
         <NotificationMessages
           setIsMesasages={setIsMesasages}
@@ -252,7 +252,17 @@ function BlockPole() {
         <div className="fixed right-0 bottom-0">
           <ChatBlock socket={socket} />
         </div>
-        <PlayerCard/>
+        {isYourTurn ? (
+          <PlayerCard
+            setIsReplaceMob={setIsReplaceMob}
+            setReplaceMob={setReplaceMob}
+            isReplaceMob={isReplaceMob}
+            replaceMob={replaceMob}
+            MobIsNowTurn={MobIsNowTurn}
+            setIsYourTurn={setIsYourTurn}
+            soket={socket}
+          />
+        ) : null}
       </div>
     </>
   );

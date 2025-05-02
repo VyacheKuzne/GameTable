@@ -39,7 +39,7 @@ model mob {
   armor     Armor?     @relation(fields: [armorId], references: [id], map: "Mob_armorId_fkey")
   weapon    Weapon?    @relation(fields: [weaponId], references: [id], map: "Mob_weaponId_fkey")
   turnorder TurnOrder?
-  turnhistory turnhistory[]
+  mobsOnTable mobsOnTable[]
   manevr Int
   createdAt  DateTime   @default(now())
 
@@ -57,10 +57,13 @@ model TurnOrder {
   createdAt  DateTime   @default(now())
 }
 
-model turnhistory {
+model mobsOnTable {
   id Int @id @default(autoincrement())
   x Int
   y Int
+  name      String
+  health    Int @default(100)
+  psih Int @default(100)
   GameHub GameHub? @relation(fields: [idSession], references: [token])
   idSession String?
   createdAt DateTime @default(now())
@@ -106,7 +109,7 @@ model User {
   tarif             Tariff?     @relation(fields: [idTariff], references: [idTariff])
   idTariff          Int?
   createdSessionId  String?     @unique 
-  turnhistory       turnhistory[]
+  mobsOnTable       mobsOnTable[]
   gameHub           GameHub?    @relation("GameHubPlayers", fields: [idSession], references: [token]) 
   idSession         String?
 
@@ -118,7 +121,7 @@ model GameHub {
   status      String
   createdAt   DateTime    @default(now())
   updateAT    DateTime
-  turnhistory turnhistory[]
+  mobsOnTable mobsOnTable[]
   chatMessage chatMessage[]
   users       User[]      @relation("GameHubPlayers")
 }

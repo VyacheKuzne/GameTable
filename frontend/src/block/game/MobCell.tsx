@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Mob } from "./types";
+import {MobsOnTable} from './types'
+
 type MobWithToken = Mob & { tokenMob: string };
 type props = {
   renderedMob: MobWithToken;
   setIsReplaceMob: React.Dispatch<React.SetStateAction<boolean>>;
-  setReplaceMob: React.Dispatch<React.SetStateAction<Mob | undefined>>;
+  setReplaceMob: React.Dispatch<React.SetStateAction<MobsOnTable | undefined>>;
 
   setIsViewMobsStat: React.Dispatch<React.SetStateAction<boolean>>;
   setViewMobsStat: React.Dispatch<React.SetStateAction<Mob | undefined>>;

@@ -50,10 +50,13 @@ CREATE TABLE `TurnOrder` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `turnhistory` (
+CREATE TABLE `mobsOnTable` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `x` INTEGER NOT NULL,
     `y` INTEGER NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `health` INTEGER NOT NULL DEFAULT 100,
+    `psih` INTEGER NOT NULL DEFAULT 100,
     `idSession` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `idMob` INTEGER NULL,
@@ -61,7 +64,7 @@ CREATE TABLE `turnhistory` (
     `tokenMob` VARCHAR(191) NOT NULL,
     `isOverMove` BOOLEAN NULL,
 
-    UNIQUE INDEX `turnhistory_tokenMob_key`(`tokenMob`),
+    UNIQUE INDEX `mobsOnTable_tokenMob_key`(`tokenMob`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -131,13 +134,13 @@ ALTER TABLE `mob` ADD CONSTRAINT `Mob_weaponId_fkey` FOREIGN KEY (`weaponId`) RE
 ALTER TABLE `TurnOrder` ADD CONSTRAINT `TurnOrder_mobId_fkey` FOREIGN KEY (`mobId`) REFERENCES `mob`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `turnhistory` ADD CONSTRAINT `turnhistory_idSession_fkey` FOREIGN KEY (`idSession`) REFERENCES `GameHub`(`token`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `mobsOnTable` ADD CONSTRAINT `mobsOnTable_idSession_fkey` FOREIGN KEY (`idSession`) REFERENCES `GameHub`(`token`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `turnhistory` ADD CONSTRAINT `turnhistory_idMob_fkey` FOREIGN KEY (`idMob`) REFERENCES `mob`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `mobsOnTable` ADD CONSTRAINT `mobsOnTable_idMob_fkey` FOREIGN KEY (`idMob`) REFERENCES `mob`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `turnhistory` ADD CONSTRAINT `turnhistory_idOwner_fkey` FOREIGN KEY (`idOwner`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `mobsOnTable` ADD CONSTRAINT `mobsOnTable_idOwner_fkey` FOREIGN KEY (`idOwner`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `chatMessage` ADD CONSTRAINT `chatMessage_idSession_fkey` FOREIGN KEY (`idSession`) REFERENCES `GameHub`(`token`) ON DELETE SET NULL ON UPDATE CASCADE;
