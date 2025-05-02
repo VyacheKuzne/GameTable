@@ -15,6 +15,12 @@ type Props = {
   setReplaceMob: React.Dispatch<React.SetStateAction<Mob | undefined>>;
   isReplaceMob: boolean;
   replaceMob: Mob | undefined;
+  
+
+  setIsViewMobsStat: React.Dispatch<React.SetStateAction<boolean>>;
+  setViewMobsStat: React.Dispatch<React.SetStateAction<Mob | undefined>>;
+  isViewMobsStat: boolean;
+  viewMobsStat: Mob | undefined;
 };
 
 export default function GirdCellGame({
@@ -29,6 +35,11 @@ export default function GirdCellGame({
   setReplaceMob,
   isReplaceMob,
   replaceMob,
+  
+  setIsViewMobsStat,
+  setViewMobsStat,
+  isViewMobsStat,
+  viewMobsStat,
 }: Props) {
    function getCookie(name: string) {
     const value = `; ${document.cookie}`;
@@ -81,6 +92,10 @@ export default function GirdCellGame({
           setIsReplaceMob={setIsReplaceMob}
           setReplaceMob={setReplaceMob}
           renderedMob={renderedMob}
+          setIsViewMobsStat={setIsViewMobsStat}
+          setViewMobsStat={setViewMobsStat}
+          isViewMobsStat={isViewMobsStat}
+          viewMobsStat={viewMobsStat}
         />
       )}
     </div>

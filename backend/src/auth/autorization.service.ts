@@ -52,14 +52,14 @@ export class AutorizationService {
   
     const isPasswordValid = await bcrypt.compare(user.password, findUser.password);
   
-    console.log('1:' + user.password)
-    console.log('2:' + findUser.password)
-    console.log(isPasswordValid)
+    // console.log('1:' + user.password)
+    // console.log('2:' + findUser.password)
+    // console.log(isPasswordValid)
   
     if (!isPasswordValid) {
       throw new NotFoundException('Неверный пароль');
     }
-    const token = this.jwtService.sign({ id: user.id, status: user.status});
+    const token = this.jwtService.sign({ id: findUser.id, status: findUser.status});
     return {findUser, token};
   }
 }

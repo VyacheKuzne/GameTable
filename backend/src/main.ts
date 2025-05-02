@@ -8,8 +8,8 @@ async function bootstrap() {
   // Настройка CORS для передачи куков
   app.use(
     cors({
-      origin: 'http://localhost:3001',  // Убедись, что это твой фронт
-      credentials: true,  // Важно: разрешаем передачу куков
+      origin: 'http://localhost:3001',  
+      credentials: true,  
     }),
   );
 

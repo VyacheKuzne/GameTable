@@ -17,7 +17,7 @@ import { PrismaClient } from '@prisma/client';
 export class setMobWS implements OnGatewayInit {
   private userSockets: Map<number, string> = new Map();
   private getSocketIdByUserId(userId: number): string | undefined {
-    console.debug('getSocketIdByUserId ' + this.userSockets.get(userId))
+    console.debug('getSocketIdByUserId ' + this.userSockets.get(userId));
     return this.userSockets.get(userId);
   }
   private async determineNextTurn(idSession: string) {
@@ -69,7 +69,7 @@ export class setMobWS implements OnGatewayInit {
     let userId: number;
     try {
       const decoded = verifyToken(userToken);
-      userId = decoded.id; // или decoded.sub, в зависимости от структуры токена
+      userId = decoded.id; 
       console.debug('User ID from token:', userId);
     } catch (e) {
       console.error('Token verification failed:', e.message);
@@ -78,6 +78,13 @@ export class setMobWS implements OnGatewayInit {
     }
     client.join(idSession);
     console.log(`🔗 Клиент ${client.id} присоединился к комнате ${idSession}`);
+    await this.prisma.user.update({
+      where: {id: userId},
+      data: {idSession: idSession}
+    })
+    const AllMembers = await this.prisma.user.findMany({
+      where: {idSession: idSession}
+    })
     const turnhistoryMobs = await this.prisma.turnhistory.findMany({
       where: { idSession: idSession },
     });
@@ -91,7 +98,8 @@ export class setMobWS implements OnGatewayInit {
     });
     this.userSockets.set(userId, client.id);
     this.server.to(idSession).emit('sessionMob', sessionMob);
-    await this.determineNextTurn(idSession);
+    this.server.to(idSession).emit('sessionMembers', AllMembers);
+    // await this.determineNextTurn(idSession);
   }
   @SubscribeMessage('newMobOnTable')
   async handleMessage(
@@ -147,7 +155,7 @@ export class setMobWS implements OnGatewayInit {
 
     this.server.to(payload.idSession).emit('sessionMob', sessionMob);
     // console.debug(sessionMob);
-    await this.determineNextTurn(payload.idSession);
+    // await this.determineNextTurn(payload.idSession);
   }
   @SubscribeMessage('replaceMobOnTable')
   async handleReplaceMob(
@@ -185,9 +193,41 @@ export class setMobWS implements OnGatewayInit {
       where: { idSession: payload.idSession },
     });
     this.server.to(payload.idSession).emit('sessionMob', sessionMob);
-    await this.determineNextTurn(payload.idSession);
-
+    // await this.determineNextTurn(payload.idSession);
   }
+  @SubscribeMessage('GameOn')
+  async gameOn(payload: { idSession: string }) {
+    console.debug('Игра началась');
+    await this.determineNextTurn(payload.idSession);
+  }
+@SubscribeMessage('editMob')
+async handleEditMob(client: any, payload: { idSession: string; ownerId: number; tokenMob: string }) {
+  console.debug('ownerId моба', payload.ownerId);
+  console.debug('idSession моба', payload.idSession);
+  console.debug('tokenMob моба', payload.tokenMob);
+  const editMob = await this.prisma.turnhistory.update({
+    where: {tokenMob:payload.tokenMob},
+    data: {idOwner:payload.ownerId}
+  })
+  console.debug(editMob)
+  const AllMembers = await this.prisma.user.findMany({
+    where: {idSession: payload.idSession}
+  })
+  const turnhistoryMobs = await this.prisma.turnhistory.findMany({
+    where: { idSession: payload.idSession },
+  });
+  const allMobs = await this.prisma.mob.findMany();
+  const sessionMob = turnhistoryMobs.map((turnHistoryEntry) => {
+    const mob = allMobs.find((m) => m.id === turnHistoryEntry.idMob);
+    return {
+      ...turnHistoryEntry,
+      mob: mob || null,
+    };
+  });
+  // this.userSockets.set(userId, client.id);
+  this.server.to(payload.idSession).emit('sessionMob', sessionMob);
+  this.server.to(payload.idSession).emit('sessionMembers', AllMembers);
+}
 }
 
 // where[]{

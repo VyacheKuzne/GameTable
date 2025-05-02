@@ -40,3 +40,19 @@ export interface MobCellProps {
     isSelected: boolean;              // Проверка, выбран ли моб
     cellSize: number;                 // Размер клетки
 }
+export interface Member {
+    id: number;
+    name: string;
+    secondname: string;
+    email: string;
+    phone: string;
+    password: string; // В большинстве случаев не стоит передавать это на клиент
+    nickname: string;
+    createdAt: string; // Date можно тоже, если не сериализовано
+    updateAt: string;
+    role: string;
+    status: string;
+    idTariff?: number | null;
+    createdSessionId?: string | null;
+    idSession?: string | null;
+  }

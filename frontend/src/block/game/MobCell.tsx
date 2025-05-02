@@ -5,17 +5,28 @@ type props = {
   renderedMob: MobWithToken;
   setIsReplaceMob: React.Dispatch<React.SetStateAction<boolean>>;
   setReplaceMob: React.Dispatch<React.SetStateAction<Mob | undefined>>;
+
+  setIsViewMobsStat: React.Dispatch<React.SetStateAction<boolean>>;
+  setViewMobsStat: React.Dispatch<React.SetStateAction<Mob | undefined>>;
+  isViewMobsStat: boolean;
+  viewMobsStat: Mob | undefined;
 };
 export default function MobCell({
   renderedMob,
   setReplaceMob,
-  setIsReplaceMob,
-}: props) {
+  
+  setIsViewMobsStat,
+  setViewMobsStat,
+  isViewMobsStat,
+  viewMobsStat,
+}: // setIsReplaceMob,
+props) {
   return (
     <div
       onClick={() => {
-        setIsReplaceMob(true);
-        setReplaceMob(renderedMob);
+        // setIsReplaceMob(true);
+        setIsViewMobsStat(true);
+        setViewMobsStat(renderedMob);
       }}
       className="bg-black text-white h-full flex items-center justify-center"
     >
