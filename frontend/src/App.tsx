@@ -9,6 +9,7 @@ import ProfilePage from './pages/ProfilePage';
 import TarifPage from './pages/TarifPage';
 import AdminPanel from './admin/AdminPanel';
 import AdminPanelTarif from './admin/AdminPanelTarif';
+import HistoruGames from './pages/HistoruGames';
 function App() {
   return (
     <BrowserRouter>
@@ -22,6 +23,7 @@ function App() {
             <Route path="/tarifs" element={<TarifPage/>} />
             <Route path="/AdminPanel/users" element={<AdminPanel/>} />
             <Route path="/AdminPanel/tarifs" element={<AdminPanelTarif/>} />
+            <Route path="/HistoruGames" element={<HistoruGames/>} />
 
           </Routes>
       </div>

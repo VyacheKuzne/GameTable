@@ -25,8 +25,6 @@ async function main() {
     data: {
       name: 'Гоблин',
       health: 30,
-      attack: 5,
-      defense: 2,
       speed: 10,
       weaponId: sword.id,
       armorId: shield.id,
@@ -38,8 +36,6 @@ async function main() {
     data: {
       name: 'Орк',
       health: 50,
-      attack: 8,
-      defense: 5,
       speed: 7,
       manevr: 13,
     },

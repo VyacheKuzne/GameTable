@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient, Tariff } from '@prisma/client';
+import { PrismaClient, Tariff, User } from '@prisma/client';
 // import { use } from 'passport';
 
 @Injectable()
@@ -10,9 +10,12 @@ export class TariffService {
     return await this.prisma.tariff.findMany();
   }
 
-  async creatTariff(tariff: Tariff): Promise<Tariff> {
+  async creatTariff(tariff: Tariff, user: { id: number }): Promise<Tariff> {
     const createdTarif = await this.prisma.tariff.create({
-      data: tariff,
+      data: {
+        ...tariff,
+        createrId: user.id
+      }
     });
     return createdTarif;
   }
@@ -53,5 +56,16 @@ export class TariffService {
       data: { status: 'delete' },
     });
     return deleteTariffConfirm;
+  }
+  async buyTariff( user: { id: number }, tariff: Tariff): Promise<User> {
+    const createdTarif = await this.prisma.user.update({
+      where: {
+        id: user.id
+      },
+      data: {
+        idTariff: tariff.idTariff
+      }
+    });
+    return createdTarif;
   }
 }

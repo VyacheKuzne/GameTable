@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Post, Patch, UseGuards, Req } from '@nestjs/common';
 import { GetAllUserService } from './getAllUser.service';
 import { TariffService } from './Tariff.service';
 import { User, Tariff } from '@prisma/client';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller()
 export class GetAllUserController {
@@ -35,13 +36,21 @@ export class GetAllUserController {
     return await this.TariffService.updateTariff(tariff);
   }
   @Post('/createTariff')
-  async createNewTariff(@Body() tariff: Tariff): Promise<Tariff> {
-    console.log('получили данные', tariff);
-    return await this.TariffService.creatTariff(tariff);
+  @UseGuards(AuthGuard('jwt'))
+  async createNewTariff(@Body() tariff: Tariff, @Req() req: any): Promise<Tariff> {
+    const user = req.user as { id: number }
+    console.log('получили данные', tariff, user);
+    return await this.TariffService.creatTariff(tariff, user);
   }
   @Patch('/deleteTariff')
   async deleteTariff(@Body() tariff: Tariff): Promise<Tariff> {
     console.log('Полученные данные для удаления:', tariff); // Логируем данные
     return await this.TariffService.deleteTariff(tariff);
+  }
+  @Post('/buyTarif')
+  @UseGuards(AuthGuard('jwt'))
+  async buyTariff(@Body() tariff: Tariff, @Req() req: any): Promise<User>{
+    const user = req.user as { id: number }
+    return await this.TariffService.buyTariff(user, tariff);
   }
 }

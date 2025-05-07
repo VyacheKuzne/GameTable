@@ -4,9 +4,14 @@ import { AutorizationService } from './autorization.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
-
+import { YandexStrategy } from './yandex.strategy';
+import { CacheModule } from '@nestjs/cache-manager';
 @Module({
   imports: [
+    CacheModule.register({
+      ttl: 60, // Время жизни кэша в секундах
+      max: 100, // Макс. кол-во элементов в кэше
+    }),
     PassportModule,
     JwtModule.register({
       secret: 'supersecretkey123',
@@ -14,6 +19,6 @@ import { JwtStrategy } from './jwt.strategy';
     }),
   ],
   controllers: [AutorizationController],
-  providers: [AutorizationService, JwtStrategy],
+  providers: [AutorizationService, JwtStrategy, YandexStrategy],
 })
 export class AutorizationModule {}

@@ -10,6 +10,7 @@ import { PrismaModule } from 'prisma/prisma.module';
 import { ChatModule } from './chat/chat.module';
 import { GetAllUserModule } from './admin/getAllUser/getAllUser.module';
 import { GameSessionModule } from './createGameSession/gameSession.module';
+import { LkModule } from './lk/lk.module';
 @Module({
   imports: [
     MoblistModule,
@@ -19,6 +20,7 @@ import { GameSessionModule } from './createGameSession/gameSession.module';
     ChatModule,
     GetAllUserModule,
     GameSessionModule,
+    LkModule,
   ],
   controllers: [AppController, TurnListController],
   providers: [AppService, TurnListService],

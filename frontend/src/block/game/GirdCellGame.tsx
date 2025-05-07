@@ -23,6 +23,9 @@ type Props = {
   setViewMobsStat: React.Dispatch<React.SetStateAction<Mob | undefined>>;
   isViewMobsStat: boolean;
   viewMobsStat: Mob | undefined;
+
+  setIsModAtack: React.Dispatch<React.SetStateAction<boolean>>;
+  isModAtack: boolean
 };
 
 export default function GirdCellGame({
@@ -42,6 +45,9 @@ export default function GirdCellGame({
   setViewMobsStat,
   isViewMobsStat,
   viewMobsStat,
+
+  setIsModAtack,
+  isModAtack,
 }: Props) {
    function getCookie(name: string) {
     const value = `; ${document.cookie}`;
@@ -74,6 +80,15 @@ export default function GirdCellGame({
       });
       console.log("replaceMob" + replaceMob.tokenMob);
     }
+    else if (isModAtack && replaceMob && renderedMob) {
+      socket?.emit("atackMob", {
+        idMob: replaceMob.id,
+        idSession: token,
+        MobIsNowTurn: replaceMob,
+        renderedMob:renderedMob
+      });
+      console.log("replaceMob" + replaceMob.tokenMob);
+    }
   }
 
   const mobTemplate = placedMob
@@ -87,7 +102,7 @@ export default function GirdCellGame({
   return (
     <div
       onClick={setMobs}
-      className="w-[50px] h-[50px] bg-custom-darkGray border border-zinc-900 cursor-pointer"
+      className="w-[100px] h-[100px] bg-custom-darkGray border border-zinc-900 cursor-pointer"
     >
       {renderedMob && (
         <MobCell

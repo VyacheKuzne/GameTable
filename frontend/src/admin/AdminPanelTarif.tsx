@@ -12,25 +12,27 @@ export default function AdminPanelTarif() {
   const [isCreate, setIsCreate] = useState<boolean>(false);
   const tableHeadersWithKeys = [
     { label: "ID", key: "idTariff" },
-    { label: "Имя", key: "name" },
-    // { label: "Фамиля", key: "secondname" },
-    // { label: "ЭЛЕКТРОННАЯ ПОЧТА", key: "email" },
-    // { label: "ПАРОЛЬ", key: "password" },
-    // { label: "НИКНЕЙМ", key: "nickname" },
-    // { label: "ТЕЛЕФОН", key: "phone" },
+    { label: "ИМЯ", key: "name" },
+    { label: "КОЛИЧЕСТВО ВОЗМОЖНЫХ МОБОВ", key: "availableMobs" },
+    { label: "ИГРОВОЕ ВЕРМЯ", key: "availableTime" },
+    { label: "ЦЕНА", key: "price" },
     { label: "СТАТУС", key: "status" },
-    // { label: "ДАТА СОЗДАНИЯ", key: "createdAt" },
+    { label: "ДАТА СОЗДАНИЯ", key: "createdAt" },
   ];
 
   type Tariff = {
-    idTariff: number;
+    idTariff: number
     name: string;
+    status?: string; // По умолчанию "active", поэтому можно оставить необязательным
+    availableMobs: number;
+    availableTime: number;
+    price: number;
   };
   const [selectedTariff, setSelectedUser] = useState<Tariff | null>(null);
   const [allTariff, setAllTariffs] = useState<Tariff[]>([]);
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const allTariff = async () => {
       try {
         const response = await axios.get("http://localhost:3000/find/tariffs");
         setAllTariffs(response.data);
@@ -39,7 +41,7 @@ export default function AdminPanelTarif() {
         console.log("не получилось получить данные про пользователей", error);
       }
     };
-    fetchUsers();
+    allTariff();
   }, []);
   // function qwe() {
   //   setIsCreate(!isCreate)
@@ -58,7 +60,10 @@ export default function AdminPanelTarif() {
         setIsCreate={setIsCreate}
       />
       <AminModalBlockMenu />
-      <button onClick={() => setIsCreate(!isCreate)}>
+      <button
+        className="bg-custom-red w-[367px] items-center h-[63px] hover-effect-btn-red text-white cursor-pointer rounded-[10px] flex align-center justify-center"
+        onClick={() => setIsCreate(!isCreate)}
+      >
         Создать новый тариф
       </button>
       <table className={`text-center  top-[3%] left-[calc(40%-280px)]`}>

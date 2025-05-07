@@ -22,20 +22,23 @@ export default function TurnList({ placedMobs }: props) {
   });
 
   return (
-    <div className="h-[200px] overflow-y-auto">
-      TurnList
+    <div className="h-[200px] bg-white rounded-[20px] p-2 shadow-md">
+      <p className="text-[24px] font-medium">Последовательность ходов:</p>
+      <div className="h-[80%] overflow-y-auto">
       {sortedPlacedMobs.map((mobOnTable, index) => {
         const mob = mobOnTable.mob;
         return (
           <div key={index}>
-            имя: {mob?.name ?? "без имени"}
+            Имя: {mob?.name ?? "без имени"}
             <br />
-            маневр: {mob?.manevr}
-            <br />В этом раунде ходил: {mobOnTable.isOverMove ? "да" : "нет"}
+            Маневр: {mob?.manevr}
+            <p>В этом раунде ходил: <span className={`${mobOnTable.isOverMove ? "text-custom-green" : "text-custom-red"}`}>{mobOnTable.isOverMove ? "да" : "нет"}</span></p>
             <hr />
           </div>
         );
       })} 
+      </div>
+     
     </div>
   );
 }

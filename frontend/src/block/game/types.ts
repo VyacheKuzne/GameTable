@@ -62,7 +62,8 @@ export interface Member {
     x: number;
     y: number;
     name: string;
-    health: number;
+    healthMax: number;
+    healthNow: number;
     psih: number;
     idSession?: string | null;
     createdAt: string; // ISO 8601 формат (Date.toISOString())

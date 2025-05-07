@@ -43,7 +43,12 @@ export class GameSessionService {
   }
   async mobfindMany() {
     try {
-      return this.prisma.mob.findMany()
+      return this.prisma.mob.findMany({
+        include: {
+          weapon: true,  // Включаем оружие, если оно существует
+          armor: true,   // Включаем броню, если она существует
+        },
+      })
     } catch (error) {
       null
     }

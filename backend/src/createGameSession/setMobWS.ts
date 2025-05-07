@@ -13,7 +13,8 @@ export interface MobsOnTable {
   x: number;
   y: number;
   name: string;
-  health: number;
+  healthMax:    number;
+  healthNow:    number;
   psih: number;
   idSession?: string | null;
   createdAt: string; // ISO 8601 формат (Date.toISOString())
@@ -34,6 +35,9 @@ export class setMobWS implements OnGatewayInit {
     return this.userSockets.get(userId);
   }
   private async determineNextTurn(idSession: string) {
+    console.debug('determineNextTurn');
+    console.debug(idSession);
+
     const turnhistoryMobs = await this.prisma.mobsOnTable.findMany({
       where: { idSession },
       include: { Mob: true },
@@ -152,7 +156,8 @@ export class setMobWS implements OnGatewayInit {
       data: {
         idMob: payload.idMob,
         name: mobTamplate.name,
-        health: mobTamplate.health,
+        healthMax: mobTamplate.health,
+        healthNow: mobTamplate.health,
         x: payload.x,
         y: payload.y,
         idSession: payload.idSession,
@@ -218,8 +223,9 @@ export class setMobWS implements OnGatewayInit {
     // await this.determineNextTurn(payload.idSession);
   }
   @SubscribeMessage('GameOn')
-  async gameOn(payload: { idSession: string }) {
+  async gameOn(client: any, payload: { idSession: string }) {
     console.debug('Игра началась');
+    console.debug(payload.idSession);
     await this.determineNextTurn(payload.idSession);
   }
   @SubscribeMessage('editMob')
@@ -262,7 +268,102 @@ export class setMobWS implements OnGatewayInit {
       where: { tokenMob: payload.MobIsNowTurn.tokenMob },
       data: { isOverMove: true },
     });
-    console.debug('моб закончил ход' + (await endTurnMob).isOverMove)
+    console.debug('моб закончил ход' + (await endTurnMob).isOverMove);
+    const AllMembers = await this.prisma.user.findMany({
+      where: { idSession: payload.idSession },
+    });
+    const turnhistoryMobs = await this.prisma.mobsOnTable.findMany({
+      where: { idSession: payload.idSession },
+    });
+    const allMobs = await this.prisma.mob.findMany();
+    const sessionMob = turnhistoryMobs.map((turnHistoryEntry) => {
+      const mob = allMobs.find((m) => m.id === turnHistoryEntry.idMob);
+      return {
+        ...turnHistoryEntry,
+        mob: mob || null,
+      };
+    });
+    this.server.to(payload.idSession).emit('sessionMob', sessionMob);
+    this.server.to(payload.idSession).emit('sessionMembers', AllMembers);
+  }
+  @SubscribeMessage('atackMob')
+  async atackMob(
+    client: any,
+    payload: {
+      MobIsNowTurn: MobsOnTable;
+      idSession: string;
+      tokenMob: string;
+      renderedMob: any;
+    },
+  ) {
+    console.debug('после атаки');
+    // console.debug(payload)
+    const atackMob = payload.MobIsNowTurn;
+    const atackMobFromTaplate = await this.prisma.mob.findFirstOrThrow({
+      where: { id: atackMob.idMob! },
+      include: {
+        weapon: true, // Включаем оружие, если оно существует
+        armor: true, // Включаем броню, если она существует
+      },
+    });
+    const underArackMob = await this.prisma.mobsOnTable.findFirstOrThrow({
+      where: { tokenMob: payload.renderedMob.tokenMob },
+    });
+
+    console.debug(atackMob);
+    console.debug(underArackMob);
+    const currentHp = underArackMob.healthNow - atackMobFromTaplate.weapon?.damage!
+    
+    await this.prisma.mobsOnTable.update({
+      where: { id: underArackMob.id },
+      data: {
+        healthNow: currentHp,
+      },
+    });
+    const endTurnMob = this.prisma.mobsOnTable.update({
+      where: { tokenMob: payload.MobIsNowTurn.tokenMob },
+      data: { isOverMove: true },
+    });
+    console.debug('моб закончил ход' + (await endTurnMob).isOverMove);
+    const AllMembers = await this.prisma.user.findMany({
+      where: { idSession: payload.idSession },
+    });
+    const turnhistoryMobs = await this.prisma.mobsOnTable.findMany({
+      where: { idSession: payload.idSession },
+    });
+    const allMobs = await this.prisma.mob.findMany();
+    const sessionMob = turnhistoryMobs.map((turnHistoryEntry) => {
+      const mob = allMobs.find((m) => m.id === turnHistoryEntry.idMob);
+      return {
+        ...turnHistoryEntry,
+        mob: mob || null,
+      };
+    });
+    this.server.to(payload.idSession).emit('sessionMob', sessionMob);
+    this.server.to(payload.idSession).emit('sessionMembers', AllMembers);
+  }
+  @SubscribeMessage('roundEnd')
+  async roundEnd(
+    client: any,
+    payload: {
+      idSession: string;
+    },
+  ) {
+    const mobsToUpdate = await this.prisma.mobsOnTable.findMany({
+      where: {
+        idSession: payload.idSession,
+      },
+    });
+
+    // Обновляем каждый моб, устанавливая isOverMove в false
+    await Promise.all(
+      mobsToUpdate.map((mob) =>
+        this.prisma.mobsOnTable.update({
+          where: { id: mob.id },
+          data: { isOverMove: false },
+        }),
+      ),
+    );
     const AllMembers = await this.prisma.user.findMany({
       where: { idSession: payload.idSession },
     });

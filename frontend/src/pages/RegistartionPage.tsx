@@ -110,7 +110,17 @@ export default function RegistartionPage() {
     return () => timeouts.forEach(clearTimeout);
   
   }, []); // Пустой массив зависимостей — запрос выполнится только один раз
-
+  const redirectToYandexAuth = () => {
+    window.location.href = 'http://localhost:3000/auth/yandex';
+  };
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    if (token) {
+      localStorage.setItem('token', token);
+      // переход в личный кабинет или другое действие
+    }
+  }, []);
   return (
     <div className="bg-custom-darkGray w-screen h-screen relative">
       <div className="border-[5px] my-[10%] border-white shadow-inner z-10 bg-custom-red relative rounded-xl w-1/3 m-auto p-8 max-w-[630px] min-w-[600px]">
@@ -204,6 +214,7 @@ export default function RegistartionPage() {
           }}
         ></div>
       ))}
+      <button onClick={redirectToYandexAuth}>Войти через Яндекс</button>
     </div>
   );
 }

@@ -41,6 +41,7 @@ function BlockPole() {
   const [allMembers, setMembers] = useState<Member[] | undefined>([]);
   const [isYourTurn, setIsYourTurn] = useState<boolean>(false);
   const [MobIsNowTurn, setMobIsNowTurn] = useState<MobsOnTable>();
+  const [isModAtack, setIsModAtack] = useState<boolean>(false);
   // useEffect(() => {
   //   const handleMouseMove = (event: MouseEvent) => {
   //     setMousePosition({ x: event.clientX, y: event.clientY });
@@ -142,6 +143,14 @@ function BlockPole() {
       idSession: token,
     });
   }
+  function roundEnd() {
+    setIsGameOn(true);
+    console.log("Завершаем рануд");
+    const token = window.location.pathname.split("/").pop();
+    socket?.emit("roundEnd", {
+      idSession: token,
+    });
+  }
   return (
     <>
       <MembersList allMembers={allMembers} />
@@ -163,7 +172,7 @@ function BlockPole() {
 
       <div className="flex">
         <div
-          className={`grid`}
+          className={`grid absolute left-[50%] translate-x-[-50%]`}
           style={{ gridTemplateColumns: `repeat(${blockInLine}, 1fr)` }}
         >
           {Array.from({ length: blockCount }).map((_, index) => {
@@ -189,6 +198,8 @@ function BlockPole() {
                   setViewMobsStat={setViewMobsStat}
                   isViewMobsStat={isViewMobsStat}
                   viewMobsStat={viewMobsStat}
+                  setIsModAtack={setIsModAtack}
+                  isModAtack={isModAtack}
                 />
               </div>
             );
@@ -221,6 +232,13 @@ function BlockPole() {
           >
             закончить расстановку
           </button>
+          <br />
+          <button
+            className="p-2 m-2 bg-custom-red text-white"
+            onClick={roundEnd}
+          >
+            закончить раунд
+          </button>
           {/*конец костыль для проверки стейтов */}
           <TurnList placedMobs={placedMobs} />
           {isCreator ? (
@@ -243,11 +261,8 @@ function BlockPole() {
             >
               {selectMob?.name}
             </div>
-          ) : (
-            <div className="border border-black w-[50px] h-[50px] flex justify-center items-center overflow-hidden">
-              {selectMob?.name}
-            </div>
-          )}
+          ) : null
+      }
         </div>
         <div className="fixed right-0 bottom-0">
           <ChatBlock socket={socket} />
@@ -261,6 +276,7 @@ function BlockPole() {
             MobIsNowTurn={MobIsNowTurn}
             setIsYourTurn={setIsYourTurn}
             soket={socket}
+            setIsModAtack={setIsModAtack}
           />
         ) : null}
       </div>

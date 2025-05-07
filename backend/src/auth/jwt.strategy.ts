@@ -4,7 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -23,6 +23,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: any) {
     console.log('[JWT Strategy] Токен прошёл проверку. Payload:', payload);
-    return { id: payload.id, status: payload.status };
+    return { id: payload.id, status: payload.status, role: payload.role };
   }
 }

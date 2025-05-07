@@ -49,7 +49,7 @@ function Header() {
     setIsModalKey(!isModalKey);
   }
   function function2() {
-    navigate("/tarif");
+    navigate("/HistoruGames");
   }
   function function3() {
     navigate("/tarifs");

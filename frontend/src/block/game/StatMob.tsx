@@ -55,7 +55,7 @@ export default function StatMob({
     if (!isViewMobsStat || !viewMobsStat) return null;
   
     return (
-      <div className="absolute left-0 z-50 bg-white rounded-[20px] p-2">
+      <div className="absolute left-0 z-50 bg-white rounded-[20px] shadow-md p-2">
         <div className="flex items-center justify-between mb-2">
           <p className="font-bold text-[24px]">Статы моба</p>
           <button
@@ -136,6 +136,8 @@ export default function StatMob({
             <p>Имя: {viewMobsStat.name}</p>
             <p>Маневр: {viewMobsStat.manevr}</p>
             <p>Скорость: {viewMobsStat.speed}</p>
+            <p>Оружие: {viewMobsStat.weapon?.name}</p>
+            <p>Урон оружия: {viewMobsStat.weapon?.damage}</p>
             {isCreator && (
               <button
                 className="bg-blue-500 text-white px-2 py-1 rounded mt-2"

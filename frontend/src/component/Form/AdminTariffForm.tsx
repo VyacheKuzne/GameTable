@@ -7,9 +7,12 @@ type TableHeader = {
   key: string;
 };
 type Tariff = {
-    name: string;
-    status?: string;
-  };
+  name: string;
+  status?: string; // По умолчанию "active", поэтому можно оставить необязательным
+  availableMobs: number;
+  availableTime: number;
+  price: number;
+};
 type Props = {
   tableHeadersWithKeys: TableHeader[];
   setIsEdit: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,10 +37,10 @@ export default function AdminUserForm({
   const [tariffData, setTariffData] = useState<Tariff | null>(null);
   const [newTariff, setNewTariff] = useState<Tariff>(() => {
     const initial: any = {};
-    
-    // Фильтруем headers, чтобы исключить 'idTariff'
+  
+    // Исключаем 'idTariff' и 'createdAt'
     tableHeadersWithKeys.forEach((header) => {
-      if (header.key !== 'idTariff') {  // Убираем 'idTariff'
+      if (header.key !== 'idTariff' && header.key !== 'createdAt') {
         initial[header.key] = "";
       }
     });
@@ -45,6 +48,7 @@ export default function AdminUserForm({
     initial.status = "active"; // или другой дефолт
     return initial;
   });
+  
   
   
   useEffect(() => {
@@ -59,9 +63,11 @@ export default function AdminUserForm({
   }, [isCreate]);
   const handleInputChange = (key: keyof Tariff, value: string) => {
     if (tariffData) {
+      const numericFields: (keyof Tariff)[] = ['availableMobs', 'availableTime', 'price'];
+  
       setTariffData({
         ...tariffData,
-        [key]: value,
+        [key]: numericFields.includes(key) ? Number(value) : value,
       });
     }
   };
@@ -96,7 +102,8 @@ export default function AdminUserForm({
       console.log(tariffData);
       const response = await axios.post(
         "http://localhost:3000/createTariff",
-        tariffData
+        tariffData,
+        { withCredentials: true } 
       );
   
       console.log(response.status);
@@ -257,7 +264,8 @@ export default function AdminUserForm({
               (tableHeaders) =>
                 tableHeaders.key !== "id" &&
                 tableHeaders.key !== "createdAt" &&
-                tableHeaders.key !== "idTariff"
+                tableHeaders.key !== "idTariff"&&
+                tableHeaders.key !== "status"
             )
             .map((tableHeaders) => {
               return (
