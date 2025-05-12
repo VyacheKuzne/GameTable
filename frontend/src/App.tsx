@@ -10,6 +10,7 @@ import TarifPage from './pages/TarifPage';
 import AdminPanel from './admin/AdminPanel';
 import AdminPanelTarif from './admin/AdminPanelTarif';
 import HistoruGames from './pages/HistoruGames';
+import ConstractsPage from './pages/ConstractsPage';
 function App() {
   return (
     <BrowserRouter>
@@ -24,6 +25,7 @@ function App() {
             <Route path="/AdminPanel/users" element={<AdminPanel/>} />
             <Route path="/AdminPanel/tarifs" element={<AdminPanelTarif/>} />
             <Route path="/HistoruGames" element={<HistoruGames/>} />
+            <Route path="/construcrts" element={<ConstractsPage/>} />
 
           </Routes>
       </div>

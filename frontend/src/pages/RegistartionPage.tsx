@@ -126,7 +126,7 @@ export default function RegistartionPage() {
       <div className="border-[5px] my-[10%] border-white shadow-inner z-10 bg-custom-red relative rounded-xl w-1/3 m-auto p-8 max-w-[630px] min-w-[600px]">
         <form className="relative m-auto w-full" onSubmit={handleSubmit}>
           <div className="flex justify-between items-center">
-            <a href="/registartion" className="text-[32px] text-white">
+            <a href="/registartion" className="text-[32px] font-medium text-white">
               Регистрация
             </a>
             <div className="w-[18px] h-[18px] rounded-full bg-white"></div>
@@ -192,7 +192,7 @@ export default function RegistartionPage() {
           </div>
           <button
             type="submit"
-            className="rounded-full flex items-center justify-center bg-custom-red absolute top-1/3 right-[-14%] border-[5px] border-white w-[74px] h-[74px]"
+            className="rounded-full flex items-center justify-center hover-effect-btn-red bg-custom-red absolute top-1/3 right-[-14%] border-[5px] border-white w-[74px] h-[74px]"
           >
             <img src={Poligon} alt="Poligon" />
           </button>

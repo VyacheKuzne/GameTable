@@ -2,7 +2,7 @@ import React from "react";
 import { Mob } from "./types";
 import { Socket } from "socket.io-client";
 import MobCell from "./MobCell";
-import {MobsOnTable} from './types'
+import { MobsOnTable } from "./types";
 
 type Props = {
   x: number;
@@ -10,14 +10,13 @@ type Props = {
   selectMob: Mob | undefined;
   isSelectMob: boolean;
   socket: Socket | null;
-  placedMob?: { idMob: number; tokenMob: string };
+  placedMob?: { idMob: number; tokenMob: string; status: string };
   allMobs?: Mob[];
 
-    setIsReplaceMob: React.Dispatch<React.SetStateAction<boolean>>;
-    setReplaceMob: React.Dispatch<React.SetStateAction<MobsOnTable | undefined>>;
-    isReplaceMob: boolean;
-    replaceMob: MobsOnTable | undefined;
-  
+  setIsReplaceMob: React.Dispatch<React.SetStateAction<boolean>>;
+  setReplaceMob: React.Dispatch<React.SetStateAction<MobsOnTable | undefined>>;
+  isReplaceMob: boolean;
+  replaceMob: MobsOnTable | undefined;
 
   setIsViewMobsStat: React.Dispatch<React.SetStateAction<boolean>>;
   setViewMobsStat: React.Dispatch<React.SetStateAction<Mob | undefined>>;
@@ -25,7 +24,7 @@ type Props = {
   viewMobsStat: Mob | undefined;
 
   setIsModAtack: React.Dispatch<React.SetStateAction<boolean>>;
-  isModAtack: boolean
+  isModAtack: boolean;
 };
 
 export default function GirdCellGame({
@@ -40,7 +39,7 @@ export default function GirdCellGame({
   setReplaceMob,
   isReplaceMob,
   replaceMob,
-  
+
   setIsViewMobsStat,
   setViewMobsStat,
   isViewMobsStat,
@@ -49,17 +48,17 @@ export default function GirdCellGame({
   setIsModAtack,
   isModAtack,
 }: Props) {
-   function getCookie(name: string) {
+  function getCookie(name: string) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop()?.split(';').shift();
+    if (parts.length === 2) return parts.pop()?.split(";").shift();
     return null;
   }
-  const token = getCookie('access_token');
-  // console.log(token); 
+  const token = getCookie("access_token");
+  // console.log(token);
   async function setMobs() {
     const token = window.location.pathname.split("/").pop();
-    const userToken = getCookie('access_token'); // или getCookie('access_token')
+    const userToken = getCookie("access_token"); // или getCookie('access_token')
     // console.log('UserToken from cookie:', userToken);
     if (isSelectMob && selectMob) {
       socket?.emit("newMobOnTable", {
@@ -67,7 +66,7 @@ export default function GirdCellGame({
         x,
         y,
         idSession: token,
-        token:token,
+        token: token,
         userToken: userToken,
       });
     } else if (isReplaceMob && replaceMob) {
@@ -79,13 +78,12 @@ export default function GirdCellGame({
         tokenMob: replaceMob.tokenMob,
       });
       console.log("replaceMob" + replaceMob.tokenMob);
-    }
-    else if (isModAtack && replaceMob && renderedMob) {
+    } else if (isModAtack && replaceMob && renderedMob) {
       socket?.emit("atackMob", {
         idMob: replaceMob.id,
         idSession: token,
         MobIsNowTurn: replaceMob,
-        renderedMob:renderedMob
+        renderedMob: renderedMob,
       });
       console.log("replaceMob" + replaceMob.tokenMob);
     }
@@ -94,8 +92,9 @@ export default function GirdCellGame({
   const mobTemplate = placedMob
     ? allMobs?.find((mob) => mob.id === placedMob.idMob)
     : null;
+
   const renderedMob =
-    mobTemplate && placedMob
+    mobTemplate && placedMob?.status === "alive" && placedMob
       ? { ...mobTemplate, tokenMob: placedMob.tokenMob }
       : null;
   // console.log('лог на маневры '+renderedMob?.manevr);

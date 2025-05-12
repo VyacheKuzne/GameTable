@@ -13,8 +13,8 @@ export interface MobsOnTable {
   x: number;
   y: number;
   name: string;
-  healthMax:    number;
-  healthNow:    number;
+  healthMax: number;
+  healthNow: number;
   psih: number;
   idSession?: string | null;
   createdAt: string; // ISO 8601 формат (Date.toISOString())
@@ -45,7 +45,7 @@ export class setMobWS implements OnGatewayInit {
     });
 
     const notMovedYet = turnhistoryMobs.filter(
-      (entry) => !entry.isOverMove && entry.Mob,
+      (entry) => !entry.isOverMove && entry.Mob && entry.status === 'alive',
     );
 
     notMovedYet.sort((a, b) => {
@@ -309,11 +309,80 @@ export class setMobWS implements OnGatewayInit {
     const underArackMob = await this.prisma.mobsOnTable.findFirstOrThrow({
       where: { tokenMob: payload.renderedMob.tokenMob },
     });
+    function testWillToLive(willToLiveMob: number | null | undefined): boolean {
+      if (willToLiveMob === null || willToLiveMob === undefined) {
+        console.warn('моб умер.');
+        return false;
+      }
 
+      const maxAcceptableValue = Math.floor((willToLiveMob / 100) * 20);
+      const randomNumber = Math.floor(Math.random() * 20) + 1;
+
+      console.log(
+        `willToLiveMob: ${willToLiveMob}, randomNumber: ${randomNumber}, maxAcceptableValue: ${maxAcceptableValue}`,
+      );
+
+      return randomNumber <= maxAcceptableValue;
+    }
     console.debug(atackMob);
     console.debug(underArackMob);
-    const currentHp = underArackMob.healthNow - atackMobFromTaplate.weapon?.damage!
-    
+    const currentHp =
+      underArackMob.healthNow - atackMobFromTaplate.weapon?.damage!;
+      console.debug('текущие хп' + currentHp + underArackMob.healthNow + atackMobFromTaplate.weapon?.damage)
+    if (currentHp <= 0) {
+      const willToLiveMob = underArackMob.willToLive;
+      if (
+        willToLiveMob !== null &&
+        willToLiveMob !== undefined &&
+        willToLiveMob >= 100
+      ) {
+        const currentWillToLive = willToLiveMob - 10;
+        await this.prisma.mobsOnTable.update({
+          where: {
+            id: underArackMob.id,
+          },
+          data: {
+            willToLive: currentWillToLive,
+          },
+        });
+      } else {
+        const willToLiveMob = underArackMob.willToLive;
+
+        if (willToLiveMob === null || willToLiveMob === undefined) {
+          console.warn(
+            'willToLiveMob is null or undefined. Using default max value.',
+          );
+          const randomNumber = Math.floor(Math.random() * 20) + 1;
+        } else {
+          const willToLiveMob = underArackMob.willToLive;
+          const testResult = testWillToLive(willToLiveMob);
+
+          if (testResult) {
+            console.log('Испытание пройдено!');
+            const willToLiveMob = underArackMob.willToLive;
+            const currentWillToLive = willToLiveMob! - 10;
+            await this.prisma.mobsOnTable.update({
+              where: {
+                id: underArackMob.id,
+              },
+              data:{
+                willToLive: currentWillToLive
+              }
+            })
+          } else {
+            await this.prisma.mobsOnTable.update({
+              where: {
+                id: underArackMob.id,
+              },
+              data: {
+                status: 'dead',
+              },
+            });
+            console.log('Испытание провалено!');
+          }
+        }
+      }
+    }
     await this.prisma.mobsOnTable.update({
       where: { id: underArackMob.id },
       data: {

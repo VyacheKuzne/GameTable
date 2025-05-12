@@ -100,7 +100,7 @@ export default function ExitPage() {
               Регистрация
             </a>
             <div className="w-[18px] h-[18px] rounded-full bg-white"></div>
-            <a href="/aftorization" className="text-[32px] text-white">
+            <a href="/aftorization" className="text-[32px] text-white font-medium">
               Авторизация
             </a>
           </div>
@@ -130,7 +130,7 @@ export default function ExitPage() {
           <div></div>
           <button
             type="submit"
-            className="rounded-full flex items-center justify-center bg-custom-red absolute top-1/3 right-[-14%] border-[5px] border-white w-[74px] h-[74px]"
+            className="rounded-full flex items-center justify-center hover-effect-btn-red bg-custom-red absolute top-1/3 right-[-14%] border-[5px] border-white w-[74px] h-[74px]"
           >
             <img src={Poligon} alt="Poligon" />
           </button>

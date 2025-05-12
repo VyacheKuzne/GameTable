@@ -71,6 +71,8 @@ CREATE TABLE `mobsOnTable` (
     `idOwner` INTEGER NOT NULL,
     `tokenMob` VARCHAR(191) NOT NULL,
     `isOverMove` BOOLEAN NULL,
+    `willToLive` INTEGER NULL DEFAULT 100,
+    `status` VARCHAR(191) NOT NULL DEFAULT 'alive',
 
     UNIQUE INDEX `mobsOnTable_tokenMob_key`(`tokenMob`),
     PRIMARY KEY (`id`)

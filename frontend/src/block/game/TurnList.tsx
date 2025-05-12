@@ -1,5 +1,6 @@
 import React from "react";
 import { Mob } from "./types";
+import { MobsOnTable } from "./types";
 type props = {
   placedMobs?: {
     x: number;
@@ -8,6 +9,7 @@ type props = {
     tokenMob: string;
     isOverMove: number;
     mob?: Mob;
+    status: string, 
   }[];
 };
 export default function TurnList({ placedMobs }: props) {
@@ -32,7 +34,8 @@ export default function TurnList({ placedMobs }: props) {
             Имя: {mob?.name ?? "без имени"}
             <br />
             Маневр: {mob?.manevr}
-            <p>В этом раунде ходил: <span className={`${mobOnTable.isOverMove ? "text-custom-green" : "text-custom-red"}`}>{mobOnTable.isOverMove ? "да" : "нет"}</span></p>
+            <p>В этом раунде ходил: <span className={`${mobOnTable.isOverMove ? "text-custom-green" : "text-custom-red"}`}>{mobOnTable.isOverMove ? "да" : "нет"} </span></p>
+            <p>{mobOnTable.status === "alive" ? "жив" : "мертв"}</p>
             <hr />
           </div>
         );

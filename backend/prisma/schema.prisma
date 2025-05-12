@@ -80,6 +80,8 @@ model mobsOnTable {
   idOwner Int
   tokenMob String @unique
   isOverMove Boolean?
+  willToLive Int? @default(100)
+  status String @default("alive")
 }
 
 

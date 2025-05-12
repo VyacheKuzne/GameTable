@@ -28,6 +28,7 @@ function BlockPole() {
       tokenMob: string;
       isOverMove: number;
       mob: Mob;
+      status: string;
     }[]
   >([]);
   const [allMobs, setAllMobs] = useState<Mob[]>([]);
@@ -88,6 +89,7 @@ function BlockPole() {
         tokenMob: string;
         isOverMove: number;
         mob: Mob;
+        status: string
       }[]
     ) => {
       setPlacedMobs(data);

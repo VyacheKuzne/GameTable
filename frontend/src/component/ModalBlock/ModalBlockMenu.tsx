@@ -1,10 +1,20 @@
 import React from 'react'
 import './ModalBlockMenu.css'
-export default function ModalBlockMenu() {
+type props ={
+    user: {
+        name: string,
+        secondname: string,
+        nickname: string,
+        email: string,
+        phone: string
+    }
+}
+export default function ModalBlockMenu({user}:props) {
 const menuItem = [
     { name: 'Главная', link: '/' },
     { name: 'Профиль', link: '/profile' },
     { name: 'Тарифы', link: '/tarifs' },
+    { name: 'Конструкторы', link: '/construcrts' },
     { name: 'Выход', link: '/aftorization' },
 ]
   return (
@@ -15,9 +25,9 @@ const menuItem = [
                 <p>img</p>
             </div>
             <div className='mx-2'>
-                <p>ИМЯ</p>
+                <p>{user.name}</p>
                 <hr/>
-                <p>ФАМИЛИЯ</p>
+                <p>{user.secondname}</p>
             </div>
         </div>
         <div className='px-2'>
