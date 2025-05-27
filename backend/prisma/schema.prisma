@@ -107,6 +107,7 @@ model Tariff {
   price Int
   createdAt  DateTime   @default(now())
   updateAt DateTime @updatedAt
+    purchasedTariffs  purchasedTariffs[]
 
 }
 model User {
@@ -129,6 +130,7 @@ model User {
   gameHub           GameHub?    @relation("GameHubPlayers", fields: [idSession], references: [token]) 
   idSession         String?
   createdTariffs    Tariff[]    @relation("CreaterUser") // Link to tariffs created by this user
+    purchasedTariffs  purchasedTariffs[]
 
 }
 
@@ -146,6 +148,22 @@ model GameHub {
 model skill {
   idSkill Int @id @default(autoincrement())
   
+}
+
+model purchasedTariffs {
+  id             Int      @id @default(autoincrement())
+  user           User     @relation(fields: [userId], references: [id])
+  userId         Int
+
+  tariff         Tariff   @relation(fields: [tariffId], references: [idTariff])
+  tariffId       Int
+
+  status         String   @default("pending") 
+  createdAt      DateTime @default(now())
+  priceAtPurchase Int
+  
+
+  @@unique([userId, tariffId, createdAt]) 
 }
 
 // model tarifAdvantages {

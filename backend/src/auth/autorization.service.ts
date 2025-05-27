@@ -3,6 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';  // Импортируем Response из express
 import { error } from 'console';
 import * as bcrypt from 'bcrypt';
 import axios from 'axios';
@@ -159,4 +160,13 @@ export class AutorizationService {
     });
   }
   
+async logout(res: Response) {
+    res.setHeader('Set-Cookie', [
+      `session=; Path=/; Domain=${process.env.COOKIE_DOMAIN || 'localhost'}; ` +
+      'Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly' +
+      (process.env.NODE_ENV === 'production' ? '; Secure' : '')
+    ]);
+    
+    return { redirectUrl: '/aftorization' };
+  }
 }

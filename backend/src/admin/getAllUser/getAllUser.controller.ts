@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Patch, UseGuards, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Patch, UseGuards, Req, Query } from '@nestjs/common';
 import { GetAllUserService } from './getAllUser.service';
 import { TariffService } from './Tariff.service';
 import { User, Tariff } from '@prisma/client';
@@ -53,4 +53,16 @@ export class GetAllUserController {
     const user = req.user as { id: number }
     return await this.TariffService.buyTariff(user, tariff);
   }
+// tariff.controller.ts
+  @Get('tariffs')
+  async findTariffs(@Query('name') name?: string) {
+    return this.TariffService.findTariffsByName(name);
+  }
+
+@Get('sort')
+async sortTariffs(
+  @Query('order') order: 'asc' | 'desc' = 'asc'
+) {
+  return this.TariffService.sortTariffs(order);
+}
 }

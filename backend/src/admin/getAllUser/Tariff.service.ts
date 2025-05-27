@@ -66,6 +66,35 @@ export class TariffService {
         idTariff: tariff.idTariff
       }
     });
+    await this.prisma.purchasedTariffs.create({
+      data:{
+        userId: user.id,
+        tariffId: tariff.idTariff,
+        priceAtPurchase: tariff.price
+      }
+    })
     return createdTarif;
   }
+ async findTariffsByName(name?: string): Promise<Tariff[]> {
+    if (!name || name.trim() === '') {
+      return this.prisma.tariff.findMany();
+    }
+
+    // Регистронезависимый поиск для MySQL
+    return this.prisma.$queryRaw`
+      SELECT * FROM Tariff 
+      WHERE name LIKE CONCAT('%', ${name}, '%')
+      COLLATE utf8mb4_general_ci
+    `;
+  }
+
+  // tariff.service.ts
+
+async sortTariffs(order: 'asc' | 'desc') {
+  return this.prisma.tariff.findMany({
+    orderBy: {
+      name: order
+    }
+  });
+}
 }

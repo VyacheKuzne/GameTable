@@ -148,6 +148,20 @@ CREATE TABLE `skill` (
     PRIMARY KEY (`idSkill`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `purchasedTariffs` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `userId` INTEGER NOT NULL,
+    `tariffId` INTEGER NOT NULL,
+    `status` VARCHAR(191) NOT NULL DEFAULT 'pending',
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `priceAtPurchase` INTEGER NOT NULL,
+    `isActive` BOOLEAN NOT NULL DEFAULT false,
+
+    UNIQUE INDEX `purchasedTariffs_userId_tariffId_createdAt_key`(`userId`, `tariffId`, `createdAt`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `mob` ADD CONSTRAINT `Mob_armorId_fkey` FOREIGN KEY (`armorId`) REFERENCES `Armor`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -180,3 +194,9 @@ ALTER TABLE `User` ADD CONSTRAINT `User_idTariff_fkey` FOREIGN KEY (`idTariff`) 
 
 -- AddForeignKey
 ALTER TABLE `User` ADD CONSTRAINT `User_idSession_fkey` FOREIGN KEY (`idSession`) REFERENCES `GameHub`(`token`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `purchasedTariffs` ADD CONSTRAINT `purchasedTariffs_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `purchasedTariffs` ADD CONSTRAINT `purchasedTariffs_tariffId_fkey` FOREIGN KEY (`tariffId`) REFERENCES `Tariff`(`idTariff`) ON DELETE RESTRICT ON UPDATE CASCADE;

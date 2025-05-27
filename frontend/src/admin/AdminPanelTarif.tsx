@@ -5,48 +5,88 @@ import Edit from "../img/Edit.svg";
 import AminModalBlockMenu from "./adminModalBlock/AminModalBlockMenu";
 import axios from "axios";
 import AdminTariffForm from "../component/Form/AdminTariffForm";
-import RedButton from "../component/Button/RedButton";
+
 export default function AdminPanelTarif() {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const [isCreate, setIsCreate] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'delete'>('all');
+  
   const tableHeadersWithKeys = [
     { label: "ID", key: "idTariff" },
     { label: "ИМЯ", key: "name" },
-    { label: "КОЛИЧЕСТВО ВОЗМОЖНЫХ МОБОВ", key: "availableMobs" },
-    { label: "ИГРОВОЕ ВЕРМЯ", key: "availableTime" },
+    { label: "КОЛИЧЕСТВО ВОЖМОЖНЫХ МОБОВ", key: "availableMobs" },
+    { label: "ИГРОВОЕ ВРЕМЯ", key: "availableTime" },
     { label: "ЦЕНА", key: "price" },
     { label: "СТАТУС", key: "status" },
     { label: "ДАТА СОЗДАНИЯ", key: "createdAt" },
   ];
 
   type Tariff = {
-    idTariff: number
+    idTariff: number;
     name: string;
-    status?: string; // По умолчанию "active", поэтому можно оставить необязательным
+    status: 'active' | 'delete';
     availableMobs: number;
     availableTime: number;
     price: number;
+    createdAt: string;
   };
+
   const [selectedTariff, setSelectedUser] = useState<Tariff | null>(null);
   const [allTariff, setAllTariffs] = useState<Tariff[]>([]);
+  const [filteredTariffs, setFilteredTariffs] = useState<Tariff[]>([]);
 
+  // Загрузка тарифов
   useEffect(() => {
-    const allTariff = async () => {
+    const loadTariffs = async () => {
       try {
         const response = await axios.get("http://localhost:3000/find/tariffs");
         setAllTariffs(response.data);
-        console.log("Tariff:", response.data);
       } catch (error) {
-        console.log("не получилось получить данные про пользователей", error);
+        console.error("Ошибка загрузки тарифов:", error);
       }
     };
-    allTariff();
+    loadTariffs();
   }, []);
-  // function qwe() {
-  //   setIsCreate(!isCreate)
-  //   console.log(isCreate)
-  // }
+
+  // Фильтрация, сортировка и поиск
+  useEffect(() => {
+    let result = [...allTariff];
+    
+    // Фильтрация по статусу
+    if (statusFilter !== 'all') {
+      result = result.filter(tariff => tariff.status === statusFilter);
+    }
+    
+    // Фильтрация по поисковому запросу
+    if (searchTerm.trim() !== "") {
+      result = result.filter(tariff =>
+        tariff.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
+    // Сортировка
+    result.sort((a, b) => {
+      if (sortOrder === 'asc') {
+        return a.name.localeCompare(b.name);
+      } else {
+        return b.name.localeCompare(a.name);
+      }
+    });
+    
+    setFilteredTariffs(result);
+  }, [searchTerm, allTariff, sortOrder, statusFilter]);
+
+  const handleSortToggle = () => {
+    setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
+  };
+
+  const handleStatusFilterChange = (filter: 'all' | 'active' | 'delete') => {
+    setStatusFilter(filter);
+  };
+
   return (
     <div>
       <AdminTariffForm
@@ -60,13 +100,81 @@ export default function AdminPanelTarif() {
         setIsCreate={setIsCreate}
       />
       <AminModalBlockMenu />
+      
+      {/* Фильтры и поиск */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 px-4 gap-4">
+        <div className="relative w-full md:w-[400px]">
+          <input
+            type="text"
+            placeholder="Поиск по названию тарифа"
+            className="w-full border border-gray-300 rounded-[10px] px-4 py-2 focus:outline-none focus:ring-2 focus:ring-custom-red"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm("")}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+        
+        <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+          <div className="flex gap-2">
+            <button
+              onClick={() => handleStatusFilterChange('all')}
+              className={`px-4 py-2 rounded-[10px] ${
+                statusFilter === 'all' 
+                  ? 'bg-custom-blue text-white' 
+                  : 'bg-gray-200 hover:bg-gray-300'
+              }`}
+            >
+              Все
+            </button>
+            <button
+              onClick={() => handleStatusFilterChange('active')}
+              className={`px-4 py-2 rounded-[10px] ${
+                statusFilter === 'active' 
+                  ? 'bg-green-500 text-white' 
+                  : 'bg-gray-200 hover:bg-gray-300'
+              }`}
+            >
+              Активные
+            </button>
+            <button
+              onClick={() => handleStatusFilterChange('delete')}
+              className={`px-4 py-2 rounded-[10px] ${
+                statusFilter === 'delete' 
+                  ? 'bg-red-500 text-white' 
+                  : 'bg-gray-200 hover:bg-gray-300'
+              }`}
+            >
+              Удалённые
+            </button>
+          </div>
+          
+          <button
+            onClick={handleSortToggle}
+            className="bg-custom-blue hover-effect-btn-blue text-white px-4 py-2 rounded-[10px] flex items-center"
+          >
+            Сортировка: {sortOrder === 'asc' ? 'А → Я' : 'Я → А'}
+            <span className="ml-2">
+              {sortOrder === 'asc' ? '↑' : '↓'}
+            </span>
+          </button>
+        </div>
+      </div>
+      
       <button
-        className="bg-custom-red w-[367px] items-center h-[63px] hover-effect-btn-red text-white cursor-pointer rounded-[10px] flex align-center justify-center"
+        className="bg-custom-red w-full md:w-[367px] items-center h-[63px] hover-effect-btn-red text-white cursor-pointer rounded-[10px] flex align-center justify-center mb-6 mx-auto"
         onClick={() => setIsCreate(!isCreate)}
       >
         Создать новый тариф
       </button>
-      <table className={`text-center  top-[3%] left-[calc(40%-280px)]`}>
+      
+      <table className="text-center top-[3%] left-[calc(40%-280px)] w-full">
         <thead>
           <tr className="bg-white h-[69px] rounded-tr-[20px] rounded-tl-[20px]">
             {tableHeadersWithKeys.map((header, key) => (
@@ -76,7 +184,7 @@ export default function AdminPanelTarif() {
           </tr>
         </thead>
         <tbody>
-          {allTariff.map((tariff, key) => (
+          {filteredTariffs.map((tariff, key) => (
             <tr
               key={tariff.idTariff}
               className={`h-[69px] ${
@@ -90,7 +198,6 @@ export default function AdminPanelTarif() {
               <td>
                 <button
                   onClick={() => {
-                    // console.log(tariff);
                     setIsEdit(!isEdit);
                     setSelectedUser(tariff);
                   }}
@@ -100,7 +207,6 @@ export default function AdminPanelTarif() {
                 </button>
                 <button
                   onClick={() => {
-                    // console.log(tariff);
                     setIsDelete(!isDelete);
                     setSelectedUser(tariff);
                   }}

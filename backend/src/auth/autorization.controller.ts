@@ -16,6 +16,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
 import * as passport from 'passport';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { HttpStatus } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
 import axios from 'axios';
 import * as qs from 'qs'; // Для работы с параметрами запроса в формате URL encoded
@@ -163,5 +164,6 @@ async yandexCallback(@Req() req, @Res() res: ExpressResponse) {
     return res.status(500).send({ message: 'Ошибка при авторизации' });
   }
 }
+
 
 }
