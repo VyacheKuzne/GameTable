@@ -11,7 +11,6 @@ model Armor {
   id      Int    @id @default(autoincrement())
   name    String
   defense Int
-  weight  Int
   mob     mob[]
   createdAt  DateTime   @default(now())
 
@@ -21,7 +20,6 @@ model Weapon {
   id     Int    @id @default(autoincrement())
   name   String
   damage Int
-  weight Int
   mob    mob[]
   createdAt  DateTime   @default(now())
 
@@ -42,6 +40,7 @@ model mob {
   titulid Int? 
   manevr Int
   createdAt  DateTime   @default(now())
+  skill skill[] 
 
 
 
@@ -80,7 +79,7 @@ model mobsOnTable {
   idOwner Int
   tokenMob String @unique
   isOverMove Boolean?
-  willToLive Int? @default(100)
+  willToLive Int? @default(80)
   status String @default("alive")
 }
 
@@ -114,7 +113,6 @@ model User {
   id                Int         @id @default(autoincrement())
   name              String
   secondname        String
-  yandexId          String?   @unique
   email             String      @unique
   phone             String      @unique
   password          String
@@ -123,14 +121,16 @@ model User {
   updateAt          DateTime    @updatedAt
   role              String      @default("user")
   status            String      @default("active")
+  yandexId          String?   @unique
   tarif             Tariff?     @relation(fields: [idTariff], references: [idTariff])
   idTariff          Int?
   createdSessionId  String?     @unique 
-  mobsOnTable       mobsOnTable[]
   gameHub           GameHub?    @relation("GameHubPlayers", fields: [idSession], references: [token]) 
   idSession         String?
   createdTariffs    Tariff[]    @relation("CreaterUser") // Link to tariffs created by this user
-    purchasedTariffs  purchasedTariffs[]
+  purchasedTariffs  purchasedTariffs[]
+  mobsOnTable       mobsOnTable[]
+
 
 }
 
@@ -147,7 +147,14 @@ model GameHub {
 
 model skill {
   idSkill Int @id @default(autoincrement())
-  
+  name String @unique
+  timeout Int
+  damageMin Int
+  // issupport Boolean 
+  damageMax Int
+  range Int
+  mob         mob?  @relation(fields: [mobId], references: [id])
+  mobId       Int?
 }
 
 model purchasedTariffs {

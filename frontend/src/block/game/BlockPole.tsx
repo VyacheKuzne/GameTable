@@ -12,6 +12,9 @@ import MembersList from "./MembersList";
 import NotificationMessages from "../../component/messages/NotificationMessages";
 import PlayerCard from "./PlayerCard";
 import { MobsOnTable } from "./types";
+import MouseMove from "../../function/MouseMove";
+import { useNavigate } from "react-router-dom";
+
 function BlockPole() {
   const blocks = 10;
   const blockCount = blocks * blocks;
@@ -43,15 +46,8 @@ function BlockPole() {
   const [isYourTurn, setIsYourTurn] = useState<boolean>(false);
   const [MobIsNowTurn, setMobIsNowTurn] = useState<MobsOnTable>();
   const [isModAtack, setIsModAtack] = useState<boolean>(false);
-  // useEffect(() => {
-  //   const handleMouseMove = (event: MouseEvent) => {
-  //     setMousePosition({ x: event.clientX, y: event.clientY });
-  //   };
-  //   window.addEventListener("mousemove", handleMouseMove);
-  //   return () => {
-  //     window.removeEventListener("mousemove", handleMouseMove);
-  //   };
-  // }, []);
+  const navigate = useNavigate();
+
   function getCookie(name: string) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -101,6 +97,7 @@ function BlockPole() {
     };
     socket.on("sessionMob", handleSessionMob);
     socket.on("sessionMembers", handleSessionMembers);
+    socket.on("stopGameMessage", stopGameRedirect);
     return () => {
       socket.off("sessionMob", handleSessionMob);
       socket.off("sessionMembers", handleSessionMembers);
@@ -145,6 +142,13 @@ function BlockPole() {
       idSession: token,
     });
   }
+    function stopGame() {
+    console.log("завершаем игру");
+    const token = window.location.pathname.split("/").pop();
+    socket?.emit("GameStop", {
+      idSession: token,
+    });
+  }
   function roundEnd() {
     setIsGameOn(true);
     console.log("Завершаем рануд");
@@ -153,8 +157,13 @@ function BlockPole() {
       idSession: token,
     });
   }
+  function stopGameRedirect(){
+      console.log("полученно сообщение завершить игру делаем редирект")
+      navigate("/");
+  }
   return (
     <>
+    <MouseMove setMousePosition={setMousePosition}/>
       <MembersList allMembers={allMembers} />
       <StatMob
         setIsViewMobsStat={setIsViewMobsStat}
@@ -240,6 +249,12 @@ function BlockPole() {
             onClick={roundEnd}
           >
             закончить раунд
+          </button>
+             <button
+            className="p-2 m-2 bg-custom-red text-white"
+            onClick={stopGame}
+          >
+            закончить эту партию
           </button>
           {/*конец костыль для проверки стейтов */}
           <TurnList placedMobs={placedMobs} />

@@ -5,7 +5,7 @@ import Edit from "../img/Edit.svg";
 import AminModalBlockMenu from "./adminModalBlock/AminModalBlockMenu";
 import axios from "axios";
 import AdminTariffForm from "../component/Form/AdminTariffForm";
-
+import DownloadTariffReportButton from "../component/Button/DownloadTariffReportButton";
 export default function AdminPanelTarif() {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isDelete, setIsDelete] = useState<boolean>(false);
@@ -166,7 +166,7 @@ export default function AdminPanelTarif() {
           </button>
         </div>
       </div>
-      
+      <DownloadTariffReportButton/>
       <button
         className="bg-custom-red w-full md:w-[367px] items-center h-[63px] hover-effect-btn-red text-white cursor-pointer rounded-[10px] flex align-center justify-center mb-6 mx-auto"
         onClick={() => setIsCreate(!isCreate)}

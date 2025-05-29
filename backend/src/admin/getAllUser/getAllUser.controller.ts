@@ -1,14 +1,17 @@
-import { Body, Controller, Get, Post, Patch, UseGuards, Req, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Patch, UseGuards, Req, Query, Res  } from '@nestjs/common';
 import { GetAllUserService } from './getAllUser.service';
 import { TariffService } from './Tariff.service';
 import { User, Tariff } from '@prisma/client';
 import { AuthGuard } from '@nestjs/passport';
+import { ReportService } from './report.service';
+import { Response } from 'express';
 
 @Controller()
 export class GetAllUserController {
   constructor(
     private readonly getAllUserService: GetAllUserService,
     private readonly TariffService: TariffService,
+    private readonly ReportService: ReportService,
   ) {}
 
   @Get('find/allUser')
@@ -65,4 +68,9 @@ async sortTariffs(
 ) {
   return this.TariffService.sortTariffs(order);
 }
+
+  @Get('tariff-purchases')
+  async downloadReport(@Res() res: Response) {
+    return this.ReportService.generateTariffPurchasesReport(res);
+  }
 }

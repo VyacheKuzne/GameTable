@@ -8,7 +8,6 @@ async function main() {
     data: {
       name: 'Меч',
       damage: 15,
-      weight: 5,
     },
   });
 
@@ -16,7 +15,6 @@ async function main() {
     data: {
       name: 'Щит',
       defense: 10,
-      weight: 7,
     },
   });
 

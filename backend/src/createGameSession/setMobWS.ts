@@ -450,6 +450,32 @@ export class setMobWS implements OnGatewayInit {
     this.server.to(payload.idSession).emit('sessionMob', sessionMob);
     this.server.to(payload.idSession).emit('sessionMembers', AllMembers);
   }
+  @SubscribeMessage('GameStop')
+  async stopGame(
+    client: any,
+    payload: {
+      idSession: string;
+    },
+  ) {
+    console.log('заканчиваем игру!')
+    await this.prisma.user.updateMany({
+      where: { idSession: payload.idSession },
+      data: {
+        idSession: null
+      }
+    });
+    await this.prisma.user.update({
+      where: {createdSessionId: payload.idSession},
+      data:{createdSessionId: null}
+    })
+    await this.prisma.gameHub.update({
+      where: {token: payload.idSession},
+      data: {
+        status: 'end'
+      }
+    })
+    this.server.to(payload.idSession).emit('stopGameMessage');
+  }
 }
 
 // where[]{

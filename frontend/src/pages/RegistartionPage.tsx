@@ -110,9 +110,6 @@ export default function RegistartionPage() {
     return () => timeouts.forEach(clearTimeout);
   
   }, []); // Пустой массив зависимостей — запрос выполнится только один раз
-  const redirectToYandexAuth = () => {
-    window.location.href = 'http://localhost:3000/auth/yandex';
-  };
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
@@ -121,6 +118,14 @@ export default function RegistartionPage() {
       // переход в личный кабинет или другое действие
     }
   }, []);
+
+const clientId = '48a5fec8f1ee4b3888ba3721222c255a';
+const redirectUri = 'http://localhost:3000/auth/yandex/callback';
+
+const yandexAuthUrl = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+    const handleYandexLogin = () => {
+    window.location.href = yandexAuthUrl;
+  };
   return (
     <div className="bg-custom-darkGray w-screen h-screen relative">
       <div className="border-[5px] my-[10%] border-white shadow-inner z-10 bg-custom-red relative rounded-xl w-1/3 m-auto p-8 max-w-[630px] min-w-[600px]">
@@ -214,7 +219,7 @@ export default function RegistartionPage() {
           }}
         ></div>
       ))}
-      <button onClick={redirectToYandexAuth}>Войти через Яндекс</button>
+      <button onClick={handleYandexLogin}>Войти через Яндекс</button>
     </div>
   );
 }

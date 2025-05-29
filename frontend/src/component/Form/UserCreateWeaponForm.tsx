@@ -6,40 +6,33 @@ import axios from "axios";
 import AllMessages from "../messages/AllMessages";
 
 type props = {
-  setIsCreateMob: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsCreateWeapon: React.Dispatch<React.SetStateAction<boolean>>;
 };
-type MobForm = {
+type Form = {
   name: string;
-  health: number;
-  // psih: number;
-  speed: number;
-  manevr: number;
+  damage: number;
 };
 
-export default function UserCreateMobForm({ setIsCreateMob }: props) {
-  const [status, setStatus] = useState<number | string>();
-  const [createMob, setCreateMob] = useState<MobForm>({
+export default function UserCreateWeaponForm({ setIsCreateWeapon }: props) {
+    const [status, setStatus] = useState<number | string>();
+
+  const [Data, setData] = useState<Form>({
     name: "",
-    health: 0,
-    // psih: 0,
-    speed: 0,
-    manevr: 0,
+    damage: 0,
   });
   const headersWithKeys = [
-    { label: "ИМЯ", key: "name" },
-    { label: "МАКС-ЗДОРОВЬЕ", key: "health" },
+    { label: "НАЗВАНИЕ", key: "name" },
+    { label: "УРОНЕ", key: "damage" },
     // { label: "МАКС-ПСИХИКА", key: "psih" },
-    { label: "CКОРОСТЬ", key: "speed" },
-    { label: "МАНЕВР", key: "manevr" },
     // { label: "ОРУЖИЕ", key: "manevr" },
     // { label: "БРОНЯ", key: "manevr" },
     // { label: "СПОСОБНОСТИ, 6шт", key: "manevr" },
   ];
   const fetchData = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setCreateMob((prevData) => ({
+    setData((prevData) => ({
       ...prevData,
-      [name]: ["health", "psih", "speed", "manevr"].includes(name)
+      [name]: ["damage"].includes(name)
         ? Number(value)
         : value,
     }));
@@ -48,28 +41,28 @@ export default function UserCreateMobForm({ setIsCreateMob }: props) {
     e.preventDefault();
     try {
       const host = "http://localhost:3000/construct-user";
-      const responce = await axios.post(`${host}/createMob`, createMob, {
+      const responce = await axios.post(`${host}/createWeapon`, Data, {
         withCredentials: true,
       });
-      setStatus(responce.status);
+      setStatus(responce.status)
     } catch (error) {
-      setStatus(500);
+      setStatus(500)
     }
   };
+  const header = "Введите данные для создания оружия";
+
   return (
     <div className="w-screen h-screen bg-custom-fon-darkGray top-0 fixed z-[1000] flex items-center justify-center ">
-      <AllMessages status={status!} />
+      <AllMessages status={status!}/>
       <div className="relative bg-custom-darkGray w-fit rounded-[20px] p-8">
         <button
-          onClick={() => setIsCreateMob(false)}
+          onClick={() => setIsCreateWeapon(false)}
           className="bg-custom-red rounded-[10px] p-[10px] absolute right-[-15px] top-[-15px]"
         >
           <img src={Cross} alt="Cross" />
         </button>
         <form className="flex flex-col items-center" onSubmit={submitForm}>
-          <p className="text-[24px] text-white font-medium">
-            Введите данные для создания моба
-          </p>
+          <p className="text-[24px] text-white font-medium">{`${header}`}</p>
           <img src={Line} alt="Line" />
           {headersWithKeys.map((header, index) => {
             return (
@@ -93,7 +86,7 @@ export default function UserCreateMobForm({ setIsCreateMob }: props) {
             className="bg-custom-red hover-effect-btn-red rounded-[10px] w-full h-[47px] mt-[32px]"
             type="submit"
           >
-            <p className="text-white font-medium">Создать моба</p>
+            <p className="text-white font-medium">Создать оружие</p>
           </button>
         </form>
       </div>

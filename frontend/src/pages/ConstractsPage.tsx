@@ -2,18 +2,50 @@ import React, { useState } from "react";
 import Header from "../block/Header";
 import { Mob } from "../block/game/types";
 import UserCreateMobForm from "../component/Form/UserCreateMobForm";
+import UserCreateWeaponForm from "../component/Form/UserCreateWeaponForm";
+import UserCreateArmorForm from "../component/Form/UserCreateArmorForm";
+import UserCreateEffectForm from "../component/Form/UserCreateEffectForm";
+import UserCreateSkillForm from "../component/Form/UserCreateSkillForm";
+
 export default function ConstractsPage() {
   const [isCreateMob, setIsCreateMob] = useState<boolean>(false);
-  const [createMob, setCreateMob] = useState<Mob>();
+  const [isCreateWeapon, setIsCreateWeapon] = useState<boolean>(false);
+  const [isCreateArmor, setIsCreateArmor] = useState<boolean>(false);
+  const [isCreateSkill, setIsCreateSkill] = useState<boolean>(false);
+  const [isCreateEffect, setIsCreateEffect] = useState<boolean>(false);
+
 
   return (
     <div>
       <Header />
       {isCreateMob ? (
         <UserCreateMobForm
-          createMob={createMob}
+          // createMob={createMob}
           setIsCreateMob={setIsCreateMob}
-          setCreateMob={setCreateMob}
+        />
+      ) : null}
+      {isCreateWeapon ? (
+        <UserCreateWeaponForm
+          // createMob={createMob}
+          setIsCreateWeapon={setIsCreateWeapon}
+        />
+      ) : null}
+      {isCreateArmor ? (
+        <UserCreateArmorForm
+          // createMob={createMob}
+          setIsCreateArmor={setIsCreateArmor}
+        />
+      ) : null}
+      {isCreateSkill ? (
+        <UserCreateSkillForm
+          // createMob={createMob}
+          setIsCreateSkill={setIsCreateSkill}
+        />
+      ) : null}
+      {isCreateEffect ? (
+        <UserCreateEffectForm
+          // createMob={createMob}
+          setIsCreateEffect={setIsCreateEffect}
         />
       ) : null}
       <div className="grid grid-cols-3 w-fit m-auto">
@@ -22,6 +54,7 @@ export default function ConstractsPage() {
           onClick={() => setIsCreateMob(true)}
         >
           <svg
+            className="cursor-pointer "
             xmlns="http://www.w3.org/2000/svg"
             width="256"
             height="294"
@@ -36,8 +69,12 @@ export default function ConstractsPage() {
             <p className="text-white">Создать новго моба</p>
           </div>
         </div>
-        <div className="relative flex justify-center items-center">
+        <div
+          className="relative flex justify-center items-center"
+          onClick={() => setIsCreateWeapon(true)}
+        >
           <svg
+            className="cursor-pointer "
             xmlns="http://www.w3.org/2000/svg"
             width="256"
             height="294"
@@ -52,8 +89,12 @@ export default function ConstractsPage() {
             <p className="text-white">Создать новое оружие</p>
           </div>
         </div>
-        <div className="relative flex justify-center items-center">
+        <div
+          className="relative flex justify-center items-center"
+          onClick={() => setIsCreateArmor(true)}
+        >
           <svg
+            className="cursor-pointer "
             xmlns="http://www.w3.org/2000/svg"
             width="256"
             height="294"
@@ -68,8 +109,12 @@ export default function ConstractsPage() {
             <p className="text-white">Создать новую броню</p>
           </div>
         </div>
-        <div className="relative flex justify-center items-center left-[50%] top-[-24.5%]">
+        {/* <div
+          className="relative flex justify-center items-center left-[50%] top-[-24.5%]"
+          onClick={() => setIsCreateSkill(true)}
+        >
           <svg
+            className="cursor-pointer "
             xmlns="http://www.w3.org/2000/svg"
             width="256"
             height="294"
@@ -83,9 +128,13 @@ export default function ConstractsPage() {
           <div className="absolute">
             <p className="text-white">Создать новый эффект</p>
           </div>
-        </div>
-        <div className="relative flex justify-center items-center left-[50%] top-[-24.5%]">
+        </div> */}
+        <div
+          className="relative flex justify-center items-center left-[50%] top-[-24.5%]"
+          onClick={() => setIsCreateSkill(true)}
+        >
           <svg
+            className="cursor-pointer "
             xmlns="http://www.w3.org/2000/svg"
             width="256"
             height="294"

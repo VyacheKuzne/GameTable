@@ -4,8 +4,8 @@ import { AutorizationService } from './autorization.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
-import { YandexStrategy } from './yandex.strategy';
 import { CacheModule } from '@nestjs/cache-manager';
+import { YandexStrategy } from './strategies/yandex.strategy';
 @Module({
   imports: [
     CacheModule.register({
