@@ -106,7 +106,9 @@ function BlockPole() {
 
   useEffect(() => {
     async function fetchMobs() {
-      const response = await axios.get("http://localhost:3000/mobs");
+      const response = await axios.get("http://localhost:3000/mobs",{
+        withCredentials: true
+      });
       setAllMobs(response.data);
     }
     fetchMobs();

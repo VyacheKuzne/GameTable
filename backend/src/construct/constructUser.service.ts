@@ -9,11 +9,15 @@ import { CreateSkillDto } from './create-skill.dto';
 export class ConstructUserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createMob(createDto: CreateConstructUserDto) {
-    return this.prisma.mob.create({
-      data: createDto,
-    });
-  }
+async createMob(createDto: CreateConstructUserDto, user) {
+  return this.prisma.mob.create({
+    data: {
+      ...createDto,
+      creatorId: user.id,
+    },
+  });
+}
+
    async createWeapon(CreateWeaponDto: CreateWeaponDto) {
     return this.prisma.weapon.create({
       data: CreateWeaponDto,
@@ -29,18 +33,29 @@ export class ConstructUserService {
       data: CreateSkillDto,
     });
   }
-    async checkTariff(user: { id: number }) {
-    console.debug(user.id)
-    const Finduser = this.prisma.user.findUnique({
-     where: {id:user.id }
-    })
-    if(Finduser.tarif == null){
-      console.log(`у пользователя нет тарифа`)
-      return
-    }
-    else
-    {
-      return true
-    }
+async checkTariff(user: { id: number }) {
+  const foundUser = await this.prisma.user.findUnique({
+    where: { id: user.id },
+    include: { tarif: true },
+  });
+
+  if (!foundUser || !foundUser.tarif) {
+    return {
+      hasTariff: false,
+      currentMobCount: 0,
+      maxMobCount: 0,
+    };
   }
+
+  const mobCount = await this.prisma.mob.count({
+    where: { creatorId: user.id },
+  });
+
+  return {
+    hasTariff: true,
+    currentMobCount: mobCount,
+    maxMobCount: foundUser.tarif.availableMobs,
+  };
+}
+
 }

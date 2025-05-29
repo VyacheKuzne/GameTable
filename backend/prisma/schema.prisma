@@ -38,6 +38,8 @@ model mob {
   mobsOnTable mobsOnTable[]
   titul titul? @relation(fields: [titulid], references: [id])
   titulid Int? 
+  user User? @relation(fields: [creatorId], references: [id])
+  creatorId Int? 
   manevr Int
   createdAt  DateTime   @default(now())
   skill skill[] 
@@ -131,7 +133,7 @@ model User {
   createdTariffs    Tariff[]    @relation("CreaterUser") // Link to tariffs created by this user
   purchasedTariffs  purchasedTariffs[]
   mobsOnTable       mobsOnTable[]
-
+  mob mob[]
 
 }
 

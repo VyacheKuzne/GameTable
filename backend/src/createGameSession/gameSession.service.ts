@@ -41,18 +41,23 @@ export class GameSessionService {
       null
     }
   }
-  async mobfindMany() {
-    try {
-      return this.prisma.mob.findMany({
-        include: {
-          weapon: true,  // Включаем оружие, если оно существует
-          armor: true,   // Включаем броню, если она существует
-        },
-      })
-    } catch (error) {
-      null
-    }
+async mobfindMany(user) {
+  try {
+    return await this.prisma.mob.findMany({
+      where: {
+        creatorId: user.id,
+      },
+      include: {
+        weapon: true,
+        armor: true,
+      },
+    });
+  } catch (error) {
+    console.error("Ошибка при получении мобов:", error);
+    return null;
   }
+}
+
   async checkCreator(user: { id: number }, token) {
     console.debug(token)
     console.debug(user.id)

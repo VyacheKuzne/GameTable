@@ -17,7 +17,23 @@ async function main() {
       defense: 10,
     },
   });
-
+  await prisma.user.create({
+    data: {
+      name: "Тест",
+      secondname: "Пользователь",
+      email: "test@example.com",
+      phone: "+79991234567",
+      password: "hashed_password", // обязательно хешируй на практике
+      nickname: "testuser",
+      role: "user",
+      status: "active",
+      yandexId: null,
+      avatar: null,
+      createdSessionId: null,
+      idTariff: null,
+      idSession: null,
+    },
+  });
   // Создаем мобов
   const goblin = await prisma.mob.create({
     data: {
@@ -26,6 +42,7 @@ async function main() {
       speed: 10,
       weaponId: sword.id,
       armorId: shield.id,
+      creatorId: 1,
       manevr: 16,
     },
   });
@@ -35,6 +52,7 @@ async function main() {
       name: 'Орк',
       health: 50,
       speed: 7,
+      creatorId: 1,
       manevr: 13,
     },
   });

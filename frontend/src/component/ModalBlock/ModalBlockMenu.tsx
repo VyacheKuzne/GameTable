@@ -2,12 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './ModalBlockMenu.css';
+import Profile from '../../img/profile.svg'
 
 type Props = {
     user: {
         name: string,
         secondname: string,
         nickname: string,
+        avatar: string,
         email: string,
         phone: string
     }
@@ -49,7 +51,11 @@ export default function ModalBlockMenu({ user }: Props) {
         <div>
             <div className='flex text-white p-2'>
                 <div className='w-[41px] h-[41px] bg-slate-300 rounded-full flex items-center justify-center'>
-                    <p>img</p>
+                {
+                  user.avatar ? (<img className="rounded-full h-full w-full" src={`http://localhost:3000${user.avatar}`} alt="avatar" />)
+                  :
+                  (<img className="rounded-full h-full w-full" src={Profile} alt="avatar" />)
+                  }
                 </div>
                 <div className='mx-2'>
                     <p>{user.name}</p>

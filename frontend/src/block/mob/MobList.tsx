@@ -14,7 +14,9 @@ export default function MobList({
   const [mobsData, setMobsData] = React.useState<Mob[]>([]);
   async function getMobs() {
     const url = process.env.REACT_APP_API_BASE_URL;
-    const response = await axios.get(`${url}/moblist/mob`);
+    const response = await axios.get(`${url}/moblist/mob`, {
+      withCredentials:true
+    });
     await setMobsData(response.data);
   }
   useEffect(() => {

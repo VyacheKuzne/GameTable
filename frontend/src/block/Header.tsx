@@ -17,6 +17,7 @@ function Header() {
     email: "",
     phone: "",
     tarif: [],
+    avatar: ''
   });
 
   async function getUserData() {

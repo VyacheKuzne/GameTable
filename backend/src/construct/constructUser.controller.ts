@@ -10,8 +10,10 @@ export class ConstructUserController {
   constructor(private readonly constructUserService: ConstructUserService) {}
 
   @Post('createMob')
-  createMob(@Body() dto: CreateConstructUserDto) {
-    return this.constructUserService.createMob(dto);
+    @UseGuards(AuthGuard('jwt'))
+  createMob(@Body() dto: CreateConstructUserDto, @Req() req: any) {
+          const user = req.user as { id: number }
+    return this.constructUserService.createMob(dto, user);
   }
    @Post('createWeapon')
   createWeapon(@Body() CreateWeaponDto: CreateWeaponDto) {

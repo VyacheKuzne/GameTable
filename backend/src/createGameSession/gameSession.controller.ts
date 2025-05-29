@@ -17,8 +17,10 @@ export class GameSessiontController {
     return this.GameSessionService.getGamePage(token);
   }
   @Get('mobs')
-  async getAllMobs() {
-    return this.GameSessionService.mobfindMany(); // имя таблицы в Prisma
+  @UseGuards(AuthGuard('jwt'))
+  async getAllMobs(@Req() req: any) {
+    const user = req.user as { id: number }
+    return this.GameSessionService.mobfindMany(user); // имя таблицы в Prisma
   }
   @Get('checkCreator')
   @UseGuards(AuthGuard('jwt'))
