@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../block/Header";
 import { Mob } from "../block/game/types";
 import UserCreateMobForm from "../component/Form/UserCreateMobForm";
@@ -6,6 +6,11 @@ import UserCreateWeaponForm from "../component/Form/UserCreateWeaponForm";
 import UserCreateArmorForm from "../component/Form/UserCreateArmorForm";
 import UserCreateEffectForm from "../component/Form/UserCreateEffectForm";
 import UserCreateSkillForm from "../component/Form/UserCreateSkillForm";
+import ConstrSwordSvg from '../img/ConstrSword.svg';
+import ConstrPlusSvg from '../img/ConsrtPlus.svg';
+import ConstrArmordSvg from '../img/ConstrSheld.svg';
+import ConstrSkillSvg from '../img/ConstrSkill.svg';
+import axios from "axios";
 
 export default function ConstractsPage() {
   const [isCreateMob, setIsCreateMob] = useState<boolean>(false);
@@ -14,10 +19,20 @@ export default function ConstractsPage() {
   const [isCreateSkill, setIsCreateSkill] = useState<boolean>(false);
   const [isCreateEffect, setIsCreateEffect] = useState<boolean>(false);
 
-
+  useEffect(()=>{
+    const CheckTariff = async () =>{
+      const responce = await axios.get('')
+    }
+  })
   return (
     <div>
       <Header />
+      <div className="font-medium text-[24px] text-center w-1/3 m-auto">
+      <p>Добро пожаловать на страницу конструктора!</p>
+      <p>Здесь, вы можете сделать свои первые шаги и создать все необходиоме для своих игр!</p>
+      <p className="font-bold">У вас должен быть оормлен тариф чтобы вы могли создавать и сохранять!</p>
+      <p>Сейчас у вас</p>
+     </div>
       {isCreateMob ? (
         <UserCreateMobForm
           // createMob={createMob}
@@ -65,7 +80,8 @@ export default function ConstractsPage() {
               d="m128 0 127.306 73.5v147L128 294 .694 220.5v-147L128 0Z"
             />
           </svg>
-          <div className="absolute">
+          <div className="svgIconConstr">
+            <img src={ConstrPlusSvg} alt="ConstrPlusSvg" />
             <p className="text-white">Создать новго моба</p>
           </div>
         </div>
@@ -85,7 +101,8 @@ export default function ConstractsPage() {
               d="m128 0 127.306 73.5v147L128 294 .694 220.5v-147L128 0Z"
             />
           </svg>
-          <div className="absolute">
+          <div className="svgIconConstr">
+            <img src={ConstrSwordSvg} alt="ConstrSwordSvg" />
             <p className="text-white">Создать новое оружие</p>
           </div>
         </div>
@@ -105,7 +122,8 @@ export default function ConstractsPage() {
               d="m128 0 127.306 73.5v147L128 294 .694 220.5v-147L128 0Z"
             />
           </svg>
-          <div className="absolute">
+          <div className="svgIconConstr">
+            <img src={ConstrArmordSvg} alt="ConstrArmordSvg" />
             <p className="text-white">Создать новую броню</p>
           </div>
         </div>
@@ -145,7 +163,8 @@ export default function ConstractsPage() {
               d="m128 0 127.306 73.5v147L128 294 .694 220.5v-147L128 0Z"
             />
           </svg>
-          <div className="absolute">
+          <div className="svgIconConstr">
+            <img src={ConstrSkillSvg} alt="ConstrSkillSvg" />
             <p className="text-white">Создать новую способность</p>
           </div>
         </div>

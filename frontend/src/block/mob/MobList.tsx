@@ -25,7 +25,7 @@ export default function MobList({
     }
   }, []);
   return (
-    <div>
+    <div className="grid grid-cols-3">
       {mobsData.map((mob, index) => (
         <button
           className="border-custom-red border-2 transition-colors duration-100 p-2 hover:bg-custom-red hover:text-white"

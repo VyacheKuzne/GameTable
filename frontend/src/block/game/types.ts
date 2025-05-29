@@ -46,6 +46,7 @@ export interface Member {
     secondname: string;
     email: string;
     phone: string;
+    avatar:string
     password: string; // В большинстве случаев не стоит передавать это на клиент
     nickname: string;
     createdAt: string; // Date можно тоже, если не сериализовано

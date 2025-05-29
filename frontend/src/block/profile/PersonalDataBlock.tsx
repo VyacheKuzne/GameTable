@@ -13,10 +13,11 @@ type Props = {
     phone: string;
     tarif?: any;
   };
+  refreshUserData: ()=>void
 };
 
-export default function PersonalDataBlock({ user }: Props) {
-  const names = ["password", "nickname", "email", "fio", "phone"] as const;
+export default function PersonalDataBlock({ user, refreshUserData }: Props) {
+  const names = ["password", "nickname", "email", "phone"] as const;
   const [isUserWantEditData, setIsUserWantEditData] = useState(false);
 
   // Локальные состояния для редактирования
@@ -25,7 +26,6 @@ export default function PersonalDataBlock({ user }: Props) {
     nickname: user.nickname,
     email: user.email,
     phone: user.phone,
-    fio: `${user.name} ${user.secondname}`,
   });
   const [viewMessage, setIsMesasages] = useState<boolean>(false);
   const maskValue = (value: string): string => {
@@ -37,8 +37,8 @@ export default function PersonalDataBlock({ user }: Props) {
     switch (key) {
       case "password":
         return "******";
-      case "fio":
-        return `${user.name} ${user.secondname}`;
+      // case "fio":
+      //   return `${user.name} ${user.secondname}`;
       case "email":
       case "phone":
         return maskValue(user[key]);
@@ -68,6 +68,7 @@ export default function PersonalDataBlock({ user }: Props) {
       });
       if (responce.status === 200 || 201) {
         setIsMesasages(true);
+        refreshUserData()
       }
     } catch (error) {
       console.log(error);

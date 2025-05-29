@@ -476,6 +476,37 @@ export class setMobWS implements OnGatewayInit {
     })
     this.server.to(payload.idSession).emit('stopGameMessage');
   }
+    @SubscribeMessage('DeleteMob')
+  async deleteMob(
+    client: any,
+    payload: { idSession: string;tokenMob: string },
+  ) {
+    // console.debug('ownerId моба', payload.ownerId);
+    console.debug('idSession моба', payload.idSession);
+    console.debug('tokenMob моба', payload.tokenMob);
+    const editMob = await this.prisma.mobsOnTable.update({
+      where: { tokenMob: payload.tokenMob },
+      data: { status: 'dead' },
+    });
+    console.debug(editMob);
+    const AllMembers = await this.prisma.user.findMany({
+      where: { idSession: payload.idSession },
+    });
+    const turnhistoryMobs = await this.prisma.mobsOnTable.findMany({
+      where: { idSession: payload.idSession },
+    });
+    const allMobs = await this.prisma.mob.findMany();
+    const sessionMob = turnhistoryMobs.map((turnHistoryEntry) => {
+      const mob = allMobs.find((m) => m.id === turnHistoryEntry.idMob);
+      return {
+        ...turnHistoryEntry,
+        mob: mob || null,
+      };
+    });
+    // this.userSockets.set(userId, client.id);
+    this.server.to(payload.idSession).emit('sessionMob', sessionMob);
+    this.server.to(payload.idSession).emit('sessionMembers', AllMembers);
+  }
 }
 
 // where[]{

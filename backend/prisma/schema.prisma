@@ -124,6 +124,7 @@ model User {
   yandexId          String?   @unique
   tarif             Tariff?     @relation(fields: [idTariff], references: [idTariff])
   idTariff          Int?
+  avatar   String?
   createdSessionId  String?     @unique 
   gameHub           GameHub?    @relation("GameHubPlayers", fields: [idSession], references: [token]) 
   idSession         String?

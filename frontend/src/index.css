@@ -27,3 +27,7 @@
     @apply hover:bg-custom-btn-hover-green transition-colors duration-150;
   }
 }
+
+.svgIconConstr {
+  @apply absolute flex flex-col justify-center items-center
+}

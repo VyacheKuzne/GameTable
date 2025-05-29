@@ -35,4 +35,10 @@ export class LkService {
       data: updateData,
     });
   }
+   async saveAvatarPath(userId: number, filename: string) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { avatar: `/uploads/avatars/${filename}` },
+    });
+  }
 }

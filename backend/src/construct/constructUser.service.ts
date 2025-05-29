@@ -29,4 +29,18 @@ export class ConstructUserService {
       data: CreateSkillDto,
     });
   }
+    async checkTariff(user: { id: number }) {
+    console.debug(user.id)
+    const Finduser = this.prisma.user.findUnique({
+     where: {id:user.id }
+    })
+    if(Finduser.tarif == null){
+      console.log(`у пользователя нет тарифа`)
+      return
+    }
+    else
+    {
+      return true
+    }
+  }
 }

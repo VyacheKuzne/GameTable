@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import ProfileBlock from '../block/profile/ProfileBlock';
-import TimeProfileBlock from '../block/profile/TimeProfileBlock';
-import PersonalDataBlock from '../block/profile/PersonalDataBlock';
-import Header from '../block/Header';
-import axios from 'axios';
+import React, { useEffect, useRef, useState } from "react";
+import ProfileBlock from "../block/profile/ProfileBlock";
+import TimeProfileBlock from "../block/profile/TimeProfileBlock";
+import PersonalDataBlock from "../block/profile/PersonalDataBlock";
+import Header from "../block/Header";
+import axios from "axios";
 
 export default function ProfilePage() {
   const [user, setUser] = useState({
@@ -13,6 +13,7 @@ export default function ProfilePage() {
     email: "",
     phone: "",
     tarif: [],
+    avatar: ''
   });
 
   async function getUserData() {
@@ -31,16 +32,19 @@ export default function ProfilePage() {
   useEffect(() => {
     getUserData();
   }, []);
+  const refreshUserData = () => {
+    getUserData();
+  };
 
   return (
     <div>
       <Header />
       <div className="grid h-[547px] grid-cols-[700px_1fr] gap-[1%] m-auto py-[4.5%] px-[5.7%]">
         <div className="flex flex-col w-full">
-          <ProfileBlock user={user} />
-          <TimeProfileBlock user={user}/>
+          <ProfileBlock user={user} refreshUserData={refreshUserData}/>
+          <TimeProfileBlock user={user} />
         </div>
-        <PersonalDataBlock  user={user} />
+        <PersonalDataBlock user={user} refreshUserData={refreshUserData}/>
       </div>
     </div>
   );

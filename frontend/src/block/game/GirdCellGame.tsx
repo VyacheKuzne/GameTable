@@ -105,6 +105,8 @@ export default function GirdCellGame({
     >
       {renderedMob && (
         <MobCell
+          isModAtack={isModAtack}
+          setIsModAtack={setIsModAtack}
           setIsReplaceMob={setIsReplaceMob}
           setReplaceMob={setReplaceMob}
           renderedMob={renderedMob}
