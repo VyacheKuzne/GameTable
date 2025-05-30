@@ -97,13 +97,13 @@ function Header() {
           img={plus}
           size={size}
         />
-        <CursCard
+        {/* <CursCard
           onclick={function2}
           mainText="Посмотреть историю игр"
           subText="Посмотрите историю своих прошлых игра"
           img={history}
           size={size}
-        />
+        /> */}
         <CursCard
           onclick={function3}
           mainText="Посмотреть акутальные тарифы"

@@ -79,14 +79,16 @@ export class AutorizationController {
 
   @Post('/autorization')
   async autorizationUser(@Body() user: User, @Response() res: ExpressResponse) {
-    const { token } = await this.AutorizationService.autorizationUser(user);
+    const { token, findUser} = await this.AutorizationService.autorizationUser(user);
     res.cookie('access_token', token, {
       httpOnly: false,
       secure: false,
       maxAge: 60 * 60 * 1000, // 1 час
       path: '/',
     });
-    return res.send({ user });
+  const { password, ...userWithoutPassword } = findUser; // чтобы не возвращать пароль
+
+  return res.send({ user: userWithoutPassword });
   }
 
 

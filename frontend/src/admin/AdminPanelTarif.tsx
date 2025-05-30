@@ -11,15 +11,17 @@ export default function AdminPanelTarif() {
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const [isCreate, setIsCreate] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'delete'>('all');
-  
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "delete">(
+    "all"
+  );
+
   const tableHeadersWithKeys = [
     { label: "ID", key: "idTariff" },
-    { label: "ИМЯ", key: "name" },
+    { label: "НАЗВАНИЕ", key: "name" },
     { label: "КОЛИЧЕСТВО ВОЖМОЖНЫХ МОБОВ", key: "availableMobs" },
-    { label: "ИГРОВОЕ ВРЕМЯ", key: "availableTime" },
-    { label: "ЦЕНА", key: "price" },
+    { label: "ИГРОВОЕ ВРЕМЯ, ЧАСЫ", key: "availableTime" },
+    { label: "ЦЕНА, РУБ", key: "price" },
     { label: "СТАТУС", key: "status" },
     { label: "ДАТА СОЗДАНИЯ", key: "createdAt" },
   ];
@@ -27,7 +29,7 @@ export default function AdminPanelTarif() {
   type Tariff = {
     idTariff: number;
     name: string;
-    status: 'active' | 'delete';
+    status: "active" | "delete";
     availableMobs: number;
     availableTime: number;
     price: number;
@@ -37,59 +39,68 @@ export default function AdminPanelTarif() {
   const [selectedTariff, setSelectedUser] = useState<Tariff | null>(null);
   const [allTariff, setAllTariffs] = useState<Tariff[]>([]);
   const [filteredTariffs, setFilteredTariffs] = useState<Tariff[]>([]);
-
+  const loadTariffs = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/find/tariffs");
+      setAllTariffs(response.data);
+    } catch (error) {
+      console.error("Ошибка загрузки тарифов:", error);
+    }
+  };
   // Загрузка тарифов
   useEffect(() => {
-    const loadTariffs = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/find/tariffs");
-        setAllTariffs(response.data);
-      } catch (error) {
-        console.error("Ошибка загрузки тарифов:", error);
-      }
-    };
     loadTariffs();
   }, []);
 
   // Фильтрация, сортировка и поиск
   useEffect(() => {
     let result = [...allTariff];
-    
+
     // Фильтрация по статусу
-    if (statusFilter !== 'all') {
-      result = result.filter(tariff => tariff.status === statusFilter);
+    if (statusFilter !== "all") {
+      result = result.filter((tariff) => tariff.status === statusFilter);
     }
-    
+
     // Фильтрация по поисковому запросу
     if (searchTerm.trim() !== "") {
-      result = result.filter(tariff =>
+      result = result.filter((tariff) =>
         tariff.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-    
+
     // Сортировка
     result.sort((a, b) => {
-      if (sortOrder === 'asc') {
+      if (sortOrder === "asc") {
         return a.name.localeCompare(b.name);
       } else {
         return b.name.localeCompare(a.name);
       }
     });
-    
+
     setFilteredTariffs(result);
   }, [searchTerm, allTariff, sortOrder, statusFilter]);
 
   const handleSortToggle = () => {
-    setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
+    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
   };
 
-  const handleStatusFilterChange = (filter: 'all' | 'active' | 'delete') => {
+  const handleStatusFilterChange = (filter: "all" | "active" | "delete") => {
     setStatusFilter(filter);
   };
-
+const handleRestore = async (tariff: Tariff) => {
+  try {
+    await axios.patch(`http://localhost:3000/tariffs/${tariff.idTariff}/restore`);
+    alert('Тариф восстановлен');
+    // Обнови список тарифов
+    loadTariffs();
+  } catch (error) {
+    console.error('Ошибка при восстановлении:', error);
+  }
+};
   return (
     <div>
       <AdminTariffForm
+        loadTariffs={loadTariffs}
         tableHeadersWithKeys={tableHeadersWithKeys}
         isDelete={isDelete}
         setIsDelete={setIsDelete}
@@ -100,7 +111,7 @@ export default function AdminPanelTarif() {
         setIsCreate={setIsCreate}
       />
       <AminModalBlockMenu />
-      
+
       {/* Фильтры и поиск */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 px-4 gap-4">
         <div className="relative w-full md:w-[400px]">
@@ -120,60 +131,58 @@ export default function AdminPanelTarif() {
             </button>
           )}
         </div>
-        
+
         <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
           <div className="flex gap-2">
             <button
-              onClick={() => handleStatusFilterChange('all')}
+              onClick={() => handleStatusFilterChange("all")}
               className={`px-4 py-2 rounded-[10px] ${
-                statusFilter === 'all' 
-                  ? 'bg-custom-blue text-white' 
-                  : 'bg-gray-200 hover:bg-gray-300'
+                statusFilter === "all"
+                  ? "bg-custom-blue text-white"
+                  : "bg-gray-200 hover:bg-gray-300"
               }`}
             >
               Все
             </button>
             <button
-              onClick={() => handleStatusFilterChange('active')}
+              onClick={() => handleStatusFilterChange("active")}
               className={`px-4 py-2 rounded-[10px] ${
-                statusFilter === 'active' 
-                  ? 'bg-green-500 text-white' 
-                  : 'bg-gray-200 hover:bg-gray-300'
+                statusFilter === "active"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-200 hover:bg-gray-300"
               }`}
             >
               Активные
             </button>
             <button
-              onClick={() => handleStatusFilterChange('delete')}
+              onClick={() => handleStatusFilterChange("delete")}
               className={`px-4 py-2 rounded-[10px] ${
-                statusFilter === 'delete' 
-                  ? 'bg-red-500 text-white' 
-                  : 'bg-gray-200 hover:bg-gray-300'
+                statusFilter === "delete"
+                  ? "bg-red-500 text-white"
+                  : "bg-gray-200 hover:bg-gray-300"
               }`}
             >
               Удалённые
             </button>
           </div>
-          
+
           <button
             onClick={handleSortToggle}
             className="bg-custom-blue hover-effect-btn-blue text-white px-4 py-2 rounded-[10px] flex items-center"
           >
-            Сортировка: {sortOrder === 'asc' ? 'А → Я' : 'Я → А'}
-            <span className="ml-2">
-              {sortOrder === 'asc' ? '↑' : '↓'}
-            </span>
+            Сортировка: {sortOrder === "asc" ? "А → Я" : "Я → А"}
+            <span className="ml-2">{sortOrder === "asc" ? "↑" : "↓"}</span>
           </button>
         </div>
       </div>
-      <DownloadTariffReportButton/>
+      <DownloadTariffReportButton />
       <button
         className="bg-custom-red w-full md:w-[367px] items-center h-[63px] hover-effect-btn-red text-white cursor-pointer rounded-[10px] flex align-center justify-center mb-6 mx-auto"
         onClick={() => setIsCreate(!isCreate)}
       >
         Создать новый тариф
       </button>
-      
+
       <table className="text-center top-[3%] left-[calc(40%-280px)] w-full">
         <thead>
           <tr className="bg-white h-[69px] rounded-tr-[20px] rounded-tl-[20px]">
@@ -196,24 +205,35 @@ export default function AdminPanelTarif() {
                 return <td key={idx}>{value ?? "Нет данных"}</td>;
               })}
               <td>
-                <button
-                  onClick={() => {
-                    setIsEdit(!isEdit);
-                    setSelectedUser(tariff);
-                  }}
-                  className="bg-custom-green hover-effect-btn-green w-[25px] h-[25px] rounded-[4px] p-[4px] mx-[10%]"
-                >
-                  <img src={Edit} alt="Edit" className="w-full" />
-                </button>
-                <button
-                  onClick={() => {
-                    setIsDelete(!isDelete);
-                    setSelectedUser(tariff);
-                  }}
-                  className="bg-custom-red w-[25px] h-[25px] rounded-[4px] p-[4px] mx-[10%]"
-                >
-                  <img src={Bascet} alt="Basket" className="w-full" />
-                </button>
+                {tariff.status === "delete" ? (
+                  <button
+                    onClick={() => handleRestore(tariff)} 
+                    className="bg-yellow-500 hover:bg-yellow-600 w-fit p-2 rounded-[4px]  mx-[10%] text-white text-sm"
+                  >
+                    Восстановить
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        setIsEdit(!isEdit);
+                        setSelectedUser(tariff);
+                      }}
+                      className="bg-custom-green hover-effect-btn-green w-[25px] h-[25px] rounded-[4px] p-[4px] mx-[10%]"
+                    >
+                      <img src={Edit} alt="Edit" className="w-full" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsDelete(!isDelete);
+                        setSelectedUser(tariff);
+                      }}
+                      className="bg-custom-red w-[25px] h-[25px] rounded-[4px] p-[4px] mx-[10%]"
+                    >
+                      <img src={Bascet} alt="Basket" className="w-full" />
+                    </button>
+                  </>
+                )}
               </td>
             </tr>
           ))}

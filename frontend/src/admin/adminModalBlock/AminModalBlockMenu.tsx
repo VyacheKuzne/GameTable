@@ -22,7 +22,7 @@ export default function AminModalBlockMenu(
       text: "тарифы",
     },
     exist: {
-      url: `${admin}/exist`,
+      url: `http://localhost:3001/aftorization`,
       text: "выход",
     },
   };

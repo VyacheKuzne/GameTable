@@ -11,6 +11,9 @@ import ConstrPlusSvg from "../img/ConsrtPlus.svg";
 import ConstrArmordSvg from "../img/ConstrSheld.svg";
 import ConstrSkillSvg from "../img/ConstrSkill.svg";
 import axios from "axios";
+import { Weapon } from "../block/game/types";
+import { Armor } from "../block/game/types";
+import { Skill } from "../block/game/types";
 
 export default function ConstractsPage() {
   const [isCreateMob, setIsCreateMob] = useState<boolean>(false);
@@ -23,6 +26,9 @@ export default function ConstractsPage() {
     currentMobCount: number;
     maxMobCount: number;
   }>(null);
+    const [armorItems, setArmorItems] = useState<Armor[]>([]);
+  const [weaponItems, setWeaponItems] = useState<Weapon[]>([]);
+  const [skillItems, setSkillItems] = useState<Skill[]>([]);
   useEffect(() => {
     const checkTariff = async () => {
       try {
@@ -40,6 +46,53 @@ export default function ConstractsPage() {
 
     checkTariff();
   }, []);
+    // Получаем броню, созданную пользователем
+  useEffect(() => {
+    const fetchArmor = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/construct-user/armor`, {
+          withCredentials: true
+        });
+        setArmorItems(response.data);
+      } catch (error) {
+        console.error("Ошибка при получении брони:", error);
+      }
+    };
+    
+    fetchArmor();
+  }, []); // Зависимость от userId, чтобы обновить данные, если id пользователя изменится
+
+  // Получаем оружие, созданное пользователем
+  useEffect(() => {
+    const fetchWeapon = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/construct-user/weapon`, {
+          withCredentials: true
+        });
+        setWeaponItems(response.data);
+      } catch (error) {
+        console.error("Ошибка при получении оружия:", error);
+      }
+    };
+    
+    fetchWeapon();
+  }, []); // Зависимость от userId
+
+  // Получаем скиллы, созданные пользователем
+  // useEffect(() => {
+  //   const fetchSkills = async () => {
+  //     try {
+  //       const response = await axios.get(`http://localhost:3000/skill/user`, {
+  //         withCredentials: true
+  //       });
+  //       setSkillItems(response.data);
+  //     } catch (error) {
+  //       console.error("Ошибка при получении скиллов:", error);
+  //     }
+  //   };
+    
+  //   fetchSkills();
+  // }, []);
   return (
     <div>
       <Header />
@@ -65,6 +118,8 @@ export default function ConstractsPage() {
         <UserCreateMobForm
           // createMob={createMob}
           setIsCreateMob={setIsCreateMob}
+          armorItems={armorItems}
+          weaponItems={weaponItems}
         />
       ) : null}
       {isCreateWeapon ? (
@@ -91,128 +146,73 @@ export default function ConstractsPage() {
           setIsCreateEffect={setIsCreateEffect}
         />
       ) : null}
-      <div className="grid grid-cols-3 w-fit m-auto">
-        <div
-          className={`relative flex justify-center items-center ${
-            tariffInfo && tariffInfo.currentMobCount >= tariffInfo.maxMobCount
-              ? "opacity-50 cursor-not-allowed"
-              : "cursor-pointer"
-          }`}
-          onClick={() => {
-            if (
-              tariffInfo &&
-              tariffInfo.currentMobCount < tariffInfo.maxMobCount
-            ) {
-              setIsCreateMob(true);
-            }
-          }}
+ <div className="grid grid-cols-3 w-fit m-auto">
+  {[
+    {
+      onClick: () => setIsCreateMob(true),
+      imgSrc: ConstrPlusSvg,
+      text:
+        tariffInfo && tariffInfo.currentMobCount >= tariffInfo.maxMobCount
+          ? "Лимит мобов исчерпан"
+          : "Создать нового моба",
+    },
+    {
+      onClick: () => setIsCreateWeapon(true),
+      imgSrc: ConstrSwordSvg,
+      text: "Создать новое оружие",
+    },
+    {
+      onClick: () => setIsCreateArmor(true),
+      imgSrc: ConstrArmordSvg,
+      text: "Создать новую броню",
+    },
+    // {
+    //   onClick: () => setIsCreateSkill(true),
+    //   imgSrc: ConstrSkillSvg,
+    //   text: "Создать новую способность",
+    //   className: "left-[50%] top-[-24.5%]",
+    // },
+  ].map(({ onClick, imgSrc, text = "" }, idx) => {
+    const isDisabled =
+      tariffInfo && tariffInfo.currentMobCount >= tariffInfo.maxMobCount;
+
+    return (
+      <div
+        key={idx}
+        className={`relative flex justify-center items-center ${
+          isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+        }`}
+        onClick={() => {
+          if (!isDisabled) onClick();
+        }}
+      >
+        <svg
+          className=""
+          xmlns="http://www.w3.org/2000/svg"
+          width="256"
+          height="294"
+          fill="none"
         >
-          <svg
-            className=""
-            xmlns="http://www.w3.org/2000/svg"
-            width="256"
-            height="294"
-            fill="none"
-          >
-            <path
-              fill="#313131"
-              d="m128 0 127.306 73.5v147L128 294 .694 220.5v-147L128 0Z"
-            />
-          </svg>
-          <div className="svgIconConstr">
-            <img src={ConstrPlusSvg} alt="ConstrPlusSvg" />
-            <p className="text-white">
-              {tariffInfo &&
-              tariffInfo.currentMobCount >= tariffInfo.maxMobCount
-                ? "Лимит мобов исчерпан"
-                : "Создать нового моба"}
-            </p>
-          </div>
-        </div>
-        <div
-          className="relative flex justify-center items-center"
-          onClick={() => setIsCreateWeapon(true)}
-        >
-          <svg
-            className="cursor-pointer "
-            xmlns="http://www.w3.org/2000/svg"
-            width="256"
-            height="294"
-            fill="none"
-          >
-            <path
-              fill="#313131"
-              d="m128 0 127.306 73.5v147L128 294 .694 220.5v-147L128 0Z"
-            />
-          </svg>
-          <div className="svgIconConstr">
-            <img src={ConstrSwordSvg} alt="ConstrSwordSvg" />
-            <p className="text-white">Создать новое оружие</p>
-          </div>
-        </div>
-        <div
-          className="relative flex justify-center items-center"
-          onClick={() => setIsCreateArmor(true)}
-        >
-          <svg
-            className="cursor-pointer "
-            xmlns="http://www.w3.org/2000/svg"
-            width="256"
-            height="294"
-            fill="none"
-          >
-            <path
-              fill="#313131"
-              d="m128 0 127.306 73.5v147L128 294 .694 220.5v-147L128 0Z"
-            />
-          </svg>
-          <div className="svgIconConstr">
-            <img src={ConstrArmordSvg} alt="ConstrArmordSvg" />
-            <p className="text-white">Создать новую броню</p>
-          </div>
-        </div>
-        {/* <div
-          className="relative flex justify-center items-center left-[50%] top-[-24.5%]"
-          onClick={() => setIsCreateSkill(true)}
-        >
-          <svg
-            className="cursor-pointer "
-            xmlns="http://www.w3.org/2000/svg"
-            width="256"
-            height="294"
-            fill="none"
-          >
-            <path
-              fill="#313131"
-              d="m128 0 127.306 73.5v147L128 294 .694 220.5v-147L128 0Z"
-            />
-          </svg>
-          <div className="absolute">
-            <p className="text-white">Создать новый эффект</p>
-          </div>
-        </div> */}
-        <div
-          className="relative flex justify-center items-center left-[50%] top-[-24.5%]"
-          onClick={() => setIsCreateSkill(true)}
-        >
-          <svg
-            className="cursor-pointer "
-            xmlns="http://www.w3.org/2000/svg"
-            width="256"
-            height="294"
-            fill="none"
-          >
-            <path
-              fill="#313131"
-              d="m128 0 127.306 73.5v147L128 294 .694 220.5v-147L128 0Z"
-            />
-          </svg>
-          <div className="svgIconConstr">
-            <img src={ConstrSkillSvg} alt="ConstrSkillSvg" />
-            <p className="text-white">Создать новую способность</p>
-          </div>
+          <path
+            fill="#313131"
+            d="m128 0 127.306 73.5v147L128 294 .694 220.5v-147L128 0Z"
+          />
+        </svg>
+        <div className="svgIconConstr">
+          <img src={imgSrc} alt={imgSrc} />
+          <p className="text-white">
+            {idx === 0
+              ? text
+              : isDisabled
+              ? "Лимит мобов исчерпан"
+              : text}
+          </p>
         </div>
       </div>
+    );
+  })}
+</div>
+
     </div>
   );
 }

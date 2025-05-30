@@ -28,19 +28,23 @@ export default function TarifPage() {
     allTariff();
   }, []);
 
-  const userBuyTariff = async function () {
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/buyTarif",
-        buyTariff,
-        {
-          withCredentials: true,
-        }
-      );
-    } catch (error) {
-      console.log("не получилось получить данные про пользователей", error);
-    }
-  };
+ const userBuyTariff = async function () {
+  try {
+    const response = await axios.post(
+      "http://localhost:3000/buyTarif",
+      buyTariff,
+      {
+        withCredentials: true,
+      }
+    );
+
+    // Перезагружаем страницу после успешного запроса
+    window.location.reload();
+  } catch (error) {
+    console.log("Не получилось получить данные про пользователей", error);
+  }
+};
+
   return (
     <div>
       {isBuyTariff ? (
@@ -80,14 +84,16 @@ export default function TarifPage() {
       ) : null}
       <Header />
       <div className="grid grid-cols-3 p-[7%]">
-        {allTariff.map((tariff, index) => (
-          <TarifCard
-            setBuyTariff={setBuyTariff}
-            setIsBuyTariff={setIsBuyTariff}
-            key={index}
-            tariff={tariff}
-          />
-        ))}
+        {allTariff
+          .filter((tariff) => tariff.status !== "delete") // Фильтруем тарифы с состоянием 'delete'
+          .map((tariff, index) => (
+            <TarifCard
+              setBuyTariff={setBuyTariff}
+              setIsBuyTariff={setIsBuyTariff}
+              key={index}
+              tariff={tariff}
+            />
+          ))}
       </div>
     </div>
   );

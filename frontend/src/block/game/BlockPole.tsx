@@ -151,6 +151,8 @@ function BlockPole() {
       idSession: token,
     });
   }
+      const token = window.location.pathname.split("/").pop();
+
   function roundEnd() {
     setIsGameOn(true);
     console.log("Завершаем рануд");
@@ -219,6 +221,7 @@ function BlockPole() {
           })}
         </div>
         <div>
+          <p>Ключ сессии: {`${token}`}</p>
           {/*debug снизу костыль для проверки стейтов*/}
           {isReplaceMob ? (
             <p>Перемещаем моба isReplaceMob</p>
@@ -246,7 +249,9 @@ function BlockPole() {
             закончить расстановку
           </button>
           <br />
-          <button
+          {isCreator ? (
+            <>
+             <button
             className="p-2 m-2 bg-custom-red text-white"
             onClick={roundEnd}
           >
@@ -258,6 +263,9 @@ function BlockPole() {
           >
             закончить эту партию
           </button>
+            </>
+          ) : null}
+         
           {/*конец костыль для проверки стейтов */}
           <TurnList placedMobs={placedMobs} />
           {isCreator ? (

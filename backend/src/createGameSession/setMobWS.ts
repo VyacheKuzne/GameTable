@@ -451,7 +451,113 @@ export class setMobWS implements OnGatewayInit {
     this.server.to(payload.idSession).emit('sessionMembers', AllMembers);
   }
   @SubscribeMessage('GameStop')
-  async stopGame(
+async stopGame(
+  client: any,
+  payload: { idSession: string; },
+) {
+  try {
+    console.log('Заканчиваем игру!');
+
+    // Обнуляем idSession у всех пользователей, чье idSession соответствует payload.idSession
+    await this.prisma.user.updateMany({
+      where: { idSession: payload.idSession },
+      data: {
+        idSession: null
+      }
+    });
+
+    // Обнуляем createdSessionId у пользователя, создавшего игру
+    await this.prisma.user.update({
+      where: { createdSessionId: payload.idSession },
+      data: {
+        createdSessionId: null
+      }
+    });
+
+    // Находим игру по token (idSession)
+    const game = await this.prisma.gameHub.findFirstOrThrow({
+      where: { token: payload.idSession }
+    });
+    console.debug('game object:', game);
+
+    const createdAt = new Date(game.createdAt);  
+    const updatedAt = new Date(game.updateAT); 
+
+    // Проверяем, что даты корректны
+    if (isNaN(createdAt.getTime()) || isNaN(updatedAt.getTime())) {
+      console.error('Ошибка: Неверные данные времени', createdAt, updatedAt);
+      return;
+    }
+
+    // Разница во времени в миллисекундах
+    const timeDifferenceInMillis = updatedAt.getTime() - createdAt.getTime();
+    
+    // Переводим разницу в часы (миллисекунды -> часы)
+    const timeDifferenceInHours = timeDifferenceInMillis / (1000 * 60 * 60); // 1000 ms * 60 sec * 60 min = 1 hour
+
+    // Округляем до 1 знака после запятой
+    const roundedTimeDifferenceInHours = Math.round(timeDifferenceInHours * 10) / 10;
+
+    console.debug('Разница во времени (в часах, с округлением):', roundedTimeDifferenceInHours);
+
+    // Получаем пользователя и его оставшееся время
+    const user = await this.prisma.user.findUnique({
+      where: { createdSessionId: payload.idSession },
+      include: {
+        leftTime: true
+      }
+    });
+
+    if (!user || !user.leftTime) {
+      console.error('Пользователь не найден или данные leftTime отсутствуют');
+      return;
+    }
+
+    // Получаем оставшееся время в секундах
+    let remainingTimeInSeconds = user.leftTime.time * 3600; // Преобразуем оставшееся время в секунды
+
+    // Вычитаем разницу времени (в секундах)
+    const timeToSubtractInSeconds = roundedTimeDifferenceInHours * 3600;
+
+    // Новое оставшееся время
+    let newRemainingTimeInSeconds = remainingTimeInSeconds - timeToSubtractInSeconds;
+
+    // Если оставшееся время становится отрицательным, устанавливаем его в 0
+    if (newRemainingTimeInSeconds < 0) {
+      console.warn('Оставшееся время не может быть отрицательным, установка в 0');
+      newRemainingTimeInSeconds = 0;
+    }
+
+    // Обновляем оставшееся время в базе данных (в секундах)
+    const updatedLeftTime = await this.prisma.leftTime.update({
+      where: { id: user.leftTime.id },
+      data: {
+        time: newRemainingTimeInSeconds / 3600, // Преобразуем обратно в часы
+      }
+    });
+
+    console.debug('Обновленное время:', updatedLeftTime);
+
+    // Обновляем статус игры в gameHub
+    await this.prisma.gameHub.update({
+      where: { token: payload.idSession },
+      data: {
+        status: 'end',
+      }
+    });
+
+    // Отправляем сообщение о завершении игры
+    this.server.to(payload.idSession).emit('stopGameMessage');
+
+    console.log('Завершение игры успешно!');
+
+  } catch (error) {
+    console.error('Ошибка в процессе завершения игры:', error);
+  }
+}
+
+  @SubscribeMessage('GameStop')
+  async sdf(
     client: any,
     payload: {
       idSession: string;

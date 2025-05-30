@@ -16,16 +16,22 @@ export class ConstructUserController {
     return this.constructUserService.createMob(dto, user);
   }
    @Post('createWeapon')
-  createWeapon(@Body() CreateWeaponDto: CreateWeaponDto) {
-    return this.constructUserService.createWeapon(CreateWeaponDto);
+    @UseGuards(AuthGuard('jwt'))
+  createWeapon(@Body() CreateWeaponDto: CreateWeaponDto, @Req() req: any) {
+    const user = req.user as { id: number }
+    return this.constructUserService.createWeapon(CreateWeaponDto, user);
   }
    @Post('createArmor')
-  createArmor(@Body() CreateArmorDto: CreateArmorDto) {
-    return this.constructUserService.createArmor(CreateArmorDto);
+    @UseGuards(AuthGuard('jwt'))
+  createArmor(@Body() CreateArmorDto: CreateArmorDto, @Req() req: any) {
+    const user = req.user as { id: number }
+    return this.constructUserService.createArmor(CreateArmorDto, user);
   }
    @Post('createSkill')
-  createSkill(@Body() CreateSkillDto: CreateSkillDto) {
-    return this.constructUserService.createSkill(CreateSkillDto);
+    @UseGuards(AuthGuard('jwt'))
+  createSkill(@Body() CreateSkillDto: CreateSkillDto, @Req() req: any) {
+    const user = req.user as { id: number }
+    return this.constructUserService.createSkill(CreateSkillDto, user);
   }
     @Get('checkTariff')
     @UseGuards(AuthGuard('jwt'))
@@ -33,4 +39,23 @@ export class ConstructUserController {
       const user = req.user as { id: number }
       return this.constructUserService.checkTariff(user); // имя таблицы в Prisma
     }
+
+    @Get('armor')
+     @UseGuards(AuthGuard('jwt'))
+       async getArmor(@Req() req: any) {
+      const user = req.user as { id: number }
+      return this.constructUserService.getArmor(user); // имя таблицы в Prisma
+    }
+     @Get('weapon')
+     @UseGuards(AuthGuard('jwt'))
+       async getWeapon(@Req() req: any) {
+      const user = req.user as { id: number }
+      return this.constructUserService.getWeapon(user); // имя таблицы в Prisma
+    }
+    //  @Get('skill/user')
+    //  @UseGuards(AuthGuard('jwt'))
+    //    async getSkill(@Req() req: any) {
+    //   const user = req.user as { id: number }
+    //   return this.constructUserService.getSkill(user); // имя таблицы в Prisma
+    // }
 }

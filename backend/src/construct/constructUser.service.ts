@@ -18,19 +18,28 @@ async createMob(createDto: CreateConstructUserDto, user) {
   });
 }
 
-   async createWeapon(CreateWeaponDto: CreateWeaponDto) {
+   async createWeapon(CreateWeaponDto: CreateWeaponDto, user: { id: number }) {
     return this.prisma.weapon.create({
-      data: CreateWeaponDto,
+      data: {
+        ...CreateWeaponDto,
+        creatorId: user.id
+      },
     });
   }
-   async createArmor(CreateArmorDto: CreateArmorDto) {
+   async createArmor(CreateArmorDto: CreateArmorDto, user: { id: number }) {
     return this.prisma.armor.create({
-      data: CreateArmorDto,
+  data: {
+        ...CreateArmorDto,
+        creatorId: user.id
+      },
     });
   }
-     async createSkill(CreateSkillDto: CreateSkillDto) {
+     async createSkill(CreateSkillDto: CreateSkillDto,user: { id: number } ) {
       return this.prisma.skill.create({
-      data: CreateSkillDto,
+   data: {
+        ...CreateSkillDto,
+        creatorId: user.id
+      },
     });
   }
 async checkTariff(user: { id: number }) {
@@ -58,4 +67,16 @@ async checkTariff(user: { id: number }) {
   };
 }
 
+  async getArmor(user: { id: number }) {
+    return this.prisma.armor.findMany({
+      where: { creatorId: user.id }, // Находим все броню, созданные данным пользователем
+    });
+  }
+
+  // Метод для получения оружия пользователя
+  async getWeapon(user: { id: number }) {
+    return this.prisma.weapon.findMany({
+      where: { creatorId: user.id }, // Находим все оружие, созданные данным пользователем
+    });
+  }
 }

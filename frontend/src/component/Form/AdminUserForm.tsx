@@ -9,13 +9,13 @@ type TableHeader = {
 type User = {
   id: number;
   name: string;
-  secondname: string
+  secondname: string;
   email: string;
   phone: string;
   password: string;
   status?: string;
   tariff?: string;
-  nickname: string
+  nickname: string;
 };
 
 type Props = {
@@ -27,6 +27,7 @@ type Props = {
   selectedUser?: User | null;
   isCreate?: boolean;
   setIsCreate?: React.Dispatch<React.SetStateAction<boolean>>;
+  fetchUsers: () => void;
 };
 
 export default function AdminUserForm({
@@ -38,6 +39,7 @@ export default function AdminUserForm({
   isEdit,
   isCreate,
   selectedUser,
+  fetchUsers,
 }: Props) {
   const [userData, setUserData] = useState<User | null>(null);
   useEffect(() => {
@@ -68,6 +70,8 @@ export default function AdminUserForm({
           //   withCredentials: true,
         }
       );
+      fetchUsers();
+
       //   document.cookie = `access_token=${response.data.token}; path=/; HttpOnly`;
       //   console.log(document.cookie);
 
@@ -77,26 +81,25 @@ export default function AdminUserForm({
     }
   };
   // console.log(selectedUser);
-  useEffect (()=>{
-    console.log(isCreate)
-  },[isCreate])
+  useEffect(() => {
+    console.log(isCreate);
+  }, [isCreate]);
 
-  function closeModalBlock () {
+  function closeModalBlock() {
     setIsEdit(false);
     setIsDelete(false);
     setIsCreate?.(false);
   }
 
-  async function deleteUser (){
+  async function deleteUser() {
     try {
       const responce = await axios.patch(
         "http://localhost:3000/deleteUser",
         userData
-      )
-      console.log(responce.status)
-    } catch (error) {
-      
-    }
+      );
+      console.log(responce.status);
+    } catch (error) {}
+    fetchUsers();
   }
   return (
     <div
@@ -186,15 +189,24 @@ export default function AdminUserForm({
           </p>
           <img src={EditLine} alt="EditLine" />
           <p className="text-center text-white font-bold my-[3%]">
-            Вы действительно хотите удалить пользователя {selectedUser?.name} {selectedUser?.secondname} ?
+            Вы действительно хотите удалить пользователя {selectedUser?.name}{" "}
+            {selectedUser?.secondname} ?
           </p>
         </div>
         <div>
           <div className="flex justify-around">
-            <button  onClick = {() => deleteUser()} className="w-[50px] h-[50px] bg-custom-red hover-effect-btn-red rounded-[10px]">
+            <button
+              onClick={() => deleteUser()}
+              className="w-[50px] h-[50px] bg-custom-red hover-effect-btn-red rounded-[10px]"
+            >
               <p className="text-white font-bold">ДА</p>
             </button>
-            <button onClick={()=>{setIsDelete(!isDelete)}} className="w-[50px] h-[50px] bg-custom-green  hover-effect-btn-green rounded-[10px]">
+            <button
+              onClick={() => {
+                setIsDelete(!isDelete);
+              }}
+              className="w-[50px] h-[50px] bg-custom-green  hover-effect-btn-green rounded-[10px]"
+            >
               <p className="text-white font-bold">НЕТ</p>
             </button>
           </div>
@@ -203,4 +215,3 @@ export default function AdminUserForm({
     </div>
   );
 }
-

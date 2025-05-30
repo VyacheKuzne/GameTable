@@ -13,7 +13,8 @@ model Armor {
   defense Int
   mob     mob[]
   createdAt  DateTime   @default(now())
-
+  user User? @relation(fields: [creatorId], references: [id])
+  creatorId Int? 
 }
 
 model Weapon {
@@ -22,7 +23,17 @@ model Weapon {
   damage Int
   mob    mob[]
   createdAt  DateTime   @default(now())
+  user User? @relation(fields: [creatorId], references: [id])
+  creatorId Int? 
+}
 
+model leftTime {
+  id        Int      @id @default(autoincrement())
+  time      Int
+  userId    Int?     @unique
+  Tariff    Tariff?  @relation(fields: [tariffId], references: [idTariff])
+  tariffId  Int?     @unique
+  user      User?    @relation("UserLeftTime", fields: [userId], references: [id]) // Связь с моделью User
 }
 
 model mob {
@@ -93,12 +104,13 @@ model chatMessage{
   GameHub GameHub? @relation(fields: [idSession], references: [token])
   idSession String?
   createdAt DateTime
-  
+  sender    User     @relation(fields: [senderId], references: [id])
+  senderId  Int
 }
 
 model Tariff {
   idTariff Int @id @default(autoincrement())
-  name String
+  name String @unique
   status String @default("avtive")
   user User[]
   creator    User     @relation("CreaterUser", fields: [createrId], references: [id])
@@ -108,7 +120,8 @@ model Tariff {
   price Int
   createdAt  DateTime   @default(now())
   updateAt DateTime @updatedAt
-    purchasedTariffs  purchasedTariffs[]
+  purchasedTariffs  purchasedTariffs[]
+  leftTime leftTime[] 
 
 }
 model User {
@@ -123,19 +136,24 @@ model User {
   updateAt          DateTime    @updatedAt
   role              String      @default("user")
   status            String      @default("active")
-  yandexId          String?   @unique
+  yandexId          String?     @unique
   tarif             Tariff?     @relation(fields: [idTariff], references: [idTariff])
   idTariff          Int?
-  avatar   String?
+  avatar            String?
   createdSessionId  String?     @unique 
   gameHub           GameHub?    @relation("GameHubPlayers", fields: [idSession], references: [token]) 
   idSession         String?
   createdTariffs    Tariff[]    @relation("CreaterUser") // Link to tariffs created by this user
   purchasedTariffs  purchasedTariffs[]
   mobsOnTable       mobsOnTable[]
-  mob mob[]
-
+  mob               mob[]
+  chatMessage       chatMessage[]
+  skill             skill[]
+  weapon            Weapon[]
+  armor             Armor[] 
+  leftTime          leftTime?   @relation("UserLeftTime") // Указываем на связь, не используя `fields` и `references` здесь
 }
+
 
 model GameHub {
   idSession   Int         @id @default(autoincrement())
@@ -158,6 +176,8 @@ model skill {
   range Int
   mob         mob?  @relation(fields: [mobId], references: [id])
   mobId       Int?
+    user User? @relation(fields: [creatorId], references: [id])
+  creatorId Int? 
 }
 
 model purchasedTariffs {

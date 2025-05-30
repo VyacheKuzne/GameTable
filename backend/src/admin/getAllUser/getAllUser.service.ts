@@ -48,4 +48,11 @@ export class GetAllUserService {
     console.log('Обновленные данные пользователя:', updatedUser); // Логируем обновленные данные
     return updatedUser;
   }
+
+  async restoreUser(id: number) {
+  return this.prisma.user.update({
+    where: { id: id },
+    data: { status: 'active' },
+  });
+}
 }

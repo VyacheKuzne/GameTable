@@ -13,7 +13,7 @@ export default function AdminPanel() {
     { label: "Имя", key: "name" },
     { label: "Фамиля", key: "secondname" },
     { label: "ЭЛЕКТРОННАЯ ПОЧТА", key: "email" },
-    { label: "ПАРОЛЬ", key: "password" },
+    // { label: "ПАРОЛЬ", key: "password" },
     { label: "НИКНЕЙМ", key: "nickname" },
     { label: "ТЕЛЕФОН", key: "phone" },
     // { label: "ТАРИФ", key: "tariff" },
@@ -34,20 +34,28 @@ export default function AdminPanel() {
   };
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [allUsers, setAllUsers] = useState<User[]>([]);
-
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/find/allUser");
+      setAllUsers(response.data);
+      console.log("Users:", response.data);
+    } catch (error) {
+      console.log("не получилось получить данные про пользователей", error);
+    }
+  };
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/find/allUser");
-        setAllUsers(response.data);
-        console.log("Users:", response.data);
-      } catch (error) {
-        console.log("не получилось получить данные про пользователей", error);
-      }
-    };
     fetchUsers();
   }, []);
-
+const handleRestore = async (user: User) => {
+  try {
+    await axios.patch(`http://localhost:3000/Users/${user.id}/restore`);
+    alert('Пользователь восстановлен');
+    // Обнови список тарифов
+    fetchUsers();
+  } catch (error) {
+    console.error('Ошибка при восстановлении:', error);
+  }
+};
   return (
     <div>
       <AdminUserForm
@@ -56,7 +64,8 @@ export default function AdminPanel() {
         setIsDelete={setIsDelete}
         isEdit={isEdit}
         setIsEdit={setIsEdit}
-        selectedUser = {selectedUser}
+        selectedUser={selectedUser}
+        fetchUsers={fetchUsers}
       />
       <AminModalBlockMenu />
       <table className={`text-center  top-[3%] left-[calc(40%-280px)]`}>
@@ -81,24 +90,35 @@ export default function AdminPanel() {
                 return <td key={idx}>{value ?? "Нет данных"}</td>;
               })}
               <td>
-                <button
-                  onClick={() => {
-                    setIsEdit(!isEdit);
-                    setSelectedUser(user);
-                  }}
-                  className="bg-custom-green hover-effect-btn-green w-[25px] h-[25px] rounded-[4px] p-[4px] mx-[10%]"
-                >
-                  <img src={Edit} alt="Edit" className="w-full" />
-                </button>
-                <button
-                  onClick={() => {
-                    setIsDelete(!isDelete);
-                    setSelectedUser(user);
-                  }}
-                  className="bg-custom-red hover-effect-btn-red w-[25px] h-[25px] rounded-[4px] p-[4px] mx-[10%]"
-                >
-                  <img src={Bascet} alt="Basket" className="w-full" />
-                </button>
+                {user.status === "delete" ? (
+                  <button
+                    onClick={() => handleRestore(user)}
+                    className="bg-yellow-500 hover:bg-yellow-600 w-fit p-2 rounded-[4px]  mx-[10%] text-white text-sm"
+                  >
+                    Восстановить
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        setIsEdit(!isEdit);
+                        setSelectedUser(user);
+                      }}
+                      className="bg-custom-green hover-effect-btn-green w-[25px] h-[25px] rounded-[4px] p-[4px] mx-[10%]"
+                    >
+                      <img src={Edit} alt="Edit" className="w-full" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsDelete(!isDelete);
+                        setSelectedUser(user);
+                      }}
+                      className="bg-custom-red hover-effect-btn-red w-[25px] h-[25px] rounded-[4px] p-[4px] mx-[10%]"
+                    >
+                      <img src={Bascet} alt="Basket" className="w-full" />
+                    </button>
+                  </>
+                )}
               </td>
             </tr>
           ))}

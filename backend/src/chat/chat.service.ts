@@ -9,6 +9,9 @@ export class ChatService {
     // console.log('сервер что ли: ' + token)
     const findMessage = await this.prisma.chatMessage.findMany({
       where: { idSession: token},
+      include: {
+        sender: true
+      }
     });
     return findMessage
   }

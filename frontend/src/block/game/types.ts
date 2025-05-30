@@ -22,15 +22,23 @@ export interface Weapon {
     id: number;
     name: string;
     damage: number;
-    weight: number;
 }
+
+export type Skill = {
+  idSkill: number;
+  name: string;
+  timeout: number;
+  damageMin: number;
+  damageMax: number;
+  range: number;
+  createdAt: string;
+};
 
 // Интерфейс для брони
 export interface Armor {
     id: number;
     name: string;
     defense: number;
-    weight: number;
 }
 
 // Интерфейс пропсов для MobCell

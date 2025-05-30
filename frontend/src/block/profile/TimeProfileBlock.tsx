@@ -9,6 +9,7 @@ type props = {
     email: string;
     phone: string;
     tarif?: any;
+    leftTime?: any;
   };
 };
 const redirectTarifs = () => {
@@ -22,7 +23,7 @@ export default function TimeProfileBlock({ user }: props) {
           <p>Оставшееся время по тарифу:</p>
           <div className="my-[1%]">
             <img src="" alt="" />
-            <p>{user.tarif.availableTime} часов</p>
+            <p>{user.leftTime.time} часов</p>
           </div>
         </div>
       ) : (

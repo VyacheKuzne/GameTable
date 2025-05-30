@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 import ChatButton from "../../img/ChatButton.svg";
 import axios from "axios";
-import chatSvg from '../../img/chatSvg.svg'
+import chatSvg from "../../img/chatSvg.svg";
+import { Member } from "./types";
 type Props = {
   socket: Socket | null;
 };
@@ -11,6 +12,7 @@ type Message = {
   id: number;
   text: string;
   idSession: string;
+  sender: Member;
 };
 
 export default function ChatBlock({ socket }: Props) {
@@ -19,10 +21,6 @@ export default function ChatBlock({ socket }: Props) {
   const [isChatVisible, setIsChatVisible] = useState(true);
 
   const token = window.location.pathname.split("/").pop();
-
-  useEffect(() => {
-    if (!token) return;
-
     const fetchMessages = async () => {
       try {
         const response = await axios.get(
@@ -33,11 +31,17 @@ export default function ChatBlock({ socket }: Props) {
         console.error("Ошибка загрузки сообщений:", error);
       }
     };
+  useEffect(() => {
+    if (!token) return;
+
+
 
     fetchMessages();
 
     // Подписка на новые сообщения
     socket?.on("messages", (data: Message[]) => {
+      console.log("data");
+      console.log(data);
       setMessage(data); // ✅ заменяем список целиком, без дублирования
     });
 
@@ -45,11 +49,25 @@ export default function ChatBlock({ socket }: Props) {
       socket?.off("messages");
     };
   }, [socket, token]);
-
+    useEffect (() => {
+    fetchMessages();
+  }, [])
+  function getCookie(name: string) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(";").shift();
+    return null;
+  }
   const sendMessage = () => {
     if (!newMessage.trim() || !token) return;
-
-    socket?.emit("messages", { text: newMessage, idSession: token });
+    const userToken = getCookie("access_token");
+    console.log(userToken);
+    socket?.emit("messages", {
+      sender: [],
+      text: newMessage,
+      idSession: token,
+      userToken: userToken,
+    });
     setNewMessage(""); // только сброс поля, без локального setMessage
   };
 
@@ -76,7 +94,7 @@ export default function ChatBlock({ socket }: Props) {
           }`}
         >
           {messages.map((msg) => (
-            <div key={msg.id}>🗨️ {msg.text}</div>
+              <div key={msg.id}><p>имя: {msg.sender?.name}</p><p>🗨️{msg.text}</p></div>
           ))}
         </div>
         {isChatVisible && (

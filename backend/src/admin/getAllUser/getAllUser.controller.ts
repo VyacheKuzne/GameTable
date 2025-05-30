@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Patch, UseGuards, Req, Query, Res  } from '@nestjs/common';
+import { Body, Controller, Get, Post, Patch, UseGuards, Req, Query, Res, Param  } from '@nestjs/common';
 import { GetAllUserService } from './getAllUser.service';
 import { TariffService } from './Tariff.service';
 import { User, Tariff } from '@prisma/client';
@@ -73,4 +73,29 @@ async sortTariffs(
   async downloadReport(@Res() res: Response) {
     return this.ReportService.generateTariffPurchasesReport(res);
   }
+@Patch('/tariffs/:idTariff/restore')
+async restoreTariff(@Param('idTariff') idTariff: string) {
+  // Преобразуем строку в число
+  const id = parseInt(idTariff, 10);
+  
+  // Проверим, что id является числом
+  if (isNaN(id)) {
+    throw new Error('Invalid idTariff');
+  }
+
+  return this.TariffService.restoreTariff(id);
+}
+@Patch('/Users/:Userid/restore')
+async restoreUser(@Param('Userid') Userid: string) {
+  // Преобразуем строку в число
+  const id = parseInt(Userid, 10);
+  
+  // Проверим, что id является числом
+  if (isNaN(id)) {
+    throw new Error('Invalid Userid');
+  }
+
+  return this.getAllUserService.restoreUser(id);
+}
+
 }

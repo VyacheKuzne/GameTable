@@ -41,7 +41,7 @@ export class AutorizationService {
     });
 
     // Создаем JWT
-    const token = this.jwtService.sign({ id: user.id, status: user.status });
+    const token = this.jwtService.sign({ id: user.id, status: user.status, role: user.role });
 
     return { user, token };
   }
@@ -77,6 +77,7 @@ export class AutorizationService {
     const token = this.jwtService.sign({
       id: findUser.id,
       status: findUser.status,
+      role: findUser.role
     });
     return { findUser, token };
   }
@@ -118,7 +119,7 @@ async validateYandexUser(profile) {
       },
     });
   }
-    const token = this.jwtService.sign({ id: user.id, status: user.status });
+    const token = this.jwtService.sign({ id: user.id, status: user.status, role: user.role});
 
   return {user,token};
 }

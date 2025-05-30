@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import EditLine from "../../img/EditLine.svg";
 import Cross from "../../img/Cross.svg";
 import axios from "axios";
+import AllMessages from "../messages/AllMessages";
 type TableHeader = {
   label: string;
   key: string;
 };
 type Tariff = {
+  idTariff: number;
   name: string;
   status?: string; // По умолчанию "active", поэтому можно оставить необязательным
   availableMobs: number;
@@ -22,6 +24,7 @@ type Props = {
   selectedTariff?: Tariff | null;
   isCreate?: boolean;
   setIsCreate?: React.Dispatch<React.SetStateAction<boolean>>;
+  loadTariffs: () => void;
 };
 
 export default function AdminUserForm({
@@ -33,24 +36,24 @@ export default function AdminUserForm({
   isEdit,
   isCreate,
   selectedTariff,
+  loadTariffs,
 }: Props) {
   const [tariffData, setTariffData] = useState<Tariff | null>(null);
   const [newTariff, setNewTariff] = useState<Tariff>(() => {
     const initial: any = {};
-  
+
     // Исключаем 'idTariff' и 'createdAt'
     tableHeadersWithKeys.forEach((header) => {
-      if (header.key !== 'idTariff' && header.key !== 'createdAt') {
+      if (header.key !== "idTariff" && header.key !== "createdAt") {
         initial[header.key] = "";
       }
     });
-  
+
     initial.status = "active"; // или другой дефолт
     return initial;
   });
-  
-  
-  
+  const [status, setStatus] = useState<number | string>()
+
   useEffect(() => {
     if (selectedTariff) {
       setTariffData(selectedTariff); // Инициализация состояния из пропса
@@ -63,14 +66,29 @@ export default function AdminUserForm({
   }, [isCreate]);
   const handleInputChange = (key: keyof Tariff, value: string) => {
     if (tariffData) {
-      const numericFields: (keyof Tariff)[] = ['availableMobs', 'availableTime', 'price'];
-  
+      const numericFields: (keyof Tariff)[] = [
+        "availableMobs",
+        "availableTime",
+        "price",
+      ];
+
       setTariffData({
         ...tariffData,
         [key]: numericFields.includes(key) ? Number(value) : value,
       });
     }
   };
+  const validateTariffData = (tariffData: Tariff) => {
+  if (tariffData.availableMobs <= 0) {
+    throw new Error("Available Mobs must be a positive number.");
+  }
+  if (tariffData.availableTime <= 0) {
+    throw new Error("Available Time must be a positive number.");
+  }
+  if (tariffData.price <= 0) {
+    throw new Error("Price must be a positive number.");
+  }
+};
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -95,21 +113,30 @@ export default function AdminUserForm({
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
-  
+
     if (!tariffData) return;
-  
-    try {
-      console.log(tariffData);
-      const response = await axios.post(
-        "http://localhost:3000/createTariff",
-        tariffData,
-        { withCredentials: true } 
-      );
-  
-      console.log(response.status);
-    } catch (error) {
-      console.error(error);
+
+ try {
+    // Валидация данных перед отправкой
+    validateTariffData(tariffData);
+
+    console.log(tariffData);
+
+    // Отправка данных
+    const response = await axios.post(
+      "http://localhost:3000/createTariff",
+      tariffData,
+      { withCredentials: true }
+    );
+  setStatus(response.status)
+    loadTariffs(); // Обновление списка тарифов после успешной отправки
+    console.log(response.status); // Выводим статус ответа
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message); // Выводим ошибку валидации или ошибки сети
+      setStatus(500)
     }
+  }
   };
 
   function closeModalBlock() {
@@ -117,17 +144,16 @@ export default function AdminUserForm({
     setIsDelete(false);
     setIsCreate?.(false);
   }
-  async function deleteTariff (){
+  async function deleteTariff() {
     try {
-      console.log(tariffData)
+      console.log(tariffData);
       const responce = await axios.patch(
         "http://localhost:3000/deleteTariff",
         tariffData
-      )
-      console.log(responce.status)
-    } catch (error) {
-      
-    }
+      );
+      loadTariffs()
+      console.log(responce.status);
+    } catch (error) {}
   }
   return (
     <div
@@ -135,6 +161,7 @@ export default function AdminUserForm({
         isDelete || isEdit || isCreate ? "block" : "hidden"
       }`}
     >
+      <AllMessages status={status!}/>
       <div
         className={`bg-custom-darkGray relative rounded-[20px] p-[1.5%] w-1/4 m-auto ${
           isEdit ? "block" : "hidden"
@@ -161,7 +188,8 @@ export default function AdminUserForm({
             {tableHeadersWithKeys
               .filter(
                 (tableHeaders) =>
-                  tableHeaders.key !== "idTariff" && tableHeaders.key !== "createdAt"
+                  tableHeaders.key !== "idTariff" &&
+                  tableHeaders.key !== "createdAt"
               )
               .map((tableHeaders) => {
                 return (
@@ -219,15 +247,24 @@ export default function AdminUserForm({
           </p>
           <img src={EditLine} alt="EditLine" />
           <p className="text-center text-white font-bold my-[3%]">
-            Вы действительно хотите удалить пользователя №12312 ?
+            Вы действительно хотите удалить тариф №
+            {`${selectedTariff?.idTariff}`} ?
           </p>
         </div>
         <div>
           <div className="flex justify-around">
-            <button onClick={()=> deleteTariff()} className="w-[50px] h-[50px] bg-custom-red hover-effect-btn-red rounded-[10px]">
+            <button
+              onClick={() => deleteTariff()}
+              className="w-[50px] h-[50px] bg-custom-green hover-effect-btn-green rounded-[10px]"
+            >
               <p className="text-white font-bold">ДА</p>
             </button>
-            <button onClick={() => {setIsDelete(!isDelete)}} className="w-[50px] h-[50px] bg-custom-green hover-effect-btn-green rounded-[10px]">
+            <button
+              onClick={() => {
+                setIsDelete(!isDelete);
+              }}
+              className="w-[50px] h-[50px] bg-custom-red hover hover-effect-btn-red rounded-[10px]"
+            >
               <p className="text-white font-bold">НЕТ</p>
             </button>
           </div>
@@ -264,7 +301,7 @@ export default function AdminUserForm({
               (tableHeaders) =>
                 tableHeaders.key !== "id" &&
                 tableHeaders.key !== "createdAt" &&
-                tableHeaders.key !== "idTariff"&&
+                tableHeaders.key !== "idTariff" &&
                 tableHeaders.key !== "status"
             )
             .map((tableHeaders) => {

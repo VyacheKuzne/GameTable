@@ -10,15 +10,30 @@ export class TariffService {
     return await this.prisma.tariff.findMany();
   }
 
-  async creatTariff(tariff: Tariff, user: { id: number }): Promise<Tariff> {
-    const createdTarif = await this.prisma.tariff.create({
-      data: {
-        ...tariff,
-        createrId: user.id
-      }
-    });
-    return createdTarif;
+async creatTariff(tariff: Tariff, user: { id: number }): Promise<Tariff> {
+  // Проверка, существует ли уже тариф с таким именем
+  const existingTariff = await this.prisma.tariff.findFirst({
+    where: {
+      name: tariff.name,  // Ищем тариф по имени
+    },
+  });
+
+  // Если тариф с таким именем найден, выбрасываем ошибку
+  if (existingTariff) {
+    throw new Error(`Тариф с именем "${tariff.name}" уже существует.`);
   }
+
+  // Если тариф уникален, создаем новый
+  const createdTarif = await this.prisma.tariff.create({
+    data: {
+      ...tariff,
+      createrId: user.id,
+    },
+  });
+
+  return createdTarif;
+}
+
   async updateTariff(tariff: Tariff): Promise<Tariff> {
     const findTariff = await this.prisma.tariff.findUnique({
       where: { idTariff: tariff.idTariff },
@@ -73,6 +88,13 @@ export class TariffService {
         priceAtPurchase: tariff.price
       }
     })
+    await this.prisma.leftTime.create({
+      data:{
+        userId: user.id,
+        time: tariff.availableTime,
+        tariffId: tariff.idTariff
+      }
+    })
     return createdTarif;
   }
  async findTariffsByName(name?: string): Promise<Tariff[]> {
@@ -95,6 +117,12 @@ async sortTariffs(order: 'asc' | 'desc') {
     orderBy: {
       name: order
     }
+  });
+}
+async restoreTariff(idTariff: number) {
+  return this.prisma.tariff.update({
+    where: { idTariff },
+    data: { status: 'active' },
   });
 }
 }

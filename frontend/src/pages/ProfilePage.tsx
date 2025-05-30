@@ -13,6 +13,7 @@ export default function ProfilePage() {
     email: "",
     phone: "",
     tarif: [],
+    leftTime: [],
     avatar: ''
   });
 

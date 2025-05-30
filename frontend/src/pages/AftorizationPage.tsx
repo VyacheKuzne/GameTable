@@ -3,6 +3,8 @@ import axios from "axios";
 import Poligon from "../img/Polygon.svg";
 import { useNavigate } from "react-router-dom";
 import ErrorMessages from "../component/messages/ErrorMessages";
+import YandexLogo from "../img/Yandex_icon.svg.png";
+
 export default function ExitPage() {
   const navigate = useNavigate();
   const [dataFrom, setDataFrom] = useState({
@@ -19,11 +21,11 @@ export default function ExitPage() {
   };
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Предотвращаем перезагрузку страницы
-    function showError(){
-      setError(true)
-      setTimeout(()=>{
-        setError(false)
-      },2000)
+    function showError() {
+      setError(true);
+      setTimeout(() => {
+        setError(false);
+      }, 2000);
     }
     try {
       console.log(dataFrom);
@@ -39,13 +41,21 @@ export default function ExitPage() {
       );
       console.log(document.cookie);
       console.log(response.data);
-      if ((response.status = 201)) {
-        navigate("/");
+
+      if (response.status === 201) {
+        // В ответе у тебя должно быть что-то вроде:
+        // { findUser: { role: 'admin', ... }, token: '...' }
+        const role = response.data.user.role;
+
+        if (role === "admin") {
+          navigate("/AdminPanel/tarifs");
+        } else {
+          navigate("/");
+        }
       }
-      console.log(error)
     } catch (error) {
       console.log(error);
-      showError()
+      showError();
     }
   };
 
@@ -87,12 +97,22 @@ export default function ExitPage() {
 
     return () => timeouts.forEach(clearTimeout);
   }, []);
+  const clientId = "48a5fec8f1ee4b3888ba3721222c255a";
+  const redirectUri = "http://localhost:3000/auth/yandex/callback";
 
+  const yandexAuthUrl = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+  const handleYandexLogin = () => {
+    window.location.href = yandexAuthUrl;
+  };
   return (
     <div className="bg-custom-darkGray w-screen h-screen relative">
       {/* Контейнер формы */}
-      {error ? (<ErrorMessages textError={"Такой пользователь не найден, возможно он был удален"} /> ): (null)}
-     
+      {error ? (
+        <ErrorMessages
+          textError={"Такой пользователь не найден, возможно он был удален"}
+        />
+      ) : null}
+
       <div className="border-[5px] my-[10%] border-white shadow-inner z-10 bg-custom-red relative rounded-xl w-1/3 m-auto p-8 max-w-[630px] min-w-[600px]">
         <form className="relative m-auto w-full" onSubmit={handleSubmit}>
           <div className="flex justify-between items-center">
@@ -100,7 +120,10 @@ export default function ExitPage() {
               Регистрация
             </a>
             <div className="w-[18px] h-[18px] rounded-full bg-white"></div>
-            <a href="/aftorization" className="text-[32px] text-white font-medium">
+            <a
+              href="/aftorization"
+              className="text-[32px] text-white font-medium"
+            >
               Авторизация
             </a>
           </div>
@@ -109,7 +132,7 @@ export default function ExitPage() {
             <div className="border-r-[1px] border-b-[1px]">
               <label className="block label-text">ПАРОЛЬ</label>
               <input
-                type="text"
+                type="password"
                 className="bg-transparent input-r"
                 name="password"
                 onChange={fetchData}
@@ -133,6 +156,13 @@ export default function ExitPage() {
             className="rounded-full flex items-center justify-center hover-effect-btn-red bg-custom-red absolute top-1/3 right-[-14%] border-[5px] border-white w-[74px] h-[74px]"
           >
             <img src={Poligon} alt="Poligon" />
+          </button>
+          <button
+            className="mt-2 ml-[50%] translate-x-[-50%] w-fit p-1 h-[40px] flex items-center text-white bg-custom-darkGray rounded-md"
+            onClick={handleYandexLogin}
+          >
+            <img className="h-full" src={YandexLogo} alt="YandexLogo" />
+            <p>Войти через Яндекс</p>{" "}
           </button>
         </form>
       </div>

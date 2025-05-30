@@ -10,6 +10,8 @@ export class LkService {
       where: { id },
       include: {
         tarif: true,
+        leftTime: true
+        
       },
     });
   }

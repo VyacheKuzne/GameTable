@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-
+import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
@@ -17,23 +17,23 @@ async function main() {
       defense: 10,
     },
   });
-  await prisma.user.create({
-    data: {
-      name: "Тест",
-      secondname: "Пользователь",
-      email: "test@example.com",
-      phone: "+79991234567",
-      password: "hashed_password", // обязательно хешируй на практике
-      nickname: "testuser",
-      role: "user",
-      status: "active",
-      yandexId: null,
-      avatar: null,
-      createdSessionId: null,
-      idTariff: null,
-      idSession: null,
-    },
-  });
+  // await prisma.user.create({
+  //   data: {
+  //     name: "Тест",
+  //     secondname: "Пользователь",
+  //     email: "test@example.com",
+  //     phone: "+79991234567",
+  //     password: "hashed_password", // обязательно хешируй на практике
+  //     nickname: "testuser",
+  //     role: "user",
+  //     status: "active",
+  //     yandexId: null,
+  //     avatar: null,
+  //     createdSessionId: null,
+  //     idTariff: null,
+  //     idSession: null,
+  //   },
+  // });
   // Создаем мобов
   const goblin = await prisma.mob.create({
     data: {
@@ -56,7 +56,23 @@ async function main() {
       manevr: 13,
     },
   });
+ const hashedPassword = await bcrypt.hash('admin1234', 10)
+   await prisma.user.upsert({
+    where: { email: 'admin@example.com' },
+    update: {},
+    create: {
+      name: 'Admin',
+      secondname: 'User',
+      email: 'admin@example.com',
+      phone: '+70000000000',
+      password: hashedPassword,
+      nickname: 'admin',
+      role: 'admin',
+      status: 'active',
+    },
+  })
 
+  console.log('✅ Admin user created (or already exists)')
   // // Устанавливаем порядок ходов
   // await prisma.turnOrder.createMany({
   //   data: [

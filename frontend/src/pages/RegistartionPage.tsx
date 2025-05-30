@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Poligon from "../img/Polygon.svg";
 import { useNavigate } from "react-router-dom";
-
+import YandexLogo from "../img/Yandex_icon.svg.png";
 export default function RegistartionPage() {
   const navigate = useNavigate();
   const [dataFrom, setDataFrom] = useState({
@@ -12,7 +12,7 @@ export default function RegistartionPage() {
     email: "",
     password: "",
     phone: "",
-    updateAt: new Date()
+    updateAt: new Date(),
   });
 
   const fetchData = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,47 +23,71 @@ export default function RegistartionPage() {
     }));
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Предотвращаем перезагрузку страницы
+ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
 
-    try {
-      console.log(dataFrom);
-      const response = await axios.post(
-        "http://localhost:3000/create",
-        dataFrom,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
+  // Простая валидация
+  const { name, secondname, nickname, email, password, phone } = dataFrom;
 
+  if (!name || !secondname || !nickname || !email || !password || !phone) {
+    alert("Пожалуйста, заполните все поля.");
+    return;
+  }
 
-      console.log(response.status);
-      if (response.status === 201) {
-        navigate("/");
+  // Простейшая email проверка
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    alert("Введите корректный email.");
+    return;
+  }
+
+  // Простейшая проверка телефона (например, "+79991234567")
+  const phoneRegex = /^\+\d{11,14}$/;
+  if (!phoneRegex.test(phone)) {
+    alert("Введите корректный номер телефона в формате +79991234567.");
+    return;
+  }
+
+  if (password.length < 6) {
+    alert("Пароль должен быть не менее 6 символов.");
+    return;
+  }
+
+  try {
+    const response = await axios.post(
+      "http://localhost:3000/create",
+      dataFrom,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
       }
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
+    );
+
+    if (response.status === 201) {
+      navigate("/");
     }
-  };
+
+    console.log(response.data);
+  } catch (error) {
+    console.error("Ошибка при отправке формы:", error);
+  }
+};
+
   // начало херни
   const protect = async () => {
     try {
       console.log("Отправка запроса на /registartion...");
-      const response = await axios.get('http://localhost:3000/registartion', {
-        withCredentials: true,  // Это обязательно для передачи куков
+      const response = await axios.get("http://localhost:3000/registartion", {
+        withCredentials: true, // Это обязательно для передачи куков
       });
       console.log("Ответ от сервера:", response.data);
     } catch (error) {
       console.error("Ошибка при запросе:", error);
     }
   };
-  
-  
-  
+
   // конец зерни
 
   const blockCount = 15;
@@ -88,7 +112,7 @@ export default function RegistartionPage() {
   useEffect(() => {
     // Выполняем запрос только один раз при монтировании компонента
     protect();
-  
+
     const timeouts = blocks.map((_, index) => {
       const animateBlock = () => {
         setBlocks((prevBlocks) =>
@@ -98,32 +122,31 @@ export default function RegistartionPage() {
               : block
           )
         );
-  
+
         // Рекурсивный setTimeout для анимации блоков
         setTimeout(animateBlock, getRandomDelay());
       };
-  
+
       return setTimeout(animateBlock, getRandomDelay());
     });
-  
+
     // Очистка таймеров при размонтировании компонента
     return () => timeouts.forEach(clearTimeout);
-  
   }, []); // Пустой массив зависимостей — запрос выполнится только один раз
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
+    const token = params.get("token");
     if (token) {
-      localStorage.setItem('token', token);
+      localStorage.setItem("token", token);
       // переход в личный кабинет или другое действие
     }
   }, []);
 
-const clientId = '48a5fec8f1ee4b3888ba3721222c255a';
-const redirectUri = 'http://localhost:3000/auth/yandex/callback';
+  const clientId = "48a5fec8f1ee4b3888ba3721222c255a";
+  const redirectUri = "http://localhost:3000/auth/yandex/callback";
 
-const yandexAuthUrl = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
-    const handleYandexLogin = () => {
+  const yandexAuthUrl = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+  const handleYandexLogin = () => {
     window.location.href = yandexAuthUrl;
   };
   return (
@@ -131,7 +154,10 @@ const yandexAuthUrl = `https://oauth.yandex.ru/authorize?response_type=code&clie
       <div className="border-[5px] my-[10%] border-white shadow-inner z-10 bg-custom-red relative rounded-xl w-1/3 m-auto p-8 max-w-[630px] min-w-[600px]">
         <form className="relative m-auto w-full" onSubmit={handleSubmit}>
           <div className="flex justify-between items-center">
-            <a href="/registartion" className="text-[32px] font-medium text-white">
+            <a
+              href="/registartion"
+              className="text-[32px] font-medium text-white"
+            >
               Регистрация
             </a>
             <div className="w-[18px] h-[18px] rounded-full bg-white"></div>
@@ -161,7 +187,7 @@ const yandexAuthUrl = `https://oauth.yandex.ru/authorize?response_type=code&clie
             <div className="border-r-[1px] border-b-[1px]">
               <label className="block label-text">ПАРОЛЬ</label>
               <input
-                type="text"
+                type="password"
                 className="bg-transparent input-r"
                 name="password"
                 onChange={fetchData}
@@ -202,6 +228,13 @@ const yandexAuthUrl = `https://oauth.yandex.ru/authorize?response_type=code&clie
             <img src={Poligon} alt="Poligon" />
           </button>
         </form>
+        <button
+          className="mt-2 ml-[50%] translate-x-[-50%] w-fit p-1 h-[40px] flex items-center text-white bg-custom-darkGray rounded-md"
+          onClick={handleYandexLogin}
+        >
+          <img className="h-full" src={YandexLogo} alt="YandexLogo" />
+          <p>Войти через Яндекс</p>{" "}
+        </button>
       </div>
 
       {blocks.map((block, index) => (
@@ -219,7 +252,6 @@ const yandexAuthUrl = `https://oauth.yandex.ru/authorize?response_type=code&clie
           }}
         ></div>
       ))}
-      <button onClick={handleYandexLogin}>Войти через Яндекс</button>
     </div>
   );
 }
