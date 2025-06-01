@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import RedButton from "../../component/Button/RedButton";
 import axios from "axios";
-import { data } from "react-router-dom";
 import NotificationMessages from "../../component/messages/NotificationMessages";
+
 // Тип пропсов
 type Props = {
   user: {
@@ -13,21 +13,31 @@ type Props = {
     phone: string;
     tarif?: any;
   };
-  refreshUserData: ()=>void
+  refreshUserData: () => void;
 };
 
 export default function PersonalDataBlock({ user, refreshUserData }: Props) {
   const names = ["password", "nickname", "email", "phone"] as const;
+
+  // Словарь русских названий полей
+  const fieldLabels: Record<typeof names[number], string> = {
+    password: "Пароль",
+    nickname: "Никнейм",
+    email: "Почта",
+    phone: "Телефон",
+  };
+
   const [isUserWantEditData, setIsUserWantEditData] = useState(false);
 
-  // Локальные состояния для редактирования
   const [formData, setFormData] = useState({
     password: "",
     nickname: user.nickname,
     email: user.email,
     phone: user.phone,
   });
+
   const [viewMessage, setIsMesasages] = useState<boolean>(false);
+
   const maskValue = (value: string): string => {
     if (value.length <= 4) return "*".repeat(value.length);
     return value.slice(0, 4) + "*".repeat(value.length - 4);
@@ -37,8 +47,6 @@ export default function PersonalDataBlock({ user, refreshUserData }: Props) {
     switch (key) {
       case "password":
         return "******";
-      // case "fio":
-      //   return `${user.name} ${user.secondname}`;
       case "email":
       case "phone":
         return maskValue(user[key]);
@@ -66,9 +74,9 @@ export default function PersonalDataBlock({ user, refreshUserData }: Props) {
       const responce = await axios.post(`${host}/user/updateData`, formData, {
         withCredentials: true,
       });
-      if (responce.status === 200 || 201) {
+      if (responce.status === 200 || responce.status === 201) {
         setIsMesasages(true);
-        refreshUserData()
+        refreshUserData();
       }
     } catch (error) {
       console.log(error);
@@ -88,14 +96,14 @@ export default function PersonalDataBlock({ user, refreshUserData }: Props) {
         {names.map((atribut, index) => (
           <div key={index} className="flex flex-col w-[367px]">
             <label className="text-[24px]" htmlFor={atribut}>
-              {atribut}
+              {fieldLabels[atribut]}
             </label>
             <input
               type="text"
               value={getValue(atribut)}
               name={atribut}
               className="placeholder:text-black placeholder:text-[36px] placeholder:pl-3 bg-slate-200 rounded-xl h-[63px]"
-              placeholder={atribut}
+              placeholder={fieldLabels[atribut]}
               readOnly
             />
           </div>
@@ -115,7 +123,7 @@ export default function PersonalDataBlock({ user, refreshUserData }: Props) {
                 {names.map((atribut, index) => (
                   <div key={index} className="flex flex-col">
                     <label className="text-white mb-1" htmlFor={atribut}>
-                      {atribut}
+                      {fieldLabels[atribut]}
                     </label>
                     <input
                       type="text"

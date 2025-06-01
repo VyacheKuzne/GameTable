@@ -32,7 +32,6 @@ export class ReportService {
         id: purchase.id,
         email: purchase.user.email,
         tariffName: purchase.tariff.name,
-        status: purchase.status,
         price: purchase.priceAtPurchase,
         createdAt: purchase.createdAt.toISOString(),
       });

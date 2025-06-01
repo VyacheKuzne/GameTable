@@ -87,16 +87,23 @@ export default function AdminPanelTarif() {
   const handleStatusFilterChange = (filter: "all" | "active" | "delete") => {
     setStatusFilter(filter);
   };
-const handleRestore = async (tariff: Tariff) => {
-  try {
-    await axios.patch(`http://localhost:3000/tariffs/${tariff.idTariff}/restore`);
-    alert('Тариф восстановлен');
-    // Обнови список тарифов
-    loadTariffs();
-  } catch (error) {
-    console.error('Ошибка при восстановлении:', error);
-  }
-};
+  const handleRestore = async (tariff: Tariff) => {
+    try {
+      await axios.patch(
+        `http://localhost:3000/tariffs/${tariff.idTariff}/restore`
+      );
+      alert("Тариф восстановлен");
+      // Обнови список тарифов
+      loadTariffs();
+    } catch (error) {
+      console.error("Ошибка при восстановлении:", error);
+    }
+  };
+  const statusLabels: Record<Tariff["status"], string> = {
+    active: "Активный",
+    delete: "Удалённый",
+  };
+
   return (
     <div>
       <AdminTariffForm
@@ -201,13 +208,26 @@ const handleRestore = async (tariff: Tariff) => {
               }`}
             >
               {tableHeadersWithKeys.map((header, idx) => {
-                const value = tariff[header.key as keyof Tariff];
+                let value = tariff[header.key as keyof Tariff];
+
+                // Подменяем статус на русский
+                if (header.key === "status") {
+                  value =
+                    statusLabels[value as Tariff["status"]] || "Неизвестно";
+                }
+
+                // Приведение даты к локальному формату (опционально)
+                if (header.key === "createdAt" && typeof value === "string") {
+                  value = new Date(value).toLocaleDateString("ru-RU");
+                }
+
                 return <td key={idx}>{value ?? "Нет данных"}</td>;
               })}
+
               <td>
                 {tariff.status === "delete" ? (
                   <button
-                    onClick={() => handleRestore(tariff)} 
+                    onClick={() => handleRestore(tariff)}
                     className="bg-yellow-500 hover:bg-yellow-600 w-fit p-2 rounded-[4px]  mx-[10%] text-white text-sm"
                   >
                     Восстановить

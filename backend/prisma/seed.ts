@@ -3,11 +3,29 @@ import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
+   const hashedPassword = await bcrypt.hash('admin1234', 10)
+   await prisma.user.upsert({
+    where: { email: 'admin@example.com' },
+    update: {},
+    create: {
+      name: 'Admin',
+      secondname: 'User',
+      email: 'admin@example.com',
+      phone: '+70000000000',
+      password: hashedPassword,
+      nickname: 'admin',
+      role: 'admin',
+      status: 'active',
+    },
+  })
+
+  console.log('✅ Admin user created (or already exists)')
   // Создаем оружие
   const sword = await prisma.weapon.create({
     data: {
       name: 'Меч',
       damage: 15,
+      creatorId: 1
     },
   });
 
@@ -15,6 +33,7 @@ async function main() {
     data: {
       name: 'Щит',
       defense: 10,
+      creatorId: 1
     },
   });
   // await prisma.user.create({
@@ -56,23 +75,7 @@ async function main() {
       manevr: 13,
     },
   });
- const hashedPassword = await bcrypt.hash('admin1234', 10)
-   await prisma.user.upsert({
-    where: { email: 'admin@example.com' },
-    update: {},
-    create: {
-      name: 'Admin',
-      secondname: 'User',
-      email: 'admin@example.com',
-      phone: '+70000000000',
-      password: hashedPassword,
-      nickname: 'admin',
-      role: 'admin',
-      status: 'active',
-    },
-  })
 
-  console.log('✅ Admin user created (or already exists)')
   // // Устанавливаем порядок ходов
   // await prisma.turnOrder.createMany({
   //   data: [

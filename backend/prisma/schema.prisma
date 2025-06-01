@@ -188,7 +188,6 @@ model purchasedTariffs {
   tariff         Tariff   @relation(fields: [tariffId], references: [idTariff])
   tariffId       Int
 
-  status         String   @default("pending") 
   createdAt      DateTime @default(now())
   priceAtPurchase Int
   

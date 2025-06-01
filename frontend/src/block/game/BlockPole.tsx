@@ -223,7 +223,7 @@ function BlockPole() {
         <div>
           <p>Ключ сессии: {`${token}`}</p>
           {/*debug снизу костыль для проверки стейтов*/}
-          {isReplaceMob ? (
+          {/* {isReplaceMob ? (
             <p>Перемещаем моба isReplaceMob</p>
           ) : (
             <p>Не Перемещаем моба isReplaceMob</p>
@@ -232,7 +232,7 @@ function BlockPole() {
             <p>Размещаем моба isSelectMob</p>
           ) : (
             <p>Не Размещаем моба isSelectMob</p>
-          )}
+          )} */}
           <button
             className="p-2 m-2 bg-custom-red text-white"
             onClick={() => {

@@ -74,33 +74,6 @@ export default function StatMob({
       {isEditing ? (
         <div className="flex flex-col gap-2">
           <label>
-            Имя:
-            <input
-              type="text"
-              value={formState?.name || ""}
-              onChange={(e) => handleInputChange("name", e.target.value)}
-              className="border p-1 rounded ml-2"
-            />
-          </label>
-          <label>
-            Маневр:
-            <input
-              type="number"
-              value={formState?.manevr || 0}
-              onChange={(e) => handleInputChange("manevr", +e.target.value)}
-              className="border p-1 rounded ml-2"
-            />
-          </label>
-          <label>
-            Скорость:
-            <input
-              type="number"
-              value={formState?.speed || 0}
-              onChange={(e) => handleInputChange("speed", +e.target.value)}
-              className="border p-1 rounded ml-2"
-            />
-          </label>
-          <label>
             Игрок:
             <select
               value={ownerId ?? ""}

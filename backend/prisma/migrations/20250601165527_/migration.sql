@@ -4,6 +4,7 @@ CREATE TABLE `Armor` (
     `name` VARCHAR(191) NOT NULL,
     `defense` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `creatorId` INTEGER NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -14,7 +15,20 @@ CREATE TABLE `Weapon` (
     `name` VARCHAR(191) NOT NULL,
     `damage` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `creatorId` INTEGER NULL,
 
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `leftTime` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `time` INTEGER NOT NULL,
+    `userId` INTEGER NULL,
+    `tariffId` INTEGER NULL,
+
+    UNIQUE INDEX `leftTime_userId_key`(`userId`),
+    UNIQUE INDEX `leftTime_tariffId_key`(`tariffId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -83,6 +97,7 @@ CREATE TABLE `chatMessage` (
     `text` VARCHAR(191) NOT NULL,
     `idSession` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL,
+    `senderId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -99,6 +114,7 @@ CREATE TABLE `Tariff` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updateAt` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `Tariff_name_key`(`name`),
     PRIMARY KEY (`idTariff`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -150,6 +166,7 @@ CREATE TABLE `skill` (
     `damageMax` INTEGER NOT NULL,
     `range` INTEGER NOT NULL,
     `mobId` INTEGER NULL,
+    `creatorId` INTEGER NULL,
 
     UNIQUE INDEX `skill_name_key`(`name`),
     PRIMARY KEY (`idSkill`)
@@ -160,13 +177,24 @@ CREATE TABLE `purchasedTariffs` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
     `tariffId` INTEGER NOT NULL,
-    `status` VARCHAR(191) NOT NULL DEFAULT 'pending',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `priceAtPurchase` INTEGER NOT NULL,
 
     UNIQUE INDEX `purchasedTariffs_userId_tariffId_createdAt_key`(`userId`, `tariffId`, `createdAt`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `Armor` ADD CONSTRAINT `Armor_creatorId_fkey` FOREIGN KEY (`creatorId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Weapon` ADD CONSTRAINT `Weapon_creatorId_fkey` FOREIGN KEY (`creatorId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `leftTime` ADD CONSTRAINT `leftTime_tariffId_fkey` FOREIGN KEY (`tariffId`) REFERENCES `Tariff`(`idTariff`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `leftTime` ADD CONSTRAINT `leftTime_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `mob` ADD CONSTRAINT `Mob_armorId_fkey` FOREIGN KEY (`armorId`) REFERENCES `Armor`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -196,6 +224,9 @@ ALTER TABLE `mobsOnTable` ADD CONSTRAINT `mobsOnTable_idOwner_fkey` FOREIGN KEY 
 ALTER TABLE `chatMessage` ADD CONSTRAINT `chatMessage_idSession_fkey` FOREIGN KEY (`idSession`) REFERENCES `GameHub`(`token`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `chatMessage` ADD CONSTRAINT `chatMessage_senderId_fkey` FOREIGN KEY (`senderId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `Tariff` ADD CONSTRAINT `Tariff_createrId_fkey` FOREIGN KEY (`createrId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -206,6 +237,9 @@ ALTER TABLE `User` ADD CONSTRAINT `User_idSession_fkey` FOREIGN KEY (`idSession`
 
 -- AddForeignKey
 ALTER TABLE `skill` ADD CONSTRAINT `skill_mobId_fkey` FOREIGN KEY (`mobId`) REFERENCES `mob`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `skill` ADD CONSTRAINT `skill_creatorId_fkey` FOREIGN KEY (`creatorId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `purchasedTariffs` ADD CONSTRAINT `purchasedTariffs_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
