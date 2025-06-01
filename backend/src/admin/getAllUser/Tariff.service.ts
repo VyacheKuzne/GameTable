@@ -58,20 +58,37 @@ async creatTariff(tariff: Tariff, user: { id: number }): Promise<Tariff> {
     console.log('Обновленные данные пользователя:', updatedTariff); // Логируем обновленные данные
     return updatedTariff;
   }
-  async deleteTariff(tariff: Tariff): Promise<Tariff> {
-    const findTariff = await this.prisma.tariff.findUnique({
-      where: { idTariff: tariff.idTariff },
-    });
-    if (!findTariff) {
-      throw new Error('Тариф  не найден');
-    }
-    console.log('удаляем пользователя');
-    const deleteTariffConfirm = await this.prisma.tariff.update({
-      where: { idTariff: tariff.idTariff },
-      data: { status: 'delete' },
-    });
-    return deleteTariffConfirm;
+async deleteTariff(tariff: Tariff): Promise<Tariff> {
+  const findTariff = await this.prisma.tariff.findUnique({
+    where: { idTariff: tariff.idTariff },
+  });
+
+  if (!findTariff) {
+    throw new Error('Тариф не найден');
   }
+
+  // Проверка: используется ли тариф хотя бы одним пользователем
+  const usersUsingTariff = await this.prisma.user.findFirst({
+    where: {
+      tarif: {
+        idTariff: tariff.idTariff,
+      },
+    },
+  });
+
+  if (usersUsingTariff) {
+    throw new Error('Нельзя удалить тариф: он используется хотя бы одним пользователем');
+  }
+
+  // Удаление (смена статуса)
+  const deleteTariffConfirm = await this.prisma.tariff.update({
+    where: { idTariff: tariff.idTariff },
+    data: { status: 'delete' },
+  });
+
+  return deleteTariffConfirm;
+}
+
   async buyTariff( user: { id: number }, tariff: Tariff): Promise<User> {
     const createdTarif = await this.prisma.user.update({
       where: {

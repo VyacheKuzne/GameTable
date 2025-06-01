@@ -144,17 +144,19 @@ export default function AdminUserForm({
     setIsDelete(false);
     setIsCreate?.(false);
   }
-  async function deleteTariff() {
-    try {
-      console.log(tariffData);
-      const responce = await axios.patch(
-        "http://localhost:3000/deleteTariff",
-        tariffData
-      );
-      loadTariffs()
-      console.log(responce.status);
-    } catch (error) {}
-  }
+    async function deleteTariff() {
+      try {
+        console.log(tariffData);
+        const responce = await axios.patch(
+          "http://localhost:3000/deleteTariff",
+          tariffData
+        );
+        loadTariffs()
+        console.log(responce.status);
+      } catch (error) {
+        alert('Тариф уже используеться и его нельзя удалить!')
+      }
+    }
   return (
     <div
       className={`bg-custom-fon-darkGray fixed w-screen h-screen z-40 content-center ${
