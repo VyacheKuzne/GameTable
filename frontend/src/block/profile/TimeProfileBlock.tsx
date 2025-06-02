@@ -23,7 +23,7 @@ export default function TimeProfileBlock({ user }: props) {
           <p>Оставшееся время по тарифу:</p>
           <div className="my-[1%]">
             <img src="" alt="" />
-            <p>{user.leftTime.time} часов</p>
+            <p>{user.leftTime.time} минут</p>
           </div>
         </div>
       ) : (
