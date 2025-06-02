@@ -41,9 +41,15 @@ export class GameSessionService {
       null
     }
   }
-async mobfindMany(user) {
+async mobfindMany(SessionToken: string) {
   try {
-    return await this.prisma.mob.findMany({
+    const user = await this.prisma.user.findFirstOrThrow({
+      where: {
+        createdSessionId: SessionToken,
+      },
+    });
+
+    const mobs = await this.prisma.mob.findMany({
       where: {
         creatorId: user.id,
       },
@@ -52,11 +58,14 @@ async mobfindMany(user) {
         armor: true,
       },
     });
+
+    return mobs;
   } catch (error) {
     console.error("Ошибка при получении мобов:", error);
     return null;
   }
 }
+
 
   async checkCreator(user: { id: number }, token) {
     console.debug(token)

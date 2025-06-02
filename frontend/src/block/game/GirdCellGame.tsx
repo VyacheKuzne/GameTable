@@ -97,6 +97,10 @@ export default function GirdCellGame({
     mobTemplate && placedMob?.status === "alive" && placedMob
       ? { ...mobTemplate, tokenMob: placedMob.tokenMob }
       : null;
+
+      console.log(placedMob)
+      // console.log('mobTemplate ' + mobTemplate)
+      // console.log('renderedMob ' + renderedMob)
   // console.log('лог на маневры '+renderedMob?.manevr);
   return (
     <div

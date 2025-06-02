@@ -32,7 +32,7 @@ model leftTime {
   time      Int
   userId    Int?     @unique
   Tariff    Tariff?  @relation(fields: [tariffId], references: [idTariff])
-  tariffId  Int?     @unique
+  tariffId  Int?   
   user      User?    @relation("UserLeftTime", fields: [userId], references: [id]) // Связь с моделью User
 }
 

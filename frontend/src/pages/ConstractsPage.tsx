@@ -47,8 +47,7 @@ export default function ConstractsPage() {
     checkTariff();
   }, []);
     // Получаем броню, созданную пользователем
-  useEffect(() => {
-    const fetchArmor = async () => {
+        const fetchArmor = async () => {
       try {
         const response = await axios.get(`http://localhost:3000/construct-user/armor`, {
           withCredentials: true
@@ -58,13 +57,14 @@ export default function ConstractsPage() {
         console.error("Ошибка при получении брони:", error);
       }
     };
+  useEffect(() => {
+
     
     fetchArmor();
   }, []); // Зависимость от userId, чтобы обновить данные, если id пользователя изменится
 
   // Получаем оружие, созданное пользователем
-  useEffect(() => {
-    const fetchWeapon = async () => {
+   const fetchWeapon = async () => {
       try {
         const response = await axios.get(`http://localhost:3000/construct-user/weapon`, {
           withCredentials: true
@@ -74,6 +74,8 @@ export default function ConstractsPage() {
         console.error("Ошибка при получении оружия:", error);
       }
     };
+  useEffect(() => {
+   
     
     fetchWeapon();
   }, []); // Зависимость от userId
@@ -124,6 +126,7 @@ export default function ConstractsPage() {
       ) : null}
       {isCreateWeapon ? (
         <UserCreateWeaponForm
+             fetchWeapon={fetchWeapon}
           // createMob={createMob}
           setIsCreateWeapon={setIsCreateWeapon}
         />
@@ -131,6 +134,8 @@ export default function ConstractsPage() {
       {isCreateArmor ? (
         <UserCreateArmorForm
           // createMob={createMob}
+          fetchArmor={fetchArmor}
+     
           setIsCreateArmor={setIsCreateArmor}
         />
       ) : null}

@@ -16,11 +16,12 @@ export class GameSessiontController {
   async getGamePage(@Param('token') token: string) {
     return this.GameSessionService.getGamePage(token);
   }
-  @Get('mobs')
-  @UseGuards(AuthGuard('jwt'))
-  async getAllMobs(@Req() req: any) {
-    const user = req.user as { id: number }
-    return this.GameSessionService.mobfindMany(user); // имя таблицы в Prisma
+  @Get('mobs/:SessionToken')
+  
+  // @UseGuards(AuthGuard('jwt'))
+  async getAllMobs(@Param('SessionToken') SessionToken:string) {
+    // const user = req.user as { id: number }
+    return this.GameSessionService.mobfindMany(SessionToken); // имя таблицы в Prisma
   }
   @Get('checkCreator')
   @UseGuards(AuthGuard('jwt'))

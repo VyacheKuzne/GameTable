@@ -89,13 +89,18 @@ function BlockPole() {
       }[]
     ) => {
       setPlacedMobs(data);
+      console.log('все мобы на поле');
       console.log(data);
     };
     const handleSessionMembers = (data: Member[]) => {
       setMembers(data);
       console.log(data);
     };
+    const alerts  = ()=> {
+      alert('alertновый моб')
+    }
     socket.on("sessionMob", handleSessionMob);
+    // socket.on("sessionMob" , alerts)
     socket.on("sessionMembers", handleSessionMembers);
     socket.on("stopGameMessage", stopGameRedirect);
     return () => {
@@ -105,8 +110,9 @@ function BlockPole() {
   }, [socket]);
 
   useEffect(() => {
+        const SessionToken = window.location.pathname.split("/").pop();
     async function fetchMobs() {
-      const response = await axios.get("http://localhost:3000/mobs",{
+      const response = await axios.get(`http://localhost:3000/mobs/${SessionToken}`,{
         withCredentials: true
       });
       setAllMobs(response.data);

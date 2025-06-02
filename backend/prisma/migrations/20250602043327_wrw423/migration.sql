@@ -28,7 +28,6 @@ CREATE TABLE `leftTime` (
     `tariffId` INTEGER NULL,
 
     UNIQUE INDEX `leftTime_userId_key`(`userId`),
-    UNIQUE INDEX `leftTime_tariffId_key`(`tariffId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

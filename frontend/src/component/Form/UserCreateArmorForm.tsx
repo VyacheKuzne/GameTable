@@ -7,13 +7,14 @@ import AllMessages from "../messages/AllMessages";
 
 type props = {
   setIsCreateArmor: React.Dispatch<React.SetStateAction<boolean>>;
+  fetchArmor: () => void
 };
 type Form = {
   name: string;
   defense: number;
 };
 
-export default function UserCreateArmorForm({ setIsCreateArmor }: props) {
+export default function UserCreateArmorForm({ setIsCreateArmor, fetchArmor }: props) {
   const [status, setStatus] = useState<number | string>();
   const [Data, setData] = useState<Form>({
     name: "",
@@ -42,6 +43,7 @@ export default function UserCreateArmorForm({ setIsCreateArmor }: props) {
         withCredentials: true,
       });
       setStatus(responce.status);
+      fetchArmor()
     } catch (error) {
       setStatus(500);
     }
