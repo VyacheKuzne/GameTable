@@ -3,7 +3,6 @@ import RedButton from "../../component/Button/RedButton";
 import axios from "axios";
 import NotificationMessages from "../../component/messages/NotificationMessages";
 
-// Тип пропсов
 type Props = {
   user: {
     name: string;
@@ -19,7 +18,6 @@ type Props = {
 export default function PersonalDataBlock({ user, refreshUserData }: Props) {
   const names = ["password", "nickname", "email", "phone"] as const;
 
-  // Словарь русских названий полей
   const fieldLabels: Record<typeof names[number], string> = {
     password: "Пароль",
     nickname: "Никнейм",
@@ -28,14 +26,12 @@ export default function PersonalDataBlock({ user, refreshUserData }: Props) {
   };
 
   const [isUserWantEditData, setIsUserWantEditData] = useState(false);
-
   const [formData, setFormData] = useState({
     password: "",
     nickname: user.nickname,
     email: user.email,
     phone: user.phone,
   });
-
   const [viewMessage, setIsMesasages] = useState<boolean>(false);
 
   const maskValue = (value: string): string => {
@@ -66,14 +62,40 @@ export default function PersonalDataBlock({ user, refreshUserData }: Props) {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    const host = "http://localhost:3000";
     e.preventDefault();
-    console.log("Обновлённые данные:", formData);
-    setIsUserWantEditData(false);
+
+    // Фильтрация: исключаем пустые или неизменённые поля
+    const updatedFields = Object.fromEntries(
+      Object.entries(formData).filter(
+        ([key, value]) =>
+          value.trim() !== "" && value !== user[key as keyof typeof user]
+      )
+    );
+
+    // Валидация email и телефона
+    if (updatedFields.email && !updatedFields.email.includes("@")) {
+      alert("Некорректный email");
+      return;
+    }
+    if (updatedFields.phone && updatedFields.phone.length < 7) {
+      alert("Некорректный телефон");
+      return;
+    }
+
+    // Если ничего не изменилось — ничего не отправляем
+    if (Object.keys(updatedFields).length === 0) {
+      setIsUserWantEditData(false);
+      return;
+    }
+
     try {
-      const responce = await axios.post(`${host}/user/updateData`, formData, {
-        withCredentials: true,
-      });
+      const responce = await axios.post(
+        "http://localhost:3000/user/updateData",
+        updatedFields,
+        {
+          withCredentials: true,
+        }
+      );
       if (responce.status === 200 || responce.status === 201) {
         setIsMesasages(true);
         refreshUserData();
@@ -81,16 +103,18 @@ export default function PersonalDataBlock({ user, refreshUserData }: Props) {
     } catch (error) {
       console.log(error);
     }
+
+    setIsUserWantEditData(false);
   };
 
   return (
     <div className="shadow-md p-[1.2%]">
-      {viewMessage ? (
+      {viewMessage && (
         <NotificationMessages
-          Mesasages="Данные успешно обновленны"
+          Mesasages="Данные успешно обновлены"
           setIsMesasages={setIsMesasages}
         />
-      ) : null}
+      )}
       <p className="text-[36px] font-medium">Ваши данные</p>
       <div className="grid grid-cols-2 items-end gap-4">
         {names.map((atribut, index) => (
@@ -109,7 +133,15 @@ export default function PersonalDataBlock({ user, refreshUserData }: Props) {
           </div>
         ))}
         <button
-          onClick={() => setIsUserWantEditData(true)}
+          onClick={() => {
+            setFormData({
+              password: "",
+              nickname: user.nickname,
+              email: user.email,
+              phone: user.phone,
+            });
+            setIsUserWantEditData(true);
+          }}
           className="bg-custom-red w-[367px] items-center h-[63px] hover-effect-btn-red text-white cursor-pointer rounded-[10px] flex align-center justify-center"
         >
           <p>Хочу обновить данные</p>
@@ -126,7 +158,7 @@ export default function PersonalDataBlock({ user, refreshUserData }: Props) {
                       {fieldLabels[atribut]}
                     </label>
                     <input
-                      type="text"
+                      type={atribut === "password" ? "password" : "text"}
                       name={atribut}
                       value={formData[atribut]}
                       onChange={handleChange}

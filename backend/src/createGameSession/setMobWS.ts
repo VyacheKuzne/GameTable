@@ -146,6 +146,12 @@ export class setMobWS implements OnGatewayInit {
       client.emit('error', 'Invalid token');
       return;
     }
+    await this.prisma.gameHub.update({
+      where: {
+        token: payload.idSession
+      },
+      data: { updateAT: new Date() }
+    })
     // console.debug('newMobOnTable');
     const newMobToken = uuidv4();
     // console.debug(token)
@@ -215,6 +221,12 @@ export class setMobWS implements OnGatewayInit {
         idSession: payload.idSession,
       },
     });
+        await this.prisma.gameHub.update({
+      where: {
+        token: payload.idSession
+      },
+      data: { updateAT: new Date() }
+    })
     // console.log(upadateMobs);
     const sessionMob = await this.prisma.mobsOnTable.findMany({
       where: { idSession: payload.idSession },
@@ -450,109 +462,93 @@ export class setMobWS implements OnGatewayInit {
     this.server.to(payload.idSession).emit('sessionMob', sessionMob);
     this.server.to(payload.idSession).emit('sessionMembers', AllMembers);
   }
-  @SubscribeMessage('GameStop')
+ @SubscribeMessage('GameStop')
 async stopGame(
   client: any,
-  payload: { idSession: string; },
+  payload: { idSession: string },
 ) {
   try {
-    console.log('Заканчиваем игру!');
+    console.log('🛑 Заканчиваем игру!');
+    console.log(`📨 Получен payload:`, payload);
 
-    // Обнуляем idSession у всех пользователей, чье idSession соответствует payload.idSession
-    await this.prisma.user.updateMany({
-      where: { idSession: payload.idSession },
-      data: {
-        idSession: null
-      }
-    });
-
-    // Обнуляем createdSessionId у пользователя, создавшего игру
-    await this.prisma.user.update({
-      where: { createdSessionId: payload.idSession },
-      data: {
-        createdSessionId: null
-      }
-    });
-
-    // Находим игру по token (idSession)
+    // 🔍 Находим игру по token (idSession)
     const game = await this.prisma.gameHub.findFirstOrThrow({
       where: { token: payload.idSession }
     });
-    console.debug('game object:', game);
+    console.debug('🎮 Найдена игра:', game);
 
     const createdAt = new Date(game.createdAt);  
     const updatedAt = new Date(game.updateAT); 
 
-    // Проверяем, что даты корректны
+    console.debug('🕒 createdAt:', createdAt);
+    console.debug('🕒 updatedAt:', updatedAt);
+
     if (isNaN(createdAt.getTime()) || isNaN(updatedAt.getTime())) {
-      console.error('Ошибка: Неверные данные времени', createdAt, updatedAt);
+      console.error('❌ Неверные значения дат:', createdAt, updatedAt);
       return;
     }
 
-    // Разница во времени в миллисекундах
-    const timeDifferenceInMillis = updatedAt.getTime() - createdAt.getTime();
-    
-    // Переводим разницу в часы (миллисекунды -> часы)
-    const timeDifferenceInHours = timeDifferenceInMillis / (1000 * 60 * 60); // 1000 ms * 60 sec * 60 min = 1 hour
+    const diffMs = updatedAt.getTime() - createdAt.getTime();
+    const diffMinutes = Math.round(diffMs / (1000 * 60));
+    console.debug(`⏱ Игра длилась: ${diffMinutes} минут`);
 
-    // Округляем до 1 знака после запятой
-    const roundedTimeDifferenceInHours = Math.round(timeDifferenceInHours * 10) / 10;
-
-    console.debug('Разница во времени (в часах, с округлением):', roundedTimeDifferenceInHours);
-
-    // Получаем пользователя и его оставшееся время
+    // 👤 Получаем пользователя и его leftTime ДО сброса createdSessionId
     const user = await this.prisma.user.findUnique({
       where: { createdSessionId: payload.idSession },
-      include: {
-        leftTime: true
-      }
+      include: { leftTime: true },
     });
 
     if (!user || !user.leftTime) {
-      console.error('Пользователь не найден или данные leftTime отсутствуют');
+      console.error('❌ Пользователь не найден или отсутствует leftTime');
       return;
     }
 
-    // Получаем оставшееся время в секундах
-    let remainingTimeInSeconds = user.leftTime.time * 3600; // Преобразуем оставшееся время в секунды
+    console.log(`👤 Найден пользователь: ${user.name} (ID: ${user.id})`);
+    console.debug('⏳ Исходное оставшееся время (минуты):', user.leftTime.time);
 
-    // Вычитаем разницу времени (в секундах)
-    const timeToSubtractInSeconds = roundedTimeDifferenceInHours * 3600;
+    // 💡 ХРАНИМ И ОБНОВЛЯЕМ ВРЕМЯ В МИНУТАХ
+    const remainingMinutes = user.leftTime.time;
+    let newRemainingMinutes = remainingMinutes - diffMinutes;
 
-    // Новое оставшееся время
-    let newRemainingTimeInSeconds = remainingTimeInSeconds - timeToSubtractInSeconds;
-
-    // Если оставшееся время становится отрицательным, устанавливаем его в 0
-    if (newRemainingTimeInSeconds < 0) {
-      console.warn('Оставшееся время не может быть отрицательным, установка в 0');
-      newRemainingTimeInSeconds = 0;
+    if (newRemainingMinutes < 0) {
+      console.warn('⚠️ Оставшееся время стало меньше 0. Устанавливаем в 0');
+      newRemainingMinutes = 0;
     }
 
-    // Обновляем оставшееся время в базе данных (в секундах)
     const updatedLeftTime = await this.prisma.leftTime.update({
       where: { id: user.leftTime.id },
-      data: {
-        time: newRemainingTimeInSeconds / 3600, // Преобразуем обратно в часы
-      }
+      data: { time: newRemainingMinutes },
     });
 
-    console.debug('Обновленное время:', updatedLeftTime);
+    console.debug('✅ Обновленное время (минуты):', updatedLeftTime.time);
 
-    // Обновляем статус игры в gameHub
+    // 🟡 Обновляем статус игры
     await this.prisma.gameHub.update({
       where: { token: payload.idSession },
-      data: {
-        status: 'end',
-      }
+      data: { status: 'end' }
     });
+    console.log('🛑 Статус игры установлен в "end"');
 
-    // Отправляем сообщение о завершении игры
+    // 🔄 Сброс idSession у всех игроков
+    const resetPlayers = await this.prisma.user.updateMany({
+      where: { idSession: payload.idSession },
+      data: { idSession: null }
+    });
+    console.log(`🔁 Пользователи с idSession "${payload.idSession}" обнулены:`, resetPlayers.count);
+
+    // 🔄 Сброс createdSessionId у создателя
+    const clearedCreator = await this.prisma.user.update({
+      where: { id: user.id },
+      data: { createdSessionId: null }
+    });
+    console.log(`👤 Создатель сессии очищен: ${clearedCreator.name}`);
+
+    // 📢 Отправляем сообщение клиентам
     this.server.to(payload.idSession).emit('stopGameMessage');
-
-    console.log('Завершение игры успешно!');
+    console.log('✅ Завершение игры успешно отправлено игрокам');
 
   } catch (error) {
-    console.error('Ошибка в процессе завершения игры:', error);
+    console.error('🚨 Ошибка в процессе завершения игры:', error);
   }
 }
 

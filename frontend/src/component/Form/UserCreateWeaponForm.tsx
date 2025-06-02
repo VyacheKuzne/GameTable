@@ -23,7 +23,7 @@ export default function UserCreateWeaponForm({ setIsCreateWeapon, fetchWeapon }:
   });
   const headersWithKeys = [
     { label: "НАЗВАНИЕ", key: "name" },
-    { label: "УРОНЕ", key: "damage" },
+    { label: "УРОН", key: "damage" },
     // { label: "МАКС-ПСИХИКА", key: "psih" },
     // { label: "ОРУЖИЕ", key: "manevr" },
     // { label: "БРОНЯ", key: "manevr" },

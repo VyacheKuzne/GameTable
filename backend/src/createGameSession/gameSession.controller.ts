@@ -23,6 +23,7 @@ export class GameSessiontController {
     // const user = req.user as { id: number }
     return this.GameSessionService.mobfindMany(SessionToken); // имя таблицы в Prisma
   }
+  // 23123123 
   @Get('checkCreator')
   @UseGuards(AuthGuard('jwt'))
   async checkCreator(@Req() req: any) {

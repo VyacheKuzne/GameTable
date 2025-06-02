@@ -20,7 +20,7 @@ export default function AdminPanelTarif() {
     { label: "ID", key: "idTariff" },
     { label: "НАЗВАНИЕ", key: "name" },
     { label: "КОЛИЧЕСТВО ВОЖМОЖНЫХ МОБОВ", key: "availableMobs" },
-    { label: "ИГРОВОЕ ВРЕМЯ, ЧАСЫ", key: "availableTime" },
+    { label: "ИГРОВОЕ ВРЕМЯ, МИНУТЫ", key: "availableTime" },
     { label: "ЦЕНА, РУБ", key: "price" },
     { label: "СТАТУС", key: "status" },
     { label: "ДАТА СОЗДАНИЯ", key: "createdAt" },
